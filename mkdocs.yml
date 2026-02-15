@@ -2,12 +2,12 @@
 site_name: NavArena 开发者文档
 site_description: 完整的 NavArena 具身导航项目开发文档，包含 API 参考、教程和使用指南
 site_author: NavArena Team
-# site_url: https://yourdomain.com  # TODO: 设置实际的文档站点 URL
+site_url: https://KEEPSLAMDUNK.github.io/NavArena-Doc/
 
-# 仓库信息（可选）
-# repo_name: your-org/navarena
-# repo_url: https://github.com/your-org/navarena
-# edit_uri: edit/main/docs/
+# 仓库信息
+repo_name: KEEPSLAMDUNK/NavArena-Doc
+repo_url: https://github.com/KEEPSLAMDUNK/NavArena-Doc
+edit_uri: edit/docs/docs/
 
 # 版权信息
 copyright: Copyright &copy; 2026 NavArena Team
@@ -176,11 +176,9 @@ extra:
       lang: en
   
   # 社交链接
-  # social:
-  #   - icon: fontawesome/brands/github
-  #     link: https://github.com/your-org
-  #   - icon: fontawesome/brands/twitter
-  #     link: https://twitter.com/your-org
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/KEEPSLAMDUNK/NavArena-Doc
 
 # 导航结构
 nav:
