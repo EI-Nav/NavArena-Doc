@@ -1,0 +1,330 @@
+/* ============================================
+   NavArena 文档 - 高端视觉样式
+   ============================================ */
+
+/* ---------- 字体与中文排版 ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
+
+:root {
+  /* 品牌色 - 亮色模式 */
+  --navarena-primary: #0d47a1;
+  --navarena-accent: #00bcd4;
+  --navarena-primary-light: #1976d2;
+  --navarena-gradient-start: #0d47a1;
+  --navarena-gradient-end: #00bcd4;
+  --navarena-card-shadow: 0 4px 20px rgba(13, 71, 161, 0.08);
+  --navarena-card-hover: 0 12px 40px rgba(13, 71, 161, 0.15);
+}
+
+[data-md-color-scheme="slate"] {
+  /* 品牌色 - 暗色模式 */
+  --navarena-primary: #42a5f5;
+  --navarena-accent: #00e5ff;
+  --navarena-primary-light: #64b5f6;
+  --navarena-gradient-start: #1565c0;
+  --navarena-gradient-end: #00bcd4;
+  --navarena-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --navarena-card-hover: 0 12px 40px rgba(66, 165, 245, 0.2);
+}
+
+/* 中文排版优化 */
+.md-typeset {
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+}
+
+.md-typeset p {
+  margin-bottom: 1em;
+}
+
+.md-typeset h1, .md-typeset h2, .md-typeset h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* 中文正文使用 Noto Sans SC */
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ---------- Hero 区域 ---------- */
+.hero {
+  background: linear-gradient(135deg, var(--navarena-gradient-start) 0%, var(--navarena-gradient-end) 100%);
+  color: #fff;
+  padding: 4rem 2rem;
+  margin: -1rem -1.2rem 3rem -1.2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: #fff !important;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  margin-bottom: 1.5rem;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-buttons .md-button {
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-buttons .md-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hero-buttons .md-button--primary {
+  background: #fff !important;
+  color: var(--navarena-primary) !important;
+}
+
+.hero-buttons .md-button:not(.md-button--primary) {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- 特性卡片网格 ---------- */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: var(--navarena-card-shadow);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--navarena-card-hover);
+  border-color: var(--navarena-accent);
+}
+
+.feature-card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.feature-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.feature-card p {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.feature-card a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--navarena-primary);
+}
+
+/* ---------- 代码块美化 ---------- */
+.highlight {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.highlight pre {
+  padding: 1rem 1.25rem;
+}
+
+[data-md-color-scheme="slate"] .highlight {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 内联代码 */
+code {
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  font-size: 0.9em;
+  transition: background 0.2s ease;
+}
+
+/* ---------- 告示框 (Admonition) 美化 ---------- */
+.admonition {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid var(--navarena-primary);
+}
+
+.admonition.note { border-left-color: #2196f3; }
+.admonition.tip, .admonition.success { border-left-color: #4caf50; }
+.admonition.warning { border-left-color: #ff9800; }
+.admonition.danger, .admonition.failure { border-left-color: #f44336; }
+
+[data-md-color-scheme="slate"] .admonition {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- 表格美化 ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+table th {
+  background-color: var(--md-default-fg-color--lightest);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+}
+
+table td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+table tr:nth-child(even) {
+  background: var(--md-default-fg-color--lightest);
+}
+
+table tbody tr:hover {
+  background: var(--md-default-fg-color--light);
+}
+
+[data-md-color-scheme="slate"] table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- 自定义滚动条 ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--md-default-fg-color--lightest);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--navarena-primary-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--navarena-primary);
+}
+
+/* ---------- 动效 ---------- */
+.md-nav__link, .md-typeset a {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.md-typeset .md-button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+/* 滚动渐入动画占位 */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Footer 美化 ---------- */
+.md-footer {
+  background: linear-gradient(180deg, var(--md-default-bg-color) 0%, var(--md-default-fg-color--lightest) 100%);
+}
+
+[data-md-color-scheme="slate"] .md-footer {
+  background: linear-gradient(180deg, var(--md-default-bg-color) 0%, rgba(0,0,0,0.3) 100%);
+}
+
+/* ---------- 搜索框 ---------- */
+.md-search__input {
+  border-radius: 8px;
+}
+
+/* ---------- 移动端优化 ---------- */
+@media screen and (max-width: 76.1875em) {
+  .hero {
+    padding: 3rem 1rem;
+    margin: -1rem -0.8rem 2rem -0.8rem;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .md-nav--primary .md-nav__title {
+    background-color: var(--md-primary-fg-color);
+  }
+}
+
+/* ---------- 导航激活态 ---------- */
+.md-nav__link--active {
+  font-weight: 600;
+  color: var(--navarena-primary) !important;
+}
+
+/* ---------- Mermaid 图表容器 ---------- */
+.md-typeset .mermaid {
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--md-default-fg-color--lightest);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .mermaid {
+  background: rgba(255, 255, 255, 0.05);
+}
