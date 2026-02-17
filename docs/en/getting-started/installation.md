@@ -1,6 +1,6 @@
 # Installation Guide
 
-This page guides you through the installation and configuration of the NavArena project. The project consists of two sub-projects: **Data Generator** (vln_data_generator) and **Evaluation Framework** (x2robot-nav).
+This page guides you through the installation and configuration of the NavArena project. The project consists of three sub-projects: **Asset Preprocessing** (NavArena-Forge), **Data Generator** (NavArena-Gen), and **Evaluation Framework** (NavArena-Bench).
 
 ## System Requirements
 
@@ -21,14 +21,14 @@ Before starting installation, ensure your system meets the following requirement
 ### 1. Create Virtual Environment
 
 ```bash
-conda create -n vln_data python=3.9
-conda activate vln_data
+conda create -n navarena_gen python=3.9
+conda activate navarena_gen
 ```
 
 ### 2. Install Base Dependencies
 
 ```bash
-cd vln_data_generator
+cd NavArena-Gen
 pip install -r requirements.txt
 ```
 
@@ -54,8 +54,8 @@ If you see the help message, installation was successful.
 ### 1. Create Virtual Environment
 
 ```bash
-conda create -n vln_evaluator python=3.10
-conda activate vln_evaluator
+conda create -n navarena_bench python=3.10
+conda activate navarena_bench
 ```
 
 ### 2. Install PyTorch
@@ -69,7 +69,7 @@ pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
 ### 3. Install Base Dependencies
 
 ```bash
-cd x2robot-nav
+cd NavArena-Bench
 pip install pyyaml pytest requests plyfile gsplat scipy skan \
     -i https://mirrors.cloud.aliyuncs.com/pypi/simple \
     --trusted-host mirrors.cloud.aliyuncs.com
@@ -80,7 +80,7 @@ pip install pyyaml pytest requests plyfile gsplat scipy skan \
 If you need to use ViNT/GNM/NoMaD agents:
 
 ```bash
-# Clone visualnav-transformer repo (alongside x2robot-nav)
+# Clone visualnav-transformer repo (alongside NavArena-Bench)
 git clone ssh://git@gitlab.zbl.local:50022/jake/visualnav-transformer.git
 
 # Install extra dependencies
@@ -115,21 +115,21 @@ If you need to install both projects simultaneously:
 
 ```bash
 # 1. Create main environment
-conda create -n vln python=3.10
-conda activate vln
+conda create -n navarena python=3.10
+conda activate navarena
 
 # 2. Install PyTorch
 pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
     --index-url https://download.pytorch.org/whl/cu121
 
 # 3. Install Data Generator dependencies
-cd vln_data_generator
+cd NavArena-Gen
 pip install -r requirements.txt
 pip install git+https://github.com/ultralytics/CLIP.git
 cd ..
 
 # 4. Install Evaluation Framework dependencies
-cd x2robot-nav
+cd NavArena-Bench
 pip install pyyaml pytest requests plyfile gsplat scipy skan \
     -i https://mirrors.cloud.aliyuncs.com/pypi/simple \
     --trusted-host mirrors.cloud.aliyuncs.com
@@ -154,8 +154,8 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 If you need to share code between projects, set PYTHONPATH:
 
 ```bash
-export PYTHONPATH=/path/to/vln_data_generator:$PYTHONPATH
-export PYTHONPATH=/path/to/x2robot-nav:$PYTHONPATH
+export PYTHONPATH=/path/to/NavArena-Gen:$PYTHONPATH
+export PYTHONPATH=/path/to/NavArena-Bench:$PYTHONPATH
 ```
 
 ## FAQ
@@ -176,13 +176,13 @@ export PYTHONPATH=/path/to/x2robot-nav:$PYTHONPATH
     We recommend using separate virtual environments for each project to avoid dependency conflicts:
     ```bash
     # Data Generator
-    conda create -n vln_data python=3.9
-    conda activate vln_data
+    conda create -n navarena_gen python=3.9
+    conda activate navarena_gen
     # ... install data generator dependencies
     
     # Evaluation Framework
-    conda create -n vln_evaluator python=3.10
-    conda activate vln_evaluator
+    conda create -n navarena_bench python=3.10
+    conda activate navarena_bench
     # ... install evaluation framework dependencies
     ```
 
@@ -204,4 +204,4 @@ After installation, continue reading:
 
 - **[Quickstart](quickstart.md)** - Learn how to use both projects
 - **[Data Generator Overview](../data-generator/overview.md)** - Deep dive into the data generation workflow
-- **[Evaluation Framework Overview](../x2robot-nav/overview.md)** - Learn about the evaluation framework architecture
+- **[Evaluation Framework Overview](../navarena-bench/overview.md)** - Learn about the evaluation framework architecture

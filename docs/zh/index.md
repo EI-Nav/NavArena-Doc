@@ -30,7 +30,7 @@
     <div class="feature-card-icon">🎯</div>
     <h3>评测框架</h3>
     <p>基于 3D Gaussian Splatting 和占据栅格的评测框架，支持多种导航任务与智能体（ViNT、GNM、NoMaD），含回放与可视化。</p>
-    <a href="x2robot-nav/overview.md">查看文档 →</a>
+    <a href="navarena-bench/overview.md">查看文档 →</a>
   </div>
 </div>
 
@@ -53,22 +53,22 @@
 
 ### 资产预处理 · 数据生成器 · 评测框架
 
-详细文档入口： [资产预处理概述](asset-preprocessing/overview.md) · [数据生成器概述](data-generator/overview.md) · [评测框架概述](x2robot-nav/overview.md)
+详细文档入口： [资产预处理概述](asset-preprocessing/overview.md) · [数据生成器概述](data-generator/overview.md) · [评测框架概述](navarena-bench/overview.md)
 
 ### API 参考
 
 - **[API 文档](api/reference.md)** - 通用 API 参考手册
 - **[数据生成器 API](api/data-generator-api.md)** - 数据生成器 API 文档
-- **[评测框架 API](api/x2robot-nav-api.md)** - 评测框架 API 文档
+- **[评测框架 API](api/navarena-bench-api.md)** - 评测框架 API 文档
 
 ## 项目架构
 
 ```mermaid
 graph TB
     subgraph NavArena[NavArena 具身导航]
-        AP[资产预处理<br/>embodied-nav-assets]
-        DG[数据生成器<br/>vln_data_generator]
-        EF[评测框架<br/>x2robot-nav]
+        AP[资产预处理<br/>NavArena-Forge]
+        DG[数据生成器<br/>NavArena-Gen]
+        EF[评测框架<br/>NavArena-Bench]
     end
     
     subgraph AP_Flow[资产预处理流程]
@@ -115,15 +115,15 @@ graph TB
 === "资产预处理"
 
     ```bash
-    cd embodied-nav-assets
-    python -m gs_asset_normalizer batch --scenes-root /path/to/scenes \
+    cd NavArena-Forge
+    python -m navarena_forge batch --scenes-root /path/to/scenes \
         --config pipeline.yaml --source-dataset InteriorGS
     ```
 
 === "数据生成"
 
     ```bash
-    cd vln_data_generator
+    cd NavArena-Gen
     python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
     # 并行生成
@@ -154,9 +154,9 @@ graph TB
 
 ## 相关项目
 
-- **embodied-nav-assets** - 资产预处理 Pipeline
-- **vln_data_generator** - 数据生成工具
-- **x2robot-nav** - 评测框架
+- **NavArena-Forge** - 资产预处理 Pipeline
+- **NavArena-Gen** - 数据生成工具
+- **NavArena-Bench** - 评测框架
 - **visualnav-transformer** - ViNT/GNM/NoMaD 模型支持
 
 ---

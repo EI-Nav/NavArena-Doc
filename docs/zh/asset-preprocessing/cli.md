@@ -1,6 +1,6 @@
 # CLI 命令
 
-资产预处理通过 `gs_asset_normalizer` 模块提供命令行接口。进入 `embodied-nav-assets` 目录后，使用 `python -m gs_asset_normalizer` 调用。
+资产预处理通过 `navarena_forge` 模块提供命令行接口。进入 `NavArena-Forge` 目录后，使用 `python -m navarena_forge` 调用。
 
 ## 命令概览
 
@@ -21,7 +21,7 @@
 对单个场景目录运行完整 Pipeline。
 
 ```bash
-python -m gs_asset_normalizer run-pipeline \
+python -m navarena_forge run-pipeline \
     --config pipeline.yaml \
     --scene-dir /path/to/scene \
     --source-dataset InteriorGS
@@ -45,7 +45,7 @@ python -m gs_asset_normalizer run-pipeline \
 对 `--scenes-root` 下所有子目录批量运行 Pipeline。
 
 ```bash
-python -m gs_asset_normalizer batch \
+python -m navarena_forge batch \
     --scenes-root /path/to/scenes \
     --config pipeline.yaml \
     --source-dataset scannetpp
@@ -72,7 +72,7 @@ python -m gs_asset_normalizer batch \
 仅运行指定步骤。
 
 ```bash
-python -m gs_asset_normalizer run-step coordinate_normalize \
+python -m navarena_forge run-step coordinate_normalize \
     --config coordinate_normalize.yaml \
     --scene-dir /path/to/scene
 ```
@@ -92,7 +92,7 @@ python -m gs_asset_normalizer run-step coordinate_normalize \
 列出所有已注册的处理步骤。
 
 ```bash
-python -m gs_asset_normalizer list-steps
+python -m navarena_forge list-steps
 ```
 
 输出示例：
@@ -111,9 +111,9 @@ python -m gs_asset_normalizer list-steps
 将已有场景复制到新的 V1 目录结构，统一文件名并生成 manifest.json。
 
 ```bash
-python -m gs_asset_normalizer migrate \
+python -m navarena_forge migrate \
     --scenes-root /path/to/old/scenes \
-    --output-root /path/to/nav_gs_assets \
+    --output-root /path/to/navarena_assets \
     --source-dataset InteriorGS
 ```
 
@@ -134,8 +134,8 @@ python -m gs_asset_normalizer migrate \
 在 V1 资产目录中批量将 PLY 转为 compressed.splat。
 
 ```bash
-python -m gs_asset_normalizer compress \
-    --assets-root /path/to/nav_gs_assets \
+python -m navarena_forge compress \
+    --assets-root /path/to/navarena_assets \
     --dataset scenesplat
 ```
 
@@ -159,7 +159,7 @@ python -m gs_asset_normalizer compress \
 ### 单文件模式
 
 ```bash
-python -m gs_asset_normalizer convert-labels \
+python -m navarena_forge convert-labels \
     --input /path/to/labels.json \
     [--output /path/to/output.json]
 ```
@@ -167,8 +167,8 @@ python -m gs_asset_normalizer convert-labels \
 ### 批量模式
 
 ```bash
-python -m gs_asset_normalizer convert-labels \
-    --assets-root /path/to/nav_gs_assets \
+python -m navarena_forge convert-labels \
+    --assets-root /path/to/navarena_assets \
     --dataset x2robot
 ```
 

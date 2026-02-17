@@ -6,11 +6,11 @@ The data generation pipeline includes environment initialization, episode genera
 
 ### Description
 
-Load scene from V1 unified asset format (nav_gs_assets) and initialize path planner (A*).
+Load scene from V1 unified asset format (navarena_assets) and initialize path planner (A*).
 
 ### Input
 
-- **scene_path**: Scene directory path (e.g. `nav_gs_assets/x2robot/17dc3367`)
+- **scene_path**: Scene directory path (e.g. `navarena_assets/x2robot/17dc3367`)
 - **V1 assets**: manifest.json (required), nav_map.pgm (required), nav_map.yaml (required), nav_mask.png (optional), labels.json (optional)
 
 ### Flow

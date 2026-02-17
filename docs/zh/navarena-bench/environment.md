@@ -20,9 +20,9 @@
 #### 初始化
 
 ```python
-from x2robot_nav.env import Env
-from x2robot_nav.configs.env_config import EnvCfg, GSEnvConfig
-from x2robot_nav.configs.eval_config import TaskCfg
+from navarena_bench.env import Env
+from navarena_bench.configs.env_config import EnvCfg, GSEnvConfig
+from navarena_bench.configs.eval_config import TaskCfg
 
 env_config = EnvCfg(
     env_type="gs",

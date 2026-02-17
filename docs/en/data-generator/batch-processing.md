@@ -14,7 +14,7 @@ The data generator supports single-scene and multi-scene batch generation, paral
 ## Single Scene
 
 ```bash
-cd vln_data_generator
+cd NavArena-Gen
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 ```
 
@@ -28,7 +28,7 @@ import subprocess
 
 scenes = ["17dc3367", "a1b2c3d4"]
 for scene_id in scenes:
-    scene_path = f"nav_gs_assets/x2robot/{scene_id}"
+    scene_path = f"navarena_assets/x2robot/{scene_id}"
     subprocess.run([
         "python", "scripts/generate_data.py",
         "--config", "configs/examples/pointnav_example.yaml",
@@ -69,8 +69,8 @@ After generation, render with `render_episodes.py`:
 ```bash
 python scripts/render_episodes.py \
     --renderer gs \
-    --trajectories-dir vln_data/scenes/17dc3367/imagenav/gt_trajectories \
-    --scene nav_gs_assets/x2robot/17dc3367 \
+    --trajectories-dir navarena_data/scenes/17dc3367/imagenav/gt_trajectories \
+    --scene navarena_assets/x2robot/17dc3367 \
     --camera-config configs/examples/camera.yaml
 ```
 
@@ -85,7 +85,7 @@ Checks Episode JSON and file references.
 ## Output Structure
 
 ```
-vln_data/
+navarena_data/
 ├── dataset_meta.json
 └── scenes/
     └── {scene_id}/

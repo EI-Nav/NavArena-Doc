@@ -17,9 +17,9 @@
 ### 1. 创建环境类
 
 ```python
-from x2robot_nav.env.base import Env
-from x2robot_nav.configs.env_config import EnvCfg
-from x2robot_nav.configs.eval_config import TaskCfg
+from navarena_bench.env.base import Env
+from navarena_bench.configs.env_config import EnvCfg
+from navarena_bench.configs.eval_config import TaskCfg
 
 @Env.register("my_env")
 class MyEnvironment(Env):
@@ -76,8 +76,8 @@ env = Env.init(env_config, task_config)
 ### 1. 创建智能体类
 
 ```python
-from x2robot_nav.agent.base import Agent
-from x2robot_nav.configs.agent_config import AgentCfg
+from navarena_bench.agent.base import Agent
+from navarena_bench.configs.agent_config import AgentCfg
 
 @Agent.register("my_agent")
 class MyAgent(Agent):
@@ -135,8 +135,8 @@ agent = Agent.init(config)
 ### 1. 创建评测器类
 
 ```python
-from x2robot_nav.evaluator.base import Evaluator
-from x2robot_nav.configs.eval_config import EvalCfg
+from navarena_bench.evaluator.base import Evaluator
+from navarena_bench.configs.eval_config import EvalCfg
 
 @Evaluator.register("my_eval")
 class MyEvaluator(Evaluator):
@@ -192,7 +192,7 @@ evaluator = Evaluator.init(config)
 ### 1. 创建指标类
 
 ```python
-from x2robot_nav.metrics.base import Metric
+from navarena_bench.metrics.base import Metric
 
 @Metric.register("my_metric")
 class MyMetric(Metric):
@@ -217,7 +217,7 @@ class MyMetric(Metric):
 ### 2. 使用新指标
 
 ```python
-from x2robot_nav.metrics import Metric
+from navarena_bench.metrics import Metric
 
 metric = Metric.init("my_metric", param1=value1)
 metric.update(episode_result)
@@ -229,8 +229,8 @@ result = metric.compute()
 ### 1. 创建回放器类
 
 ```python
-from x2robot_nav.replay.base import BaseReplayer
-from x2robot_nav.replay.loader import ReplayLoader
+from navarena_bench.replay.base import BaseReplayer
+from navarena_bench.replay.loader import ReplayLoader
 
 @BaseReplayer.register("my_replayer")
 class MyReplayer(BaseReplayer):
@@ -255,7 +255,7 @@ class MyReplayer(BaseReplayer):
 ### 2. 使用新回放器
 
 ```python
-from x2robot_nav.replay import BaseReplayer
+from navarena_bench.replay import BaseReplayer
 
 replayer = BaseReplayer.init("my_replayer", loader)
 replayer.replay("output.mp4")
@@ -314,7 +314,7 @@ def act(self, observation):
 使用日志记录调试信息：
 
 ```python
-from x2robot_nav.utils.logger import get_logger
+from navarena_bench.utils.logger import get_logger
 
 class MyComponent(BaseComponent):
     def __init__(self, config):
@@ -333,8 +333,8 @@ class MyComponent(BaseComponent):
 
 ```python
 import pytest
-from x2robot_nav.agent import Agent
-from x2robot_nav.configs.agent_config import AgentCfg
+from navarena_bench.agent import Agent
+from navarena_bench.configs.agent_config import AgentCfg
 
 def test_my_agent():
     config = AgentCfg(

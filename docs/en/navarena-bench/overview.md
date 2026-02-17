@@ -1,6 +1,6 @@
 # Evaluation Framework Overview
 
-x2robot-nav is a navigation model evaluation framework based on 3D Gaussian Splatting and occupancy grids. It provides a modular, extensible evaluation system supporting multiple navigation tasks and agent types.
+NavArena-Bench is a navigation model evaluation framework based on 3D Gaussian Splatting and occupancy grids. It provides a modular, extensible evaluation system supporting multiple navigation tasks and agent types.
 
 ## Core Features
 
@@ -162,7 +162,7 @@ The framework uses a decorator registration mechanism for easy extension:
 ### Register Environment
 
 ```python
-from x2robot_nav.env.base import Env
+from navarena_bench.env.base import Env
 
 @Env.register("my_env")
 class MyEnvironment(Env):
@@ -174,7 +174,7 @@ class MyEnvironment(Env):
 ### Register Agent
 
 ```python
-from x2robot_nav.agent.base import Agent
+from navarena_bench.agent.base import Agent
 
 @Agent.register("my_agent")
 class MyAgent(Agent):
@@ -186,7 +186,7 @@ class MyAgent(Agent):
 ### Register Evaluator
 
 ```python
-from x2robot_nav.evaluator.base import Evaluator
+from navarena_bench.evaluator.base import Evaluator
 
 @Evaluator.register("my_eval")
 class MyEvaluator(Evaluator):
@@ -248,7 +248,7 @@ agent:
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "vln_data/episodes.json"
+  dataset_path: "navarena_data/episodes.json"
 
 eval_settings:
   num_episodes: 100

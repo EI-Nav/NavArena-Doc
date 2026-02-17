@@ -1,23 +1,23 @@
-# Evaluator Module
+# 评测器模块
 
-The evaluator module coordinates the environment, agent, and dataset for evaluation, computes metrics, and saves results.
+评测器模块负责协调环境、智能体和数据集进行评测，计算评测指标并保存结果。
 
-## Overview
+## 概述
 
-The evaluator is a core component of the evaluation framework, responsible for:
+评测器是评测框架的核心组件，负责：
 
-- **Manage Evaluation Flow** - Coordinate environment, agent, and dataset
-- **Run Evaluation Loop** - Execute episodes and collect data
-- **Compute Metrics** - Success rate, SPL, etc.
-- **Save Results** - Save evaluation results and trajectories
+- **管理评测流程** - 协调环境、智能体和数据集
+- **执行评测循环** - 运行 episode 并收集数据
+- **计算指标** - 计算成功率、路径长度比等指标
+- **保存结果** - 保存评测结果和轨迹数据
 
-## Evaluator Types
+## 评测器类型
 
 ### PointNavEvaluator
 
-Point goal navigation evaluator for reaching specified 3D positions.
+点目标导航评测器，评测模型到达指定 3D 位置的能力。
 
-#### Configuration
+#### 配置
 
 ```yaml
 eval_type: "pointnav"
@@ -25,10 +25,10 @@ eval_type: "pointnav"
 task:
   task_type: "pointnav"
   task_settings:
-    success_distance: 0.5  # Success distance (meters)
+    success_distance: 0.5  # 成功距离（米）
 ```
 
-#### Episode Format
+#### Episode 格式
 
 ```json
 {
@@ -39,23 +39,23 @@ task:
   "goals": [
     {
       "position": [5.0, 0.0, 0.0],
-      "rotation": [1.0, 0.0, 0.0, 0.0]  # optional
+      "rotation": [1.0, 0.0, 0.0, 0.0]  # 可选
     }
   ]
 }
 ```
 
-#### Metrics
+#### 评测指标
 
-- **Success Rate (SR)**: Success rate
-- **Success weighted by Path Length (SPL)**: Path-length weighted success
-- **Navigation Error (NE)**: Navigation error
+- **Success Rate (SR)**: 成功率
+- **Success weighted by Path Length (SPL)**: 路径长度加权成功率
+- **Navigation Error (NE)**: 导航误差
 
 ### ObjectNavEvaluator
 
-Object goal navigation evaluator for finding objects of a given category.
+物体目标导航评测器，评测模型找到指定类别物体的能力。
 
-#### Configuration
+#### 配置
 
 ```yaml
 eval_type: "objectnav"
@@ -67,7 +67,7 @@ task:
     object_categories: ["bed", "chair", "table"]
 ```
 
-#### Episode Format
+#### Episode 格式
 
 ```json
 {
@@ -86,9 +86,9 @@ task:
 
 ### ImageNavEvaluator
 
-Image goal navigation evaluator for reaching a goal defined by an image.
+图像目标导航评测器，评测模型根据目标图像导航的能力。
 
-#### Configuration
+#### 配置
 
 ```yaml
 eval_type: "imagenav"
@@ -97,32 +97,14 @@ task:
   task_type: "imagenav"
   task_settings:
     success_distance: 0.5
-    success_angle: 0.5  # Success angle (radians)
-```
-
-#### Episode Format
-
-```json
-{
-  "episode_id": "001",
-  "scene_id": "scene_001",
-  "start_position": [0.0, 0.0, 0.0],
-  "start_rotation": [1.0, 0.0, 0.0, 0.0],
-  "goals": [
-    {
-      "position": [5.0, 0.0, 0.0],
-      "rotation": [1.0, 0.0, 0.0, 0.0],  # required
-      "image": "/path/to/goal_image.jpg"  # optional
-    }
-  ]
-}
+    success_angle: 0.5  # 成功角度（弧度）
 ```
 
 ### VLNEvaluator
 
-Vision-Language Navigation evaluator for instruction-following navigation.
+视觉语言导航评测器，评测模型根据自然语言指令导航的能力。
 
-#### Configuration
+#### 配置
 
 ```yaml
 eval_type: "vln"
@@ -137,60 +119,78 @@ agent:
     voronoi_closeness: 0.5
 ```
 
-#### VLN Episode Format
-
-VLN requires an `instructions` field:
+#### Episode 格式
 
 ```json
 {
   "episode_id": "001",
   "scene_id": "scene_001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
-  "start_state": {"position": [...], "rotation": [...]},
-  "goals": [...],
-  "instructions": ["Walk about 8 meters to the northeast"]
+  "start_position": [0.0, 0.0, 0.0],
+  "start_rotation": [1.0, 0.0, 0.0, 0.0],
+  "goals": [
+    {
+      "position": [5.0, 0.0, 0.0],
+      "rotation": [1.0, 0.0, 0.0, 0.0],  # 必需
+      "image": "/path/to/goal_image.jpg"  # 可选
+    }
+  ]
 }
 ```
 
-## Evaluation Flow
+#### VLN Episode 格式
+
+VLN 任务需要 `instructions` 字段：
+
+```json
+{
+  "episode_id": "001",
+  "scene_id": "scene_001",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
+  "start_state": {"position": [...], "rotation": [...]},
+  "goals": [...],
+  "instructions": ["向东北方向走约 8 米"]
+}
+```
+
+## 评测流程
 
 ```mermaid
 sequenceDiagram
-    participant Eval as Evaluator
-    participant Dataset as Dataset
-    participant Env as Environment
-    participant Agent as Agent
-    participant Metrics as Metrics
+    participant Eval as 评测器
+    participant Dataset as 数据集
+    participant Env as 环境
+    participant Agent as 智能体
+    participant Metrics as 指标
     
-    Eval->>Dataset: Load Episode
+    Eval->>Dataset: 加载 Episode
     Eval->>Env: reset(episode)
     Env-->>Eval: observation
     Eval->>Agent: reset(episode)
     Eval->>Agent: act(observation)
     Agent-->>Eval: action
     
-    loop Each Step
+    loop 每个 Step
         Eval->>Env: step(action)
         Env-->>Eval: observation, done, info
-        alt Not done
+        alt 未完成
             Eval->>Agent: act(observation)
             Agent-->>Eval: action
         end
     end
     
-    Eval->>Metrics: Compute metrics
+    Eval->>Metrics: 计算指标
     Metrics-->>Eval: results
-    Eval->>Eval: Save results
+    Eval->>Eval: 保存结果
 ```
 
-## Evaluation Configuration
+## 评测配置
 
-### Full Config Example
+### 完整配置示例
 
 ```yaml
 eval_type: "pointnav"
 
-# Environment config
+# 环境配置
 env:
   env_type: "gs"
   env_settings:
@@ -205,26 +205,26 @@ env:
     image_width: 640
     image_height: 480
 
-# Agent config
+# 智能体配置
 agent:
   agent_type: "local"
   model_path: "/path/to/model.pth"
   model_settings: {}
   device: null
 
-# Task config
+# 任务配置
 task:
   task_type: "pointnav"
   task_settings:
     success_distance: 0.5
 
-# Dataset config
+# 数据集配置
 dataset:
   dataset_type: "episode"
-  dataset_path: "vln_data/episodes.json"
+  dataset_path: "navarena_data/episodes.json"
   shuffle: false
 
-# Evaluation settings
+# 评测设置
 eval_settings:
   num_episodes: 100
   output_path: "./eval_results"
@@ -233,15 +233,15 @@ eval_settings:
   save_video: false
 ```
 
-## Running Evaluation
+## 运行评测
 
-### Command Line
+### 命令行运行
 
 ```bash
 python scripts/eval.py --config configs/eval/default_eval.yaml
 ```
 
-### Override Config
+### 覆盖配置参数
 
 ```bash
 python scripts/eval.py \
@@ -253,43 +253,43 @@ python scripts/eval.py \
 ### Python API
 
 ```python
-from x2robot_nav.evaluator import Evaluator
-from x2robot_nav.configs.eval_config import EvalCfg
+from navarena_bench.evaluator import Evaluator
+from navarena_bench.configs.eval_config import EvalCfg
 import yaml
 
-# Load config
+# 加载配置
 with open("configs/eval/default_eval.yaml", "r") as f:
     config_dict = yaml.safe_load(f)
 
 config = EvalCfg(**config_dict)
 
-# Create evaluator
+# 创建评测器
 evaluator = Evaluator.init(config)
 
-# Run evaluation
+# 运行评测
 results = evaluator.evaluate()
 
-# View results
+# 查看结果
 print(f"Success Rate: {results['success_rate']:.2%}")
 print(f"SPL: {results['spl']:.2%}")
 ```
 
-## Evaluation Results
+## 评测结果
 
-### Result Format
+### 结果格式
 
-After evaluation, results are saved in the output directory:
+评测完成后，结果保存在输出目录：
 
 ```
 eval_results/
-├── results.json           # Overall results
-├── episode_results.json   # Per-episode results
-└── trajectories/          # Trajectories (if saved)
+├── results.json           # 总体结果
+├── episode_results.json   # 每个 episode 的详细结果
+└── trajectories/          # 轨迹数据（如果保存）
     ├── episode_001.json
     └── ...
 ```
 
-### Overall Results
+### 总体结果
 
 ```json
 {
@@ -303,7 +303,7 @@ eval_results/
 }
 ```
 
-### Episode Results
+### Episode 结果
 
 ```json
 {
@@ -318,55 +318,55 @@ eval_results/
 }
 ```
 
-## Metric Definitions
+## 指标说明
 
 ### Success Rate (SR)
 
-Success rate: fraction of episodes that reach the goal.
+成功率，定义为成功到达目标的 episode 比例。
 
 ```
-SR = (successful episodes) / (total episodes)
+SR = (成功 episode 数) / (总 episode 数)
 ```
 
 ### Success weighted by Path Length (SPL)
 
-Path-length weighted success, accounting for efficiency.
+路径长度加权成功率，考虑路径效率。
 
 ```
 SPL = (1/N) * Σ(S_i * L_i / max(L_i, G_i))
 
-Where:
-- N: Total episodes
-- S_i: Episode i success (1 or 0)
-- L_i: Episode i path length
-- G_i: Episode i shortest path length
+其中：
+- N: 总 episode 数
+- S_i: Episode i 是否成功（1 或 0）
+- L_i: Episode i 的实际路径长度
+- G_i: Episode i 的最短路径长度
 ```
 
 ### Navigation Error (NE)
 
-Navigation error: average distance from final position to goal.
+导航误差，定义为最终位置到目标的平均距离。
 
 ```
 NE = (1/N) * Σ(distance_to_goal_i)
 ```
 
-## Custom Evaluators
+## 自定义评测器
 
-### Implement Custom Evaluator
+### 实现自定义评测器
 
 ```python
-from x2robot_nav.evaluator.base import Evaluator
-from x2robot_nav.configs.eval_config import EvalCfg
+from navarena_bench.evaluator.base import Evaluator
+from navarena_bench.configs.eval_config import EvalCfg
 
 @Evaluator.register("my_eval")
 class MyEvaluator(Evaluator):
     def __init__(self, config: EvalCfg):
         super().__init__(config)
-        # Initialize
+        # 初始化
         
     def eval_episode(self, episode):
-        """Evaluate single episode"""
-        # Evaluation logic
+        """评测单个 episode"""
+        # 实现评测逻辑
         result = {
             "episode_id": episode["episode_id"],
             "success": True,
@@ -376,35 +376,35 @@ class MyEvaluator(Evaluator):
         return result
 ```
 
-### Use Custom Evaluator
+### 使用自定义评测器
 
 ```yaml
 eval_type: "my_eval"
 ```
 
 ```python
-# Import custom evaluator so it registers
+# 确保导入自定义评测器类
 import my_evaluator_module
 
 evaluator = Evaluator.init(config)
 ```
 
-## FAQ
+## 常见问题
 
-!!! question "Slow evaluation"
-    Reduce `num_episodes` or `max_steps_per_episode`, disable trajectory saving.
+!!! question "评测速度慢"
+    减少 `num_episodes` 或 `max_steps_per_episode`，禁用轨迹保存。
 
-!!! question "Out of memory"
-    Disable trajectory saving (`save_trajectories: false`), reduce parallelism.
+!!! question "内存不足"
+    禁用轨迹保存 (`save_trajectories: false`)，减少并行度。
 
-!!! question "Metric calculation error"
-    Check task config and ensure `success_distance` is reasonable.
+!!! question "指标计算错误"
+    检查任务配置是否正确，确保 `success_distance` 设置合理。
 
-!!! question "Episode format error"
-    Validate episode JSON and ensure required fields exist.
+!!! question "Episode 格式错误"
+    验证 episode JSON 格式，确保必需字段存在。
 
-## Next Steps
+## 下一步
 
-- Learn about the **[Replay Module](replay.md)**
-- Learn how to **[Extend the Framework](extending.md)**
-- View the **[Environment Module](environment.md)** in detail
+- 了解 **[回放模块](replay.md)** 的功能
+- 学习如何 **[扩展框架](extending.md)**
+- 查看 **[环境模块](environment.md)** 的详细说明

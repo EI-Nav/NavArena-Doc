@@ -7,7 +7,7 @@
 ```json
 {
   "version": "1.0.0",
-  "dataset_name": "x2robot_nav",
+  "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-14",
     "description": "X2Robot通用具身导航数据集",
@@ -269,8 +269,8 @@ gt_trajectories/{episode_id}_gt.json:
 ## 八、文件组织结构
 
 ```bash
-x2robot-nav/
-├── vln_data/
+NavArena-Bench/
+├── navarena_data/
 │   ├── pointnav_episodes.json       # PointNav任务数据
 │   ├── imagenav_episodes.json       # ImageNav任务数据
 │   ├── objectnav_episodes.json      # ObjectNav任务数据

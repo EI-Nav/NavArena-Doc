@@ -119,8 +119,8 @@ python scripts/replay_eval.py \
 ### Basic Usage
 
 ```python
-from x2robot_nav.replay import BaseReplayer
-from x2robot_nav.replay.loader import ReplayLoader
+from navarena_bench.replay import BaseReplayer
+from navarena_bench.replay.loader import ReplayLoader
 
 # Load replay data
 loader = ReplayLoader("eval_results/episode_001")
@@ -136,8 +136,8 @@ replayer.replay(output_path="replay.mp4")
 ### Custom Replayer
 
 ```python
-from x2robot_nav.replay.base import BaseReplayer
-from x2robot_nav.replay.loader import ReplayLoader
+from navarena_bench.replay.base import BaseReplayer
+from navarena_bench.replay.loader import ReplayLoader
 
 @BaseReplayer.register("my_replayer")
 class MyReplayer(BaseReplayer):
@@ -158,7 +158,7 @@ class MyReplayer(BaseReplayer):
 Renders the navigation trajectory on the map.
 
 ```python
-from x2robot_nav.replay.renderers.trajectory_renderer import TrajectoryRenderer
+from navarena_bench.replay.renderers.trajectory_renderer import TrajectoryRenderer
 
 renderer = TrajectoryRenderer(
     pgm_map_path="scene_001_transformed.pgm",
@@ -177,7 +177,7 @@ image = renderer.render(
 Renders observation images.
 
 ```python
-from x2robot_nav.replay.renderers.observation_renderer import ObservationRenderer
+from navarena_bench.replay.renderers.observation_renderer import ObservationRenderer
 
 renderer = ObservationRenderer()
 
@@ -192,7 +192,7 @@ image = renderer.render(
 Renders the evaluation info panel.
 
 ```python
-from x2robot_nav.replay.renderers.info_panel_renderer import InfoPanelRenderer
+from navarena_bench.replay.renderers.info_panel_renderer import InfoPanelRenderer
 
 renderer = InfoPanelRenderer()
 

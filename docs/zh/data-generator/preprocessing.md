@@ -9,4 +9,4 @@
 - **[CLI 命令](../asset-preprocessing/cli.md)** - run-pipeline、batch、migrate、compress 等
 - **[Web 查看器](../asset-preprocessing/web-viewer.md)** - 3DGS 资产浏览
 
-数据生成器（vln_data_generator）依赖资产预处理输出的 V1 格式（manifest.json、nav_map.pgm、nav_map.yaml 等）。在生成数据前，请先使用 embodied-nav-assets 完成场景预处理。
+数据生成器（NavArena-Gen）依赖资产预处理输出的 V1 格式（manifest.json、nav_map.pgm、nav_map.yaml 等）。在生成数据前，请先使用 NavArena-Forge 完成场景预处理。

@@ -30,7 +30,7 @@ Welcome to the NavArena embodied navigation project developer documentation! Thi
     <div class="feature-card-icon">🎯</div>
     <h3>Evaluation Framework</h3>
     <p>Evaluation framework based on 3D Gaussian Splatting and occupancy grids, supporting multiple tasks and agents (ViNT, GNM, NoMaD) with replay and visualization.</p>
-    <a href="x2robot-nav/overview.md">View Docs →</a>
+    <a href="navarena-bench/overview.md">View Docs →</a>
   </div>
 </div>
 
@@ -53,22 +53,22 @@ Learn about the project's data format specifications:
 
 ### Asset Preprocessing · Data Generator · Evaluation Framework
 
-Overview docs: [Asset Preprocessing](asset-preprocessing/overview.md) · [Data Generator](data-generator/overview.md) · [Evaluation Framework](x2robot-nav/overview.md)
+Overview docs: [Asset Preprocessing](asset-preprocessing/overview.md) · [Data Generator](data-generator/overview.md) · [Evaluation Framework](navarena-bench/overview.md)
 
 ### API Reference
 
 - **[API Reference](api/reference.md)** - General API reference manual
 - **[Data Generator API](api/data-generator-api.md)** - Data generator API documentation
-- **[Evaluation Framework API](api/x2robot-nav-api.md)** - Evaluation framework API documentation
+- **[Evaluation Framework API](api/navarena-bench-api.md)** - Evaluation framework API documentation
 
 ## Project Architecture
 
 ```mermaid
 graph TB
     subgraph NavArena[NavArena]
-        AP[Asset Preprocessing<br/>embodied-nav-assets]
-        DG[Data Generator<br/>vln_data_generator]
-        EF[Evaluation Framework<br/>x2robot-nav]
+        AP[Asset Preprocessing<br/>NavArena-Forge]
+        DG[Data Generator<br/>NavArena-Gen]
+        EF[Evaluation Framework<br/>NavArena-Bench]
     end
     
     subgraph AP_Flow[Asset Preprocessing]
@@ -115,15 +115,15 @@ graph TB
 === "Asset Preprocessing"
 
     ```bash
-    cd embodied-nav-assets
-    python -m gs_asset_normalizer batch --scenes-root /path/to/scenes \
+    cd NavArena-Forge
+    python -m navarena_forge batch --scenes-root /path/to/scenes \
         --config pipeline.yaml --source-dataset InteriorGS
     ```
 
 === "Data Generation"
 
     ```bash
-    cd vln_data_generator
+    cd NavArena-Gen
     python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
     # Parallel generation
@@ -154,9 +154,9 @@ We welcome community contributions! If you find documentation errors or wish to 
 
 ## Related Projects
 
-- **embodied-nav-assets** - Asset preprocessing pipeline
-- **vln_data_generator** - Data generation tool
-- **x2robot-nav** - Evaluation framework
+- **NavArena-Forge** - Asset preprocessing pipeline
+- **NavArena-Gen** - Data generation tool
+- **NavArena-Bench** - Evaluation framework
 - **visualnav-transformer** - ViNT/GNM/NoMaD model support
 
 ---

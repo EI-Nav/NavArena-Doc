@@ -202,13 +202,13 @@ nav:
     - 配置说明: data-generator/configuration.md
     - 批量处理: data-generator/batch-processing.md
   - 评测框架:
-    - 概述: x2robot-nav/overview.md
-    - 环境模块: x2robot-nav/environment.md
-    - 智能体模块: x2robot-nav/agents.md
-    - 评测器模块: x2robot-nav/evaluators.md
-    - 回放模块: x2robot-nav/replay.md
-    - 扩展指南: x2robot-nav/extending.md
+    - 概述: navarena-bench/overview.md
+    - 环境模块: navarena-bench/environment.md
+    - 智能体模块: navarena-bench/agents.md
+    - 评测器模块: navarena-bench/evaluators.md
+    - 回放模块: navarena-bench/replay.md
+    - 扩展指南: navarena-bench/extending.md
   - API 参考:
     - API 文档: api/reference.md
     - 数据生成器 API: api/data-generator-api.md
-    - 评测框架 API: api/x2robot-nav-api.md
+    - 评测框架 API: api/navarena-bench-api.md

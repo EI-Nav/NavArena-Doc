@@ -5,7 +5,7 @@
 ## 1. 目录结构
 
 ```
-nav_gs_assets/
+navarena_assets/
 ├── SPEC.md                           # 本规范文档
 ├── {dataset}/                        # 数据集分组目录
 │   └── {scene_id}/                   # 8 位 UUID 短码
@@ -148,7 +148,7 @@ def generate_scene_id(original_name: str, dataset: str) -> str:
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
-| `normalizer_version` | string | gs_asset_normalizer 版本 |
+| `normalizer_version` | string | navarena_forge 版本 |
 | `processed_at` | string | ISO 8601 处理完成时间 |
 | `normalized` | bool | 是否已完成坐标归一化 |
 | `extrinsic_matrix` | array | 4x4 齐次变换矩阵（source → aligned） |
@@ -264,4 +264,4 @@ free_thresh: 0.25
 
 **生成方式**：
 
-由 `gs_asset_normalizer` 的 `compress_ply` 步骤从 `aligned.ply` 生成。可选配置低透明度 Gaussian 剪枝（默认阈值 sigmoid(-5) ≈ 0.007）。
+由 `navarena_forge` 的 `compress_ply` 步骤从 `aligned.ply` 生成。可选配置低透明度 Gaussian 剪枝（默认阈值 sigmoid(-5) ≈ 0.007）。

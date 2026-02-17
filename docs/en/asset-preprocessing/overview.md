@@ -1,6 +1,6 @@
 # Asset Preprocessing Overview
 
-Asset preprocessing (embodied-nav-assets / gs_asset_normalizer) is a modular pipeline that converts raw 3D Gaussian Splatting scenes into standardized embodied navigation assets. It transforms PLY point clouds into coordinate-aligned scenes, occupancy grids, navigable region masks, and optional compressed formats for use by the data generator and evaluation framework.
+Asset preprocessing (NavArena-Forge / navarena_forge) is a modular pipeline that converts raw 3D Gaussian Splatting scenes into standardized embodied navigation assets. It transforms PLY point clouds into coordinate-aligned scenes, occupancy grids, navigable region masks, and optional compressed formats for use by the data generator and evaluation framework.
 
 ## Project Scope
 

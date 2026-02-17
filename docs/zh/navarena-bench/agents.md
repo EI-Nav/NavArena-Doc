@@ -30,8 +30,8 @@ agent:
 #### 使用示例
 
 ```python
-from x2robot_nav.agent import Agent
-from x2robot_nav.configs.agent_config import AgentCfg
+from navarena_bench.agent import Agent
+from navarena_bench.configs.agent_config import AgentCfg
 
 config = AgentCfg(
     agent_type="local",
@@ -285,8 +285,8 @@ agent.close()
 ### 实现自定义智能体
 
 ```python
-from x2robot_nav.agent.base import Agent
-from x2robot_nav.configs.agent_config import AgentCfg
+from navarena_bench.agent.base import Agent
+from navarena_bench.configs.agent_config import AgentCfg
 
 @Agent.register("my_agent")
 class MyAgent(Agent):

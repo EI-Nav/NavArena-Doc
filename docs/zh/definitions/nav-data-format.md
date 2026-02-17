@@ -5,7 +5,7 @@
 ## 一、数据目录结构
 
 ```
-vln_data/
+navarena_data/
 ├── dataset_meta.json                      # 数据集级别元数据
 └── scenes/
     └── {scene_id}/                        # 按场景ID组织
@@ -38,11 +38,11 @@ vln_data/
 
 ### 2.1 数据集元数据 (dataset_meta.json)
 
-位于 `vln_data/dataset_meta.json`：
+位于 `navarena_data/dataset_meta.json`：
 
 ```json
 {
-  "dataset_name": "x2robot_nav",
+  "dataset_name": "navarena_bench",
   "version": "2.0.0",
   "created_date": "2026-01-26 10:30:00",
   "updated_date": "2026-01-26 15:00:00",
@@ -53,12 +53,12 @@ vln_data/
 
 ### 2.2 场景元数据 (scene_meta.json)
 
-位于 `vln_data/scenes/{scene_id}/scene_meta.json`：
+位于 `navarena_data/scenes/{scene_id}/scene_meta.json`：
 
 ```json
 {
   "scene_id": "17dc3367",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "navigable_area": 45.6,
   "num_objects": 25,
   "task_types": ["pointnav", "imagenav"],
@@ -69,19 +69,19 @@ vln_data/
 
 ## 三、Episodes 文件格式
 
-位于 `vln_data/scenes/{scene_id}/{task_type}/{split}.json`：
+位于 `navarena_data/scenes/{scene_id}/{task_type}/{split}.json`：
 
 ```json
 {
   "version": "2.0.0",
-  "dataset_name": "x2robot_nav",
+  "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-26 10:30:00",
     "description": "X2Robot IMAGENAV dataset",
     "task_type": "imagenav",
     "split": "train",
     "scene_id": "17dc3367",
-    "scene_path": "nav_gs_assets/x2robot/17dc3367",
+    "scene_path": "navarena_assets/x2robot/17dc3367",
     "num_episodes": 50
   },
   "episodes": [...]
@@ -95,7 +95,7 @@ vln_data/
 ```json
 {
   "episode_id": "string",           // 唯一标识符，格式：{split}_{序号}，如 "train_000001"
-  "scene_path": "string",           // 场景文件夹路径，如 "nav_gs_assets/x2robot/17dc3367"
+  "scene_path": "string",           // 场景文件夹路径，如 "navarena_assets/x2robot/17dc3367"
   "task_type": "string",            // 任务类型："pointnav" | "imagenav" | "objectnav" | "vln"
   "start_state": {
     "position": [float, float, float],      // 起始位置 [x, y, z]
@@ -190,7 +190,7 @@ vln_data/
 
 ## 八、GT 轨迹文件格式
 
-位于 `vln_data/scenes/{scene_id}/{task_type}/gt_trajectories/{episode_id}_gt.json`：
+位于 `navarena_data/scenes/{scene_id}/{task_type}/gt_trajectories/{episode_id}_gt.json`：
 
 ```json
 {
@@ -228,12 +228,12 @@ vln_data/
 
 ### 9.1 PointNav 示例
 
-文件位置: `vln_data/scenes/17dc3367/pointnav/train.json`
+文件位置: `navarena_data/scenes/17dc3367/pointnav/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "pointnav",
   "start_state": {
@@ -261,12 +261,12 @@ vln_data/
 
 ### 9.2 ImageNav 示例
 
-文件位置: `vln_data/scenes/17dc3367/imagenav/train.json`
+文件位置: `navarena_data/scenes/17dc3367/imagenav/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "imagenav",
   "start_state": {
@@ -297,12 +297,12 @@ vln_data/
 
 ### 9.3 ObjectNav 示例
 
-文件位置: `vln_data/scenes/17dc3367/objectnav/train.json`
+文件位置: `navarena_data/scenes/17dc3367/objectnav/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "objectnav",
   "start_state": {
@@ -331,12 +331,12 @@ vln_data/
 
 ### 9.4 具身导航示例
 
-文件位置: `vln_data/scenes/17dc3367/vln/train.json`
+文件位置: `navarena_data/scenes/17dc3367/vln/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "vln",
   "start_state": {
@@ -374,8 +374,8 @@ vln_data/
 ## 十、完整文件组织结构
 
 ```
-x2robot-nav/
-├── vln_data/
+NavArena-Bench/
+├── navarena_data/
 │   ├── dataset_meta.json                    # 数据集级别元数据
 │   └── scenes/
 │       ├── 17dc3367/                        # 场景1（8位hex scene_id）
@@ -407,7 +407,7 @@ x2robot-nav/
 │       │       └── ...
 │       └── b7c4d92e/                        # 场景2
 │           └── ...
-└── nav_gs_assets/                           # V1 统一资产格式
+└── navarena_assets/                           # V1 统一资产格式
     ├── x2robot/
     │   └── 17dc3367/                        # 8位hex scene_id
     │       ├── manifest.json                # 场景元数据与溯源
@@ -448,8 +448,8 @@ python scripts/generate_data.py --config configs/examples/imagenav_example.yaml
 # 渲染 ImageNav 任务的目标图像（使用配置文件中的第一个相机）
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --episodes vln_data/scenes/17dc3367/imagenav/train.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --episodes navarena_data/scenes/17dc3367/imagenav/train.json \
     --camera-config <path_to_camera_config.yaml>
 ```
 
@@ -459,30 +459,30 @@ python scripts/render_episodes.py \
 # 渲染所有相机
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectory vln_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
     --camera-config <path_to_camera_config.yaml>
 
 # 只渲染指定相机
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectory vln_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
     --camera-config <path_to_camera_config.yaml> \
     --camera-names left_gripper_camera_link camera_head_front_color_optical_frame
 
 # 批量渲染轨迹视频（所有相机）
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectories-dir vln_data/scenes/17dc3367/imagenav/gt_trajectories \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectories-dir navarena_data/scenes/17dc3367/imagenav/gt_trajectories \
     --camera-config <path_to_camera_config.yaml>
 
 # 同时渲染深度图
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectory vln_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
     --camera-config <path_to_camera_config.yaml> \
     --rgbd
 ```

@@ -1,6 +1,6 @@
 # 快速入门
 
-本教程将通过简单的示例帮助您快速上手 VLN 项目的两个核心组件：**数据生成器**和**评测框架**。
+本教程将通过简单的示例帮助您快速上手 NavArena 项目的两个核心组件：**数据生成器**和**评测框架**。
 
 ## 数据生成器快速入门
 
@@ -36,7 +36,7 @@ output:
 运行所有 6 个阶段：
 
 ```bash
-cd vln_data_generator
+cd NavArena-Gen
 python run_pipeline.py --config configs/main/pipeline.yaml
 ```
 
@@ -126,7 +126,7 @@ agent:
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "vln_data/episodes.json"
+  dataset_path: "navarena_data/episodes.json"
 
 eval_settings:
   num_episodes: 100
@@ -137,7 +137,7 @@ eval_settings:
 ### 3. 运行评测
 
 ```bash
-cd x2robot-nav
+cd NavArena-Bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
 ```
 
@@ -172,14 +172,14 @@ python scripts/replay_eval.py \
 
 ```bash
 # 1. 生成数据
-cd vln_data_generator
+cd NavArena-Gen
 python run_pipeline.py --config configs/main/pipeline.yaml
 
 # 2. 组织数据（可选）
-python organize_x2robot_data.py --output-dir output --target-dir ../x2robot-nav/vln_data
+python organize_x2robot_data.py --output-dir output --target-dir ../NavArena-Bench/navarena_data
 
 # 3. 运行评测
-cd ../x2robot-nav
+cd ../NavArena-Bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
 
 # 4. 生成回放
@@ -268,6 +268,6 @@ python scripts/eval.py --config configs/eval/vint_eval.yaml
 ## 下一步
 
 - 深入了解 **[数据生成器 Pipeline](../data-generator/pipeline.md)** 的各个阶段
-- 学习如何 **[配置评测框架](../x2robot-nav/overview.md)**
+- 学习如何 **[配置评测框架](../navarena-bench/overview.md)**
 - 查看 **[API 参考](../api/reference.md)** 获取更多详细信息
-- 阅读 **[扩展指南](../x2robot-nav/extending.md)** 了解如何自定义功能
+- 阅读 **[扩展指南](../navarena-bench/extending.md)** 了解如何自定义功能

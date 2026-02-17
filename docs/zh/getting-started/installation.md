@@ -1,6 +1,6 @@
 # 安装指南
 
-本页面将指导您完成 VLN 项目的安装和配置过程。VLN 项目包含两个子项目：**数据生成器** (vln_data_generator) 和 **评测框架** (x2robot-nav)。
+本页面将指导您完成 NavArena 项目的安装和配置过程。NavArena 项目包含三个子项目：**资产预处理** (NavArena-Forge)、**数据生成器** (NavArena-Gen) 和 **评测框架** (NavArena-Bench)。
 
 ## 系统要求
 
@@ -21,14 +21,14 @@
 ### 1. 创建虚拟环境
 
 ```bash
-conda create -n vln_data python=3.9
-conda activate vln_data
+conda create -n navarena_gen python=3.9
+conda activate navarena_gen
 ```
 
 ### 2. 安装基础依赖
 
 ```bash
-cd vln_data_generator
+cd NavArena-Gen
 pip install -r requirements.txt
 ```
 
@@ -54,8 +54,8 @@ python run_pipeline.py --help
 ### 1. 创建虚拟环境
 
 ```bash
-conda create -n vln_evaluator python=3.10
-conda activate vln_evaluator
+conda create -n navarena_bench python=3.10
+conda activate navarena_bench
 ```
 
 ### 2. 安装 PyTorch
@@ -69,7 +69,7 @@ pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
 ### 3. 安装基础依赖
 
 ```bash
-cd x2robot-nav
+cd NavArena-Bench
 pip install pyyaml pytest requests plyfile gsplat scipy skan \
     -i https://mirrors.cloud.aliyuncs.com/pypi/simple \
     --trusted-host mirrors.cloud.aliyuncs.com
@@ -80,7 +80,7 @@ pip install pyyaml pytest requests plyfile gsplat scipy skan \
 如果您需要使用 ViNT/GNM/NoMaD 智能体：
 
 ```bash
-# 克隆 visualnav-transformer 仓库（与 x2robot-nav 并列）
+# 克隆 visualnav-transformer 仓库（与 NavArena-Bench 并列）
 git clone ssh://git@gitlab.zbl.local:50022/jake/visualnav-transformer.git
 
 # 安装额外依赖
@@ -115,21 +115,21 @@ python scripts/eval.py --help
 
 ```bash
 # 1. 创建主环境
-conda create -n vln python=3.10
-conda activate vln
+conda create -n navarena python=3.10
+conda activate navarena
 
 # 2. 安装 PyTorch
 pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
     --index-url https://download.pytorch.org/whl/cu121
 
 # 3. 安装数据生成器依赖
-cd vln_data_generator
+cd NavArena-Gen
 pip install -r requirements.txt
 pip install git+https://github.com/ultralytics/CLIP.git
 cd ..
 
 # 4. 安装评测框架依赖
-cd x2robot-nav
+cd NavArena-Bench
 pip install pyyaml pytest requests plyfile gsplat scipy skan \
     -i https://mirrors.cloud.aliyuncs.com/pypi/simple \
     --trusted-host mirrors.cloud.aliyuncs.com
@@ -154,8 +154,8 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 如果需要在不同项目间共享代码，可以设置 PYTHONPATH：
 
 ```bash
-export PYTHONPATH=/path/to/vln_data_generator:$PYTHONPATH
-export PYTHONPATH=/path/to/x2robot-nav:$PYTHONPATH
+export PYTHONPATH=/path/to/NavArena-Gen:$PYTHONPATH
+export PYTHONPATH=/path/to/NavArena-Bench:$PYTHONPATH
 ```
 
 ## 常见问题
@@ -176,13 +176,13 @@ export PYTHONPATH=/path/to/x2robot-nav:$PYTHONPATH
     建议为每个项目使用独立的虚拟环境来避免依赖冲突：
     ```bash
     # 数据生成器
-    conda create -n vln_data python=3.9
-    conda activate vln_data
+    conda create -n navarena_gen python=3.9
+    conda activate navarena_gen
     # ... 安装数据生成器依赖
     
     # 评测框架
-    conda create -n vln_evaluator python=3.10
-    conda activate vln_evaluator
+    conda create -n navarena_bench python=3.10
+    conda activate navarena_bench
     # ... 安装评测框架依赖
     ```
 
@@ -204,4 +204,4 @@ export PYTHONPATH=/path/to/x2robot-nav:$PYTHONPATH
 
 - **[快速入门](quickstart.md)** - 了解如何使用两个项目
 - **[数据生成器概述](../data-generator/overview.md)** - 深入了解数据生成流程
-- **[评测框架概述](../x2robot-nav/overview.md)** - 了解评测框架架构
+- **[评测框架概述](../navarena-bench/overview.md)** - 了解评测框架架构

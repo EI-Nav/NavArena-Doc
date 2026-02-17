@@ -11,15 +11,15 @@
 ## 启动方式
 
 ```bash
-cd embodied-nav-assets
-python -m web_viewer.main --assets-dir /path/to/nav_gs_assets --port 41005
+cd NavArena-Forge
+python -m web_viewer.main --assets-dir /path/to/navarena_assets --port 41005
 ```
 
 ### 参数
 
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
-| `--assets-dir` | V1 资产根目录 | `/x2robot_v2/share/x2robot-nav/nav_gs_assets` |
+| `--assets-dir` | V1 资产根目录 | `/x2robot_v2/share/NavArena-Bench/navarena_assets` |
 | `--host` | 监听地址 | `0.0.0.0` |
 | `--port` | 监听端口 | `41005` |
 | `--log-level` | 日志级别 | `info` |

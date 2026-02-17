@@ -1,6 +1,6 @@
 # API Reference
 
-This document provides API reference for the NavArena project. The project consists of two core sub-projects: Data Generator and Evaluation Framework.
+This document provides API reference for the NavArena project. The project consists of three core sub-projects: Asset Preprocessing, Data Generator, and Evaluation Framework.
 
 ## Data Generator API
 
@@ -16,7 +16,7 @@ For the complete Data Generator API, see [Data Generator API](data-generator-api
 
 ## Evaluation Framework API
 
-For the complete Evaluation Framework API, see [Evaluation Framework API](x2robot-nav-api.md).
+For the complete Evaluation Framework API, see [Evaluation Framework API](navarena-bench-api.md).
 
 ### Main Classes
 
@@ -31,7 +31,7 @@ For the complete Evaluation Framework API, see [Evaluation Framework API](x2robo
 ### Data Generator
 
 ```python
-from src.pipeline.vln_data_generator import VLNDataPipeline
+from src.pipeline.navarena_gen import VLNDataPipeline
 
 # Create Pipeline
 pipeline = VLNDataPipeline(
@@ -46,8 +46,8 @@ results = pipeline.run(stages=['stage1', 'stage2', 'stage3'])
 ### Evaluation Framework
 
 ```python
-from x2robot_nav.evaluator import Evaluator
-from x2robot_nav.configs.eval_config import EvalCfg
+from navarena_bench.evaluator import Evaluator
+from navarena_bench.configs.eval_config import EvalCfg
 
 # Create evaluator
 config = EvalCfg.from_yaml("configs/eval/default_eval.yaml")
@@ -60,4 +60,4 @@ results = evaluator.evaluate()
 ## Full Documentation
 
 - [Data Generator API](data-generator-api.md) - Complete Data Generator API
-- [Evaluation Framework API](x2robot-nav-api.md) - Complete Evaluation Framework API
+- [Evaluation Framework API](navarena-bench-api.md) - Complete Evaluation Framework API

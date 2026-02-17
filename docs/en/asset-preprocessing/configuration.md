@@ -1,6 +1,6 @@
 # Configuration
 
-Asset preprocessing uses YAML config files. All configs live under `gs_asset_normalizer/configs/`.
+Asset preprocessing uses YAML config files. All configs live under `navarena_forge/configs/`.
 
 ## Config Structure
 
@@ -100,7 +100,7 @@ ransac:
 ```
 
 ```bash
-python -m gs_asset_normalizer run-step coordinate_normalize \
+python -m navarena_forge run-step coordinate_normalize \
     --config coordinate_normalize.yaml --scene-dir /path/to/scene
 ```
 

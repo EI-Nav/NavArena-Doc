@@ -1,12 +1,12 @@
 # 数据生成器概述
 
-数据生成器（vln_data_generator）是多任务视觉语言导航（VLN）数据生成框架，用于生成 PointNav、ImageNav、ObjectNav、VLN 等任务的训练和评测数据集。基于 3D Gaussian Splatting 场景，采用网格采样、路径规划与指令生成等模块生成高质量 Episode 数据。
+数据生成器（NavArena-Gen）是多任务视觉语言导航（VLN）数据生成框架，用于生成 PointNav、ImageNav、ObjectNav、VLN 等任务的训练和评测数据集。基于 3D Gaussian Splatting 场景，采用网格采样、路径规划与指令生成等模块生成高质量 Episode 数据。
 
 ## 核心功能
 
 - **多任务支持** - PointNav、ImageNav、ObjectNav、VLN
 - **多环境支持** - 3D Gaussian Splatting（已实现）、Habitat / Isaac（占位）
-- **V1 资产格式** - 读取 `nav_gs_assets` 统一格式（manifest.json、nav_map.pgm 等）
+- **V1 资产格式** - 读取 `navarena_assets` 统一格式（manifest.json、nav_map.pgm 等）
 - **灵活指令生成** - Strategy 模式，支持 simple_direction、path_based、object_goal，中英文
 - **并行处理** - 多 Worker Episode 生成、并行 I/O 写入
 - **Web 查看器** - 交互式浏览生成数据
@@ -59,7 +59,7 @@ graph TB
 ## 输出目录结构
 
 ```
-vln_data/
+navarena_data/
 ├── dataset_meta.json                   # 数据集级元数据
 └── scenes/
     └── {scene_id}/
@@ -78,7 +78,7 @@ vln_data/
 {
   "episode_id": "ep_xxx",
   "scene_id": "17dc3367",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "task_type": "vln",
   "start_state": {
     "position": [x, y, z],
@@ -100,7 +100,7 @@ vln_data/
 
 ## 依赖关系
 
-数据生成器依赖 **资产预处理** 输出的 V1 格式场景。请先使用 [embodied-nav-assets](../asset-preprocessing/overview.md) 完成场景预处理。
+数据生成器依赖 **资产预处理** 输出的 V1 格式场景。请先使用 [NavArena-Forge](../asset-preprocessing/overview.md) 完成场景预处理。
 
 ## 下一步
 

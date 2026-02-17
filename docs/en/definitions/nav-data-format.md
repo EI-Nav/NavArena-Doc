@@ -5,7 +5,7 @@ This document defines the directory structure, metadata file format, and Episode
 ## 1. Data Directory Structure
 
 ```
-vln_data/
+navarena_data/
 ├── dataset_meta.json                      # Dataset-level metadata
 └── scenes/
     └── {scene_id}/                        # Organized by scene ID
@@ -38,11 +38,11 @@ vln_data/
 
 ### 2.1 Dataset Metadata (dataset_meta.json)
 
-Located at `vln_data/dataset_meta.json`:
+Located at `navarena_data/dataset_meta.json`:
 
 ```json
 {
-  "dataset_name": "x2robot_nav",
+  "dataset_name": "navarena_bench",
   "version": "2.0.0",
   "created_date": "2026-01-26 10:30:00",
   "updated_date": "2026-01-26 15:00:00",
@@ -53,12 +53,12 @@ Located at `vln_data/dataset_meta.json`:
 
 ### 2.2 Scene Metadata (scene_meta.json)
 
-Located at `vln_data/scenes/{scene_id}/scene_meta.json`:
+Located at `navarena_data/scenes/{scene_id}/scene_meta.json`:
 
 ```json
 {
   "scene_id": "17dc3367",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "navigable_area": 45.6,
   "num_objects": 25,
   "task_types": ["pointnav", "imagenav"],
@@ -69,19 +69,19 @@ Located at `vln_data/scenes/{scene_id}/scene_meta.json`:
 
 ## 3. Episodes File Format
 
-Located at `vln_data/scenes/{scene_id}/{task_type}/{split}.json`:
+Located at `navarena_data/scenes/{scene_id}/{task_type}/{split}.json`:
 
 ```json
 {
   "version": "2.0.0",
-  "dataset_name": "x2robot_nav",
+  "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-26 10:30:00",
     "description": "X2Robot IMAGENAV dataset",
     "task_type": "imagenav",
     "split": "train",
     "scene_id": "17dc3367",
-    "scene_path": "nav_gs_assets/x2robot/17dc3367",
+    "scene_path": "navarena_assets/x2robot/17dc3367",
     "num_episodes": 50
   },
   "episodes": [...]
@@ -95,7 +95,7 @@ Located at `vln_data/scenes/{scene_id}/{task_type}/{split}.json`:
 ```json
 {
   "episode_id": "string",           // Unique identifier, format: {split}_{index}, e.g. "train_000001"
-  "scene_path": "string",           // Scene folder path, e.g. "nav_gs_assets/x2robot/17dc3367"
+  "scene_path": "string",           // Scene folder path, e.g. "navarena_assets/x2robot/17dc3367"
   "task_type": "string",            // Task type: "pointnav" | "imagenav" | "objectnav" | "vln"
   "start_state": {
     "position": [float, float, float],      // Start position [x, y, z]
@@ -190,7 +190,7 @@ Located at `vln_data/scenes/{scene_id}/{task_type}/{split}.json`:
 
 ## 8. GT Trajectory File Format
 
-Located at `vln_data/scenes/{scene_id}/{task_type}/gt_trajectories/{episode_id}_gt.json`:
+Located at `navarena_data/scenes/{scene_id}/{task_type}/gt_trajectories/{episode_id}_gt.json`:
 
 ```json
 {
@@ -228,12 +228,12 @@ Located at `vln_data/scenes/{scene_id}/{task_type}/gt_trajectories/{episode_id}_
 
 ### 9.1 PointNav Example
 
-File location: `vln_data/scenes/17dc3367/pointnav/train.json`
+File location: `navarena_data/scenes/17dc3367/pointnav/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "pointnav",
   "start_state": {
@@ -261,12 +261,12 @@ File location: `vln_data/scenes/17dc3367/pointnav/train.json`
 
 ### 9.2 ImageNav Example
 
-File location: `vln_data/scenes/17dc3367/imagenav/train.json`
+File location: `navarena_data/scenes/17dc3367/imagenav/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "imagenav",
   "start_state": {
@@ -297,12 +297,12 @@ File location: `vln_data/scenes/17dc3367/imagenav/train.json`
 
 ### 9.3 ObjectNav Example
 
-File location: `vln_data/scenes/17dc3367/objectnav/train.json`
+File location: `navarena_data/scenes/17dc3367/objectnav/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "objectnav",
   "start_state": {
@@ -331,12 +331,12 @@ File location: `vln_data/scenes/17dc3367/objectnav/train.json`
 
 ### 9.4 Embodied Navigation Example
 
-File location: `vln_data/scenes/17dc3367/vln/train.json`
+File location: `navarena_data/scenes/17dc3367/vln/train.json`
 
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "split": "train",
   "task_type": "vln",
   "start_state": {
@@ -374,8 +374,8 @@ File location: `vln_data/scenes/17dc3367/vln/train.json`
 ## 10. Complete File Organization
 
 ```
-x2robot-nav/
-├── vln_data/
+NavArena-Bench/
+├── navarena_data/
 │   ├── dataset_meta.json                    # Dataset-level metadata
 │   └── scenes/
 │       ├── 17dc3367/                        # Scene 1 (8-char hex scene_id)
@@ -407,7 +407,7 @@ x2robot-nav/
 │       │       └── ...
 │       └── b7c4d92e/                        # Scene 2
 │           └── ...
-└── nav_gs_assets/                           # V1 unified asset format
+└── navarena_assets/                           # V1 unified asset format
     ├── x2robot/
     │   └── 17dc3367/                        # 8-char hex scene_id
     │       ├── manifest.json                # Scene metadata and provenance
@@ -448,8 +448,8 @@ python scripts/generate_data.py --config configs/examples/imagenav_example.yaml
 # Render ImageNav task goal images (using first camera in config)
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --episodes vln_data/scenes/17dc3367/imagenav/train.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --episodes navarena_data/scenes/17dc3367/imagenav/train.json \
     --camera-config <path_to_camera_config.yaml>
 ```
 
@@ -459,30 +459,30 @@ python scripts/render_episodes.py \
 # Render all cameras
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectory vln_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
     --camera-config <path_to_camera_config.yaml>
 
 # Render only specified cameras
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectory vln_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
     --camera-config <path_to_camera_config.yaml> \
     --camera-names left_gripper_camera_link camera_head_front_color_optical_frame
 
 # Batch render trajectory videos (all cameras)
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectories-dir vln_data/scenes/17dc3367/imagenav/gt_trajectories \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectories-dir navarena_data/scenes/17dc3367/imagenav/gt_trajectories \
     --camera-config <path_to_camera_config.yaml>
 
 # Render with depth maps
 python scripts/render_episodes.py \
     --renderer gs \
-    --scene nav_gs_assets/x2robot/17dc3367 \
-    --trajectory vln_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
+    --scene navarena_assets/x2robot/17dc3367 \
+    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
     --camera-config <path_to_camera_config.yaml> \
     --rgbd
 ```

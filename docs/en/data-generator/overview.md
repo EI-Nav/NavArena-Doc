@@ -1,12 +1,12 @@
 # Data Generator Overview
 
-The Data Generator (vln_data_generator) is a multi-task Vision-Language Navigation (VLN) data generation framework for PointNav, ImageNav, ObjectNav, and VLN tasks. It generates high-quality Episode data from 3D Gaussian Splatting scenes using grid sampling, path planning, and instruction generation.
+The Data Generator (NavArena-Gen) is a multi-task Vision-Language Navigation (VLN) data generation framework for PointNav, ImageNav, ObjectNav, and VLN tasks. It generates high-quality Episode data from 3D Gaussian Splatting scenes using grid sampling, path planning, and instruction generation.
 
 ## Core Features
 
 - **Multi-Task Support** - PointNav, ImageNav, ObjectNav, VLN
 - **Multi-Environment Support** - 3D Gaussian Splatting (implemented), Habitat / Isaac (placeholder)
-- **V1 Asset Format** - Reads unified `nav_gs_assets` (manifest.json, nav_map.pgm, etc.)
+- **V1 Asset Format** - Reads unified `navarena_assets` (manifest.json, nav_map.pgm, etc.)
 - **Flexible Instruction Generation** - Strategy pattern: simple_direction, path_based, object_goal; Chinese and English
 - **Parallel Processing** - Multi-worker episode generation and parallel I/O
 - **Web Viewer** - Interactive data browsing
@@ -59,7 +59,7 @@ graph TB
 ## Output Structure
 
 ```
-vln_data/
+navarena_data/
 ├── dataset_meta.json                   # Dataset-level metadata
 └── scenes/
     └── {scene_id}/
@@ -78,7 +78,7 @@ vln_data/
 {
   "episode_id": "ep_xxx",
   "scene_id": "17dc3367",
-  "scene_path": "nav_gs_assets/x2robot/17dc3367",
+  "scene_path": "navarena_assets/x2robot/17dc3367",
   "task_type": "vln",
   "start_state": {
     "position": [x, y, z],
@@ -100,7 +100,7 @@ vln_data/
 
 ## Dependencies
 
-The data generator depends on **asset preprocessing** output in V1 format. Use [embodied-nav-assets](../asset-preprocessing/overview.md) first to preprocess scenes.
+The data generator depends on **asset preprocessing** output in V1 format. Use [NavArena-Forge](../asset-preprocessing/overview.md) first to preprocess scenes.
 
 ## Next Steps
 

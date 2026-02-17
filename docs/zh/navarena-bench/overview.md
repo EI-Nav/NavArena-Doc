@@ -1,6 +1,6 @@
 # 评测框架概述
 
-x2robot-nav 是一个基于 3D Gaussian Splatting 和占据栅格的导航模型评测框架。它提供了模块化、可扩展的评测系统，支持多种导航任务和智能体类型。
+NavArena-Bench 是一个基于 3D Gaussian Splatting 和占据栅格的导航模型评测框架。它提供了模块化、可扩展的评测系统，支持多种导航任务和智能体类型。
 
 ## 核心特性
 
@@ -162,7 +162,7 @@ sequenceDiagram
 ### 注册环境
 
 ```python
-from x2robot_nav.env.base import Env
+from navarena_bench.env.base import Env
 
 @Env.register("my_env")
 class MyEnvironment(Env):
@@ -174,7 +174,7 @@ class MyEnvironment(Env):
 ### 注册智能体
 
 ```python
-from x2robot_nav.agent.base import Agent
+from navarena_bench.agent.base import Agent
 
 @Agent.register("my_agent")
 class MyAgent(Agent):
@@ -186,7 +186,7 @@ class MyAgent(Agent):
 ### 注册评测器
 
 ```python
-from x2robot_nav.evaluator.base import Evaluator
+from navarena_bench.evaluator.base import Evaluator
 
 @Evaluator.register("my_eval")
 class MyEvaluator(Evaluator):
@@ -248,7 +248,7 @@ agent:
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "vln_data/episodes.json"
+  dataset_path: "navarena_data/episodes.json"
 
 eval_settings:
   num_episodes: 100

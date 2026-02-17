@@ -36,7 +36,7 @@ output:
 Run all 6 stages:
 
 ```bash
-cd vln_data_generator
+cd NavArena-Gen
 python run_pipeline.py --config configs/main/pipeline.yaml
 ```
 
@@ -126,7 +126,7 @@ agent:
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "vln_data/episodes.json"
+  dataset_path: "navarena_data/episodes.json"
 
 eval_settings:
   num_episodes: 100
@@ -137,7 +137,7 @@ eval_settings:
 ### 3. Run Evaluation
 
 ```bash
-cd x2robot-nav
+cd NavArena-Bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
 ```
 
@@ -172,14 +172,14 @@ python scripts/replay_eval.py \
 
 ```bash
 # 1. Generate data
-cd vln_data_generator
+cd NavArena-Gen
 python run_pipeline.py --config configs/main/pipeline.yaml
 
 # 2. Organize data (optional)
-python organize_x2robot_data.py --output-dir output --target-dir ../x2robot-nav/vln_data
+python organize_x2robot_data.py --output-dir output --target-dir ../NavArena-Bench/navarena_data
 
 # 3. Run evaluation
-cd ../x2robot-nav
+cd ../NavArena-Bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
 
 # 4. Generate replay
@@ -268,6 +268,6 @@ python scripts/eval.py --config configs/eval/vint_eval.yaml
 ## Next Steps
 
 - Deep dive into **[Data Generator Pipeline](../data-generator/pipeline.md)** stages
-- Learn how to **[configure the evaluation framework](../x2robot-nav/overview.md)**
+- Learn how to **[configure the evaluation framework](../navarena-bench/overview.md)**
 - See **[API Reference](../api/reference.md)** for more details
-- Read **[Extending Guide](../x2robot-nav/extending.md)** to learn how to customize functionality
+- Read **[Extending Guide](../navarena-bench/extending.md)** to learn how to customize functionality

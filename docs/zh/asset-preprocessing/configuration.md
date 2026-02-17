@@ -1,6 +1,6 @@
 # 配置说明
 
-资产预处理使用 YAML 配置文件。所有配置位于 `gs_asset_normalizer/configs/` 目录。
+资产预处理使用 YAML 配置文件。所有配置位于 `navarena_forge/configs/` 目录。
 
 ## 配置文件结构
 
@@ -100,7 +100,7 @@ ransac:
 ```
 
 ```bash
-python -m gs_asset_normalizer run-step coordinate_normalize \
+python -m navarena_forge run-step coordinate_normalize \
     --config coordinate_normalize.yaml --scene-dir /path/to/scene
 ```
 

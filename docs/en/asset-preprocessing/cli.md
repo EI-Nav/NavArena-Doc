@@ -1,6 +1,6 @@
 # CLI Commands
 
-Asset preprocessing exposes a command-line interface via `gs_asset_normalizer`. From the `embodied-nav-assets` directory, run `python -m gs_asset_normalizer`.
+Asset preprocessing exposes a command-line interface via `navarena_forge`. From the `NavArena-Forge` directory, run `python -m navarena_forge`.
 
 ## Command Overview
 
@@ -21,7 +21,7 @@ Asset preprocessing exposes a command-line interface via `gs_asset_normalizer`. 
 Run the full pipeline on a single scene directory.
 
 ```bash
-python -m gs_asset_normalizer run-pipeline \
+python -m navarena_forge run-pipeline \
     --config pipeline.yaml \
     --scene-dir /path/to/scene \
     --source-dataset InteriorGS
@@ -45,7 +45,7 @@ python -m gs_asset_normalizer run-pipeline \
 Batch-run the pipeline on all subdirectories under `--scenes-root`.
 
 ```bash
-python -m gs_asset_normalizer batch \
+python -m navarena_forge batch \
     --scenes-root /path/to/scenes \
     --config pipeline.yaml \
     --source-dataset scannetpp
@@ -72,7 +72,7 @@ Completed scenes (with `aligned.ply`, `nav_map.pgm`, `nav_map.yaml`) are skipped
 Run a single step only.
 
 ```bash
-python -m gs_asset_normalizer run-step coordinate_normalize \
+python -m navarena_forge run-step coordinate_normalize \
     --config coordinate_normalize.yaml \
     --scene-dir /path/to/scene
 ```
@@ -92,7 +92,7 @@ python -m gs_asset_normalizer run-step coordinate_normalize \
 List all registered processing steps.
 
 ```bash
-python -m gs_asset_normalizer list-steps
+python -m navarena_forge list-steps
 ```
 
 Example output:
@@ -111,9 +111,9 @@ Example output:
 Copy existing scenes into a new V1 directory with standard filenames and manifest.json.
 
 ```bash
-python -m gs_asset_normalizer migrate \
+python -m navarena_forge migrate \
     --scenes-root /path/to/old/scenes \
-    --output-root /path/to/nav_gs_assets \
+    --output-root /path/to/navarena_assets \
     --source-dataset InteriorGS
 ```
 
@@ -134,8 +134,8 @@ python -m gs_asset_normalizer migrate \
 Batch-convert PLY files to compressed.splat in a V1 assets directory.
 
 ```bash
-python -m gs_asset_normalizer compress \
-    --assets-root /path/to/nav_gs_assets \
+python -m navarena_forge compress \
+    --assets-root /path/to/navarena_assets \
     --dataset scenesplat
 ```
 
@@ -159,7 +159,7 @@ Convert labels.json from legacy format to V1.
 ### Single File
 
 ```bash
-python -m gs_asset_normalizer convert-labels \
+python -m navarena_forge convert-labels \
     --input /path/to/labels.json \
     [--output /path/to/output.json]
 ```
@@ -167,8 +167,8 @@ python -m gs_asset_normalizer convert-labels \
 ### Batch
 
 ```bash
-python -m gs_asset_normalizer convert-labels \
-    --assets-root /path/to/nav_gs_assets \
+python -m navarena_forge convert-labels \
+    --assets-root /path/to/navarena_assets \
     --dataset x2robot
 ```
 

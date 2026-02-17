@@ -5,7 +5,7 @@ This document defines the unified directory structure, file formats, and metadat
 ## 1. Directory Structure
 
 ```
-nav_gs_assets/
+navarena_assets/
 ├── SPEC.md                           # This specification document
 ├── {dataset}/                        # Dataset grouping directory
 │   └── {scene_id}/                   # 8-character UUID short code
@@ -148,7 +148,7 @@ All paths are **relative to the scene directory**. Value `null` indicates the fi
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `normalizer_version` | string | gs_asset_normalizer version |
+| `normalizer_version` | string | navarena_forge version |
 | `processed_at` | string | ISO 8601 processing completion time |
 | `normalized` | bool | Whether coordinate normalization is complete |
 | `extrinsic_matrix` | array | 4x4 homogeneous transformation matrix (source → aligned) |
@@ -264,4 +264,4 @@ Compact 3D Gaussian Splatting binary format, 32 bytes per Gaussian (little-endia
 
 **Generation**:
 
-Generated from `aligned.ply` by the `compress_ply` step of `gs_asset_normalizer`. Optionally configure low-opacity Gaussian pruning (default threshold sigmoid(-5) ≈ 0.007).
+Generated from `aligned.ply` by the `compress_ply` step of `navarena_forge`. Optionally configure low-opacity Gaussian pruning (default threshold sigmoid(-5) ≈ 0.007).

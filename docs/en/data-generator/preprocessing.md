@@ -9,4 +9,4 @@ See:
 - **[CLI Commands](../asset-preprocessing/cli.md)** - run-pipeline, batch, migrate, compress
 - **[Web Viewer](../asset-preprocessing/web-viewer.md)** - 3DGS asset browser
 
-The data generator (vln_data_generator) depends on V1 format output from asset preprocessing (manifest.json, nav_map.pgm, nav_map.yaml, etc.). Use embodied-nav-assets to preprocess scenes before generating data.
+The data generator (NavArena-Gen) depends on V1 format output from asset preprocessing (manifest.json, nav_map.pgm, nav_map.yaml, etc.). Use NavArena-Forge to preprocess scenes before generating data.

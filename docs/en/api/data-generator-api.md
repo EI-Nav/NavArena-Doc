@@ -49,7 +49,7 @@ def run(self, stages: Optional[list] = None) -> PipelineResults:
 ### Usage Example
 
 ```python
-from src.pipeline.vln_data_generator import VLNDataPipeline
+from src.pipeline.navarena_gen import VLNDataPipeline
 
 # Create Pipeline
 pipeline = VLNDataPipeline("configs/main/pipeline.yaml")

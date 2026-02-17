@@ -38,7 +38,7 @@ configs/
 
 ```yaml
 env_type: gs
-scene_path: nav_gs_assets/x2robot/17dc3367
+scene_path: navarena_assets/x2robot/17dc3367
 
 env_config:
   z_coordinate: 0.0
@@ -55,7 +55,7 @@ task_config:
   max_start_points: null
   num_goals_per_start: 1
 
-output_dir: vln_data
+output_dir: navarena_data
 dataset_name: x2robot_pointnav
 ```
 
@@ -63,7 +63,7 @@ dataset_name: x2robot_pointnav
 
 ```yaml
 env_type: gs
-scene_path: nav_gs_assets/x2robot/17dc3367
+scene_path: navarena_assets/x2robot/17dc3367
 
 env_config:
   z_coordinate: 0.0
@@ -80,7 +80,7 @@ task_config:
   language: zh-CN                     # zh-CN or en-US
   num_instructions_per_episode: 1
 
-output_dir: vln_data
+output_dir: navarena_data
 dataset_name: x2robot_vln_zh
 ```
 
@@ -110,7 +110,7 @@ dataset_name: x2robot_vln_zh
 
 | Parameter | Description |
 |-----------|-------------|
-| `output_dir` | Output root (default vln_data) |
+| `output_dir` | Output root (default navarena_data) |
 | `dataset_name` | Dataset name |
 | `split` | Split (train/val/test) |
 
@@ -122,7 +122,7 @@ python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
 # CLI args
 python scripts/generate_data.py --env gs --task pointnav \
-    --scene nav_gs_assets/x2robot/17dc3367 --num-episodes 100
+    --scene navarena_assets/x2robot/17dc3367 --num-episodes 100
 
 # Parallel
 python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \

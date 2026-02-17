@@ -7,7 +7,7 @@ This document defines the Episode format and trajectory data format for embodied
 ```json
 {
   "version": "1.0.0",
-  "dataset_name": "x2robot_nav",
+  "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-14",
     "description": "X2Robot general embodied navigation dataset",
@@ -269,8 +269,8 @@ gt_trajectories/{episode_id}_gt.json:
 ## 8. File Organization
 
 ```bash
-x2robot-nav/
-├── vln_data/
+NavArena-Bench/
+├── navarena_data/
 │   ├── pointnav_episodes.json       # PointNav task data
 │   ├── imagenav_episodes.json       # ImageNav task data
 │   ├── objectnav_episodes.json      # ObjectNav task data

@@ -1,6 +1,6 @@
 # API 参考
 
-本文档提供 VLN 项目的 API 参考。VLN 项目包含两个核心子项目：数据生成器和评测框架。
+本文档提供 NavArena 项目的 API 参考。NavArena 项目包含三个核心子项目：资产预处理、数据生成器和评测框架。
 
 ## 数据生成器 API
 
@@ -16,7 +16,7 @@
 
 ## 评测框架 API
 
-评测框架的详细 API 文档请参考 [评测框架 API](x2robot-nav-api.md)。
+评测框架的详细 API 文档请参考 [评测框架 API](navarena-bench-api.md)。
 
 ### 主要类
 
@@ -31,7 +31,7 @@
 ### 数据生成器
 
 ```python
-from src.pipeline.vln_data_generator import VLNDataPipeline
+from src.pipeline.navarena_gen import VLNDataPipeline
 
 # 创建 Pipeline
 pipeline = VLNDataPipeline(
@@ -46,8 +46,8 @@ results = pipeline.run(stages=['stage1', 'stage2', 'stage3'])
 ### 评测框架
 
 ```python
-from x2robot_nav.evaluator import Evaluator
-from x2robot_nav.configs.eval_config import EvalCfg
+from navarena_bench.evaluator import Evaluator
+from navarena_bench.configs.eval_config import EvalCfg
 
 # 创建评测器
 config = EvalCfg.from_yaml("configs/eval/default_eval.yaml")
@@ -60,4 +60,4 @@ results = evaluator.evaluate()
 ## 详细文档
 
 - [数据生成器 API](data-generator-api.md) - 数据生成器的完整 API 文档
-- [评测框架 API](x2robot-nav-api.md) - 评测框架的完整 API 文档
+- [评测框架 API](navarena-bench-api.md) - 评测框架的完整 API 文档
