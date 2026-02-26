@@ -2,6 +2,11 @@
    NavArena 文档 - 高端视觉样式
    ============================================ */
 
+/* 正文区域宽度 */
+.md-grid {
+  max-width: 80rem;
+}
+
 /* ---------- 字体与中文排版 ---------- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
 
