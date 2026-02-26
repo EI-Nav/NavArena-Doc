@@ -92,6 +92,12 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.hero-subtitle {
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.1em;
+}
+
 .hero-buttons {
   display: flex;
   gap: 1rem;
