@@ -2,11 +2,11 @@
 site_name: NavArena 开发者文档
 site_description: NavArena 具身导航基础设施开发文档——资产自动化处理、数据生成与导航评测
 site_author: NavArena Team
-site_url: https://KEEPSLAMDUNK.github.io/navarena-doc/
+site_url: https://ei-nav.github.io/NavArena-Doc/
 
 # 仓库信息
-repo_name: KEEPSLAMDUNK/navarena-doc
-repo_url: https://github.com/KEEPSLAMDUNK/navarena-doc
+repo_name: EI-Nav/NavArena-Doc
+repo_url: https://github.com/EI-Nav/NavArena-Doc
 edit_uri: edit/docs/docs/
 
 # 版权信息
@@ -178,7 +178,7 @@ extra:
   # 社交链接
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/KEEPSLAMDUNK/navarena-doc
+      link: https://github.com/EI-Nav/NavArena-Doc
 
 # 导航结构
 nav:
