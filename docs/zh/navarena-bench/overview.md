@@ -2,6 +2,9 @@
 
 navarena-bench 是一个基于 3D Gaussian Splatting 和占据栅格的导航模型评测框架。它提供了模块化、可扩展的评测系统，支持多种导航任务和智能体类型。
 
+!!! info "前提条件"
+    运行评测前需准备：① V1 格式场景资产（位于 `$NAVARENA_DATA_DIR/assets/`）；② 符合 [评测数据格式](../definitions/eval-data-format.md) 的 Episode 数据。
+
 ## 核心特性
 
 评测框架提供以下核心特性：
@@ -16,7 +19,7 @@ navarena-bench 是一个基于 3D Gaussian Splatting 和占据栅格的导航模
 ## 架构设计
 
 ```mermaid
-graph TB
+flowchart TB
     subgraph Core[核心模块]
         Eval[评测器 Evaluator]
         Env[环境 Environment]
@@ -300,10 +303,9 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 - **新指标**: 继承 `Metric` 基类并注册
 - **新回放器**: 继承 `BaseReplayer` 基类并注册
 
-## 下一步
-
-- 了解 **[环境模块](environment.md)** 的详细说明
-- 学习如何配置 **[智能体模块](agents.md)**
-- 查看 **[评测器模块](evaluators.md)** 的使用方法
-- 了解 **[回放模块](replay.md)** 的功能
-- 学习如何 **[扩展框架](extending.md)**
+!!! tip "下一步"
+    - 了解 **[环境模块](environment.md)** 的详细说明
+    - 学习如何配置 **[智能体模块](agents.md)**
+    - 查看 **[评测器模块](evaluators.md)** 的使用方法
+    - 了解 **[回放模块](replay.md)** 的功能
+    - 学习如何 **[扩展框架](extending.md)**

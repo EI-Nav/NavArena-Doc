@@ -2,6 +2,9 @@
 
 资产预处理（navarena-forge / navarena_forge）是将原始 3D Gaussian Splatting 场景转换为标准化具身导航资产的一套模块化 Pipeline。它将 PLY 点云转换为坐标对齐、占据栅格、可导航区域掩码以及可选的压缩格式，供数据生成器和评测框架使用。
 
+!!! info "前提条件"
+    使用前需准备：① 原始 3DGS PLY 点云文件；② 支持 CUDA 的 GPU 环境（用于后续数据生成与评测）。
+
 ## 项目定位
 
 - **输入**：原始 3DGS PLY 点云（来自 InteriorGS、ScanNet++、SceneSplat 等）
@@ -10,7 +13,7 @@
 ## 核心架构
 
 ```mermaid
-graph TB
+flowchart TB
     subgraph Pipeline[Pipeline]
         S1[coordinate_normalize]
         S2[pcd_to_map]
@@ -82,9 +85,8 @@ Scene ID 由 `SHA-256("{dataset}:{original_name}")` 的前 8 位十六进制字�
 
 上述文件名均为固定名称，不按 scene_id 前缀，便于下游统一解析。
 
-## 下一步
-
-- 了解 **[Pipeline 步骤](pipeline-steps.md)** 的详细说明
-- 学习 **[配置说明](configuration.md)**
-- 使用 **[CLI 命令](cli.md)** 处理场景
-- 通过 **[Web 查看器](web-viewer.md)** 浏览资产
+!!! tip "下一步"
+    - 了解 **[Pipeline 步骤](pipeline-steps.md)** 的详细说明
+    - 学习 **[配置说明](configuration.md)**
+    - 使用 **[CLI 命令](cli.md)** 处理场景
+    - 通过 **[Web 查看器](web-viewer.md)** 浏览资产

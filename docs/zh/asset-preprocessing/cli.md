@@ -180,6 +180,5 @@ python -m navarena_forge convert-labels \
 
 - `-v` / `--verbose`：启用 DEBUG 日志
 
-## 下一步
-
-- 使用 **[Web 查看器](web-viewer.md)** 浏览处理后的资产
+!!! tip "下一步"
+    - 使用 **[Web 查看器](web-viewer.md)** 浏览处理后的资产

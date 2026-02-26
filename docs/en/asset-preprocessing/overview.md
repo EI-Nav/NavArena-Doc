@@ -2,6 +2,9 @@
 
 Asset preprocessing (navarena-forge / navarena_forge) is a modular pipeline that converts raw 3D Gaussian Splatting scenes into standardized embodied navigation assets. It transforms PLY point clouds into coordinate-aligned scenes, occupancy grids, navigable region masks, and optional compressed formats for use by the data generator and evaluation framework.
 
+!!! info "Prerequisites"
+    Before use, prepare: ① Raw 3DGS PLY point cloud files; ② A CUDA-capable GPU environment (for subsequent data generation and evaluation).
+
 ## Project Scope
 
 - **Input**: Raw 3DGS PLY point clouds (from InteriorGS, ScanNet++, SceneSplat, etc.)
@@ -10,7 +13,7 @@ Asset preprocessing (navarena-forge / navarena_forge) is a modular pipeline that
 ## Core Architecture
 
 ```mermaid
-graph TB
+flowchart TB
     subgraph Pipeline[Pipeline]
         S1[coordinate_normalize]
         S2[pcd_to_map]
@@ -82,9 +85,8 @@ Scene ID is the first 8 hex characters of `SHA-256("{dataset}:{original_name}")`
 
 The above filenames are fixed; they are not prefixed by scene_id, for consistent downstream parsing.
 
-## Next Steps
-
-- Learn about **[Pipeline Steps](pipeline-steps.md)**
-- See **[Configuration](configuration.md)**
-- Use **[CLI Commands](cli.md)** to process scenes
-- Browse assets with the **[Web Viewer](web-viewer.md)**
+!!! tip "Next Steps"
+    - Learn about **[Pipeline Steps](pipeline-steps.md)**
+    - See **[Configuration](configuration.md)**
+    - Use **[CLI Commands](cli.md)** to process scenes
+    - Browse assets with the **[Web Viewer](web-viewer.md)**

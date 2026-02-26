@@ -102,9 +102,14 @@ python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --verbo
 
 ```bash
 python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
-
-# Optional: --port, --skip-frontend, --skip-backend
 ```
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `--data-dir` | Data directory path | - |
+| `--port` | Backend service port | `5000` |
+| `--skip-frontend` | Start backend only | `false` |
+| `--skip-backend` | Start frontend only | `false` |
 
 ## Output Structure
 
@@ -132,7 +137,6 @@ navarena_data/
 !!! question "Parallel out of memory"
     Reduce `--num-workers` or `task_config.max_start_points`.
 
-## Next Steps
-
-- See **[Configuration](configuration.md)**
-- Learn **[Asset Preprocessing](../asset-preprocessing/overview.md)**
+!!! tip "Next Steps"
+    - See **[Configuration](configuration.md)**
+    - Learn **[Asset Preprocessing](../asset-preprocessing/overview.md)**

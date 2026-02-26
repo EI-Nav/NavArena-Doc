@@ -181,10 +181,8 @@ pip install -e ".[web]"
 !!! note "首次运行"
     首次运行数据生成或评测时，gsplat 可能需进行编译，可能需要数分钟。
 
-## 下一步
-
-安装完成后，继续阅读：
-
-- **[快速入门](quickstart.md)** - 了解如何使用各模块
-- **[数据生成器概述](../data-generator/overview.md)** - 深入了解数据生成流程
-- **[评测框架概述](../navarena-bench/overview.md)** - 了解评测框架架构
+!!! tip "下一步"
+    安装完成后，继续阅读：
+    - **[快速入门](quickstart.md)** - 了解如何使用各模块
+    - **[数据生成器概述](../data-generator/overview.md)** - 深入了解数据生成流程
+    - **[评测框架概述](../navarena-bench/overview.md)** - 了解评测框架架构

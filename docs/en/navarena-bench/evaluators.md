@@ -431,8 +431,7 @@ evaluator = Evaluator.init(config)
 !!! question "Episode format error"
     Validate episode JSON and ensure required fields exist.
 
-## Next Steps
-
-- Learn about the **[Replay Module](replay.md)**
-- Learn how to **[Extend the Framework](extending.md)**
-- View the **[Environment Module](environment.md)** in detail
+!!! tip "Next Steps"
+    - Learn about the **[Replay Module](replay.md)**
+    - Learn how to **[Extend the Framework](extending.md)**
+    - View the **[Environment Module](environment.md)** in detail

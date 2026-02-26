@@ -2,6 +2,9 @@
 
 The Data Generator (navarena-gen) is a multi-task Vision-Language Navigation (VLN) data generation framework for PointNav, ImageNav, ObjectNav, and VLN tasks. It generates high-quality Episode data from 3D Gaussian Splatting scenes using grid sampling, path planning, and instruction generation.
 
+!!! info "Prerequisites"
+    Before using the Data Generator, complete [asset preprocessing](../asset-preprocessing/overview.md) to convert raw 3DGS scenes to V1 unified asset format (manifest.json, nav_map.pgm, etc.). V1 assets should be located under `$NAVARENA_DATA_DIR/assets/`.
+
 ## Core Features
 
 - **Multi-Task Support** - PointNav, ImageNav, ObjectNav, VLN
@@ -14,7 +17,7 @@ The Data Generator (navarena-gen) is a multi-task Vision-Language Navigation (VL
 ## Architecture
 
 ```mermaid
-graph TB
+flowchart TB
     subgraph Input[Input]
         Scene[V1 Asset Scene]
         Config[YAML Config]
@@ -77,11 +80,11 @@ navarena_data/
 ```json
 {
   "episode_id": "train_000001",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
+  "scene_path": "x2robot/17dc3367",
   "task_type": "vln",
   "start_state": {
-    "position": [x, y, z],
-    "rotation": [qx, qy, qz, qw]
+    "position": [1.5, -0.8, 0.0],
+    "rotation": [0.0, 0.0, 0.0, 1.0]
   },
   "goals": [...],
   "instructions": [
@@ -104,8 +107,7 @@ navarena_data/
 
 The data generator depends on **asset preprocessing** output in V1 format. Use [navarena-forge](../asset-preprocessing/overview.md) first to preprocess scenes.
 
-## Next Steps
-
-- Learn about **[Pipeline Stages](pipeline.md)**
-- See **[Configuration](configuration.md)**
-- View **[Batch Processing](batch-processing.md)**
+!!! tip "Next Steps"
+    - Learn about **[Pipeline Stages](pipeline.md)**
+    - See **[Configuration](configuration.md)**
+    - View **[Batch Processing](batch-processing.md)**

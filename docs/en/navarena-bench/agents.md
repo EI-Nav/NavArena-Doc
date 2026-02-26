@@ -49,9 +49,10 @@ Remote service agent that invokes a remote model via HTTP API.
 ```yaml
 agent:
   agent_type: "remote"
-  remote_url: "http://localhost:8000/api/v1/navigate"
-  remote_timeout: 30.0
-  remote_retries: 3
+  model_settings:
+    remote_url: "http://localhost:8000/api/v1/navigate"
+    remote_timeout: 30.0
+    remote_retries: 3
 ```
 
 #### API Interface Format
@@ -90,9 +91,11 @@ agent:
 ```python
 config = AgentCfg(
     agent_type="remote",
-    remote_url="http://localhost:8000/api/v1/navigate",
-    remote_timeout=30.0,
-    remote_retries=3
+    model_settings={
+        "remote_url": "http://localhost:8000/api/v1/navigate",
+        "remote_timeout": 30.0,
+        "remote_retries": 3,
+    }
 )
 
 agent = Agent.init(config)
@@ -343,8 +346,7 @@ agent = Agent.init(config)
 !!! question "Observation format mismatch"
     Check that env observations match the agent’s expected format.
 
-## Next Steps
-
-- Learn **[Evaluator Module](evaluators.md)** usage
-- View **[Replay Module](replay.md)** functionality
-- Learn how to **[Extend the Framework](extending.md)**
+!!! tip "Next Steps"
+    - Learn **[Evaluator Module](evaluators.md)** usage
+    - View **[Replay Module](replay.md)** functionality
+    - Learn how to **[Extend the Framework](extending.md)**

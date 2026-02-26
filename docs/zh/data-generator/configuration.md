@@ -135,7 +135,6 @@ python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \
     --parallel --num-workers 4 --io-workers 8
 ```
 
-## 下一步
-
-- 查看 **[批量处理](batch-processing.md)**
-- 学习 **[资产预处理](../asset-preprocessing/overview.md)** 以准备场景
+!!! tip "下一步"
+    - 查看 **[批量处理](batch-processing.md)**
+    - 学习 **[资产预处理](../asset-preprocessing/overview.md)** 以准备场景

@@ -49,9 +49,10 @@ agent = Agent.init(config)
 ```yaml
 agent:
   agent_type: "remote"
-  remote_url: "http://localhost:8000/api/v1/navigate"
-  remote_timeout: 30.0
-  remote_retries: 3
+  model_settings:
+    remote_url: "http://localhost:8000/api/v1/navigate"
+    remote_timeout: 30.0
+    remote_retries: 3
 ```
 
 #### API 接口格式
@@ -90,9 +91,11 @@ agent:
 ```python
 config = AgentCfg(
     agent_type="remote",
-    remote_url="http://localhost:8000/api/v1/navigate",
-    remote_timeout=30.0,
-    remote_retries=3
+    model_settings={
+        "remote_url": "http://localhost:8000/api/v1/navigate",
+        "remote_timeout": 30.0,
+        "remote_retries": 3,
+    }
 )
 
 agent = Agent.init(config)
@@ -343,8 +346,7 @@ agent = Agent.init(config)
 !!! question "观测格式不匹配"
     检查环境返回的观测格式是否与智能体期望的格式一致。
 
-## 下一步
-
-- 了解 **[评测器模块](evaluators.md)** 的使用方法
-- 查看 **[回放模块](replay.md)** 的功能
-- 学习如何 **[扩展框架](extending.md)**
+!!! tip "下一步"
+    - 了解 **[评测器模块](evaluators.md)** 的使用方法
+    - 查看 **[回放模块](replay.md)** 的功能
+    - 学习如何 **[扩展框架](extending.md)**

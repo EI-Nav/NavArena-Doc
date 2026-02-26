@@ -104,6 +104,5 @@ python -m navarena_forge run-step coordinate_normalize \
     --config coordinate_normalize.yaml --scene-dir /path/to/scene
 ```
 
-## Next Steps
-
-- Use **[CLI Commands](cli.md)** to run the pipeline
+!!! tip "Next Steps"
+    - Use **[CLI Commands](cli.md)** to run the pipeline

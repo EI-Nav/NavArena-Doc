@@ -105,7 +105,6 @@ GET /api/scenes/{dataset}/{scene_id}/labels
 - 场景元数据展示
 - 轨道 / 平移 / 缩放控制
 
-## 下一步
-
-- 返回 **[概述](overview.md)** 了解整体架构
-- 使用 **[CLI 命令](cli.md)** 处理场景
+!!! tip "下一步"
+    - 返回 **[概述](overview.md)** 了解整体架构
+    - 使用 **[CLI 命令](cli.md)** 处理场景

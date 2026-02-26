@@ -1,153 +1,68 @@
 # 具身导航评测数据格式
 
-本文档定义了具身导航评测数据的 Episode 格式和轨迹数据格式。
+本文档定义评测框架（navarena-bench）所需的 Episode 与轨迹格式。**Episode 核心字段、Goals、Instructions、GT Path、GT 轨迹文件格式**与 [导航训练数据格式](nav-data-format.md) 完全一致，本文档仅说明评测数据的差异与组织方式。
 
-!!! info "与训练数据格式的关系"
-    评测数据格式是 [训练数据格式](nav-data-format.md) 中 Episode 部分的**子集**。评测框架（navarena-bench）直接消费本格式。训练数据由 navarena-gen 生成，包含更多元数据与附加文件（如 goal_images、rendered_videos），但 Episode 核心字段与此规范一致。
+!!! info "与训练数据的关系"
+    评测数据格式是 [训练数据格式](nav-data-format.md) 中 Episode 部分的**子集**。训练数据由 navarena-gen 生成，含 goal_images、rendered_videos 等附加文件；评测框架仅需 Episodes JSON 与 gt_trajectories。
 
-## 一、顶层数据集格式
+## 1. 与训练格式的主要区别
 
-顶层结构说明：`metadata.task_types` 包含一种或多种任务类型；`metadata.splits` 包含一种或多种数据划分。
+| 维度 | 训练数据（navarena-gen 输出） | 评测数据（navarena-bench 输入） |
+|------|------------------------------|----------------------------------|
+| 目录结构 | `scenes/{scene_id}/{task_type}/` | 可为 `datasets/{name}/{dataset}/{scene_id}/{task_type}/` 或扁平结构 |
+| 元数据 | dataset_meta.json、scene_meta.json | 可选；Episodes 文件内 metadata 即可 |
+| Episode 字段 | 与评测一致 | 与训练一致，参见 [nav-data-format](nav-data-format.md#4-episode) |
+| 附加文件 | goal_images、rendered_videos | 仅需 gt_trajectories（ImageNav 需 goal_images） |
+
+## 2. 顶层数据集格式
+
+评测框架支持的 Episodes 文件顶层结构：
 
 ```json
 {
   "version": "1.0.0",
   "dataset_name": "navarena_bench",
   "metadata": {
-    "created_date": "2026-01-14",
-    "description": "NavArena通用具身导航数据集",
     "task_types": ["pointnav", "imagenav", "objectnav", "vln"],
-    "total_episodes": 100,
     "splits": ["train", "val_seen", "val_unseen", "test"]
   },
   "episodes": []
 }
 ```
 
-## 二、Episode 核心字段定义
+## 3. Episode 字段
 
-### 2.1 必需字段
+### 3.1 评测框架所需字段一览
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `episode_id` | string | 唯一标识符，格式：{split}\_{序号}，如 "train_001" |
-| `scene_path` | string | 场景路径，如 "x2robot/17dc3367"（相对于 $NAVARENA_DATA_DIR/assets/） |
-| `task_type` | string | 任务类型："pointnav" \| "imagenav" \| "objectnav" \| "vln" |
-| `start_state.position` | [x, y, z] | 起始位置 |
-| `start_state.rotation` | [qx, qy, qz, qw] | 起始旋转四元数 |
-| `goals` | array | 目标列表，至少包含一个目标 |
+| 字段 | 类型 | 必需 | 说明 |
+|------|------|------|------|
+| `episode_id` | string | 是 | 唯一标识，格式 `{split}_{序号}` |
+| `scene_path` | string | 是 | 场景路径，格式 `{dataset}/{scene_id}` |
+| `task_type` | string | 是 | `pointnav` \| `imagenav` \| `objectnav` \| `vln` |
+| `start_state` | object | 是 | `{position: [x,y,z], rotation: [qx,qy,qz,qw]}` |
+| `goals` | array | 是 | 至少一个目标，见下表 goal_type |
+| `instructions` | array | VLN 必需 | `[{instruction_text, language}]` |
+| `gt_path.trajectory_file` | string | 可选 | GT 轨迹文件相对路径 |
 
-### 2.2 可选字段
+### 3.2 各任务类型的 Goals 必需字段
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `split` | string | 数据集划分："train" \| "val_seen" \| "val_unseen" \| "test" |
-| `instructions` | array | 指令列表（VLN 任务必需） |
-| `gt_path` | object | Ground Truth 轨迹信息 |
+| 任务类型 | goal_type | Goals 必需字段 |
+|----------|-----------|----------------|
+| PointNav | `position` | `position` |
+| ImageNav | `image` | `image_goal.image_path`，`position`（用于评估） |
+| ObjectNav | `object` | `object_category`，`position`（用于评估） |
+| VLN | `position` | `position`，外加 episode 级 `instructions` |
 
-## 三、Goals 字段格式（根据 goal_type）
+完整字段定义详见 [导航训练数据格式](nav-data-format.md) 第 4–8 章。
 
-### 3.1 Position 类型（点导航）
+## 4. 最小可用 Episode 示例
 
-`position` 为目标位置 [x, y, z]；`rotation` 为目标朝向 [qx, qy, qz, qw]，可选。
-
-```json
-{
-  "goal_type": "position",
-  "position": [5.0, 3.0, 0.0],
-  "rotation": [0.0, 0.0, 0.383, 0.924]
-}
-```
-
-### 3.2 Image 类型（图像导航）
-
-`image_goal.image_path` 为目标图像路径。`position` 和 `rotation` 为可选，用于评估的真实位置和朝向。
+以下为 PointNav 的最小评测 Episode，可直接用于构造评测数据：
 
 ```json
 {
-  "goal_type": "image",
-  "image_goal": {
-    "image_path": "goal_images/train_000001_goal.jpg"
-  },
-  "position": [-0.9, -0.5, 0.0],
-  "rotation": [0.0, 0.0, -0.383, 0.924]
-}
-```
-
-### 3.3 Object 类型（物体导航）
-
-`object_category` 为目标物体类别；`object_id` 为可选的具体实例 ID；`position` 为可选的物体位置，用于评估。
-
-```json
-{
-  "goal_type": "object",
-  "object_category": "table",
-  "object_id": "table_0",
-  "position": [-2.78, -1.57, -0.50]
-}
-```
-
-## 四、Instructions 字段格式（VLN 任务）
-
-`instruction_text` 为自然语言指令；`language` 为语言代码（如 "zh-CN"、"en-US"）。
-
-```json
-{
-  "instruction_text": "走到走廊尽头，左转找到桌子",
-  "language": "zh-CN"
-}
-```
-
-## 五、GT Path 字段格式
-
-`trajectory_file` 为 GT 轨迹文件路径。`stats` 中：`geodesic_distance`（米）和 `num_steps` 为必需；`euclidean_distance`、`total_time`、`num_waypoints` 为推荐；`avg_speed`、`max_speed` 为可选。
-
-```json
-{
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_001_gt.json",
-    "stats": {
-      "geodesic_distance": 5.83,
-      "num_steps": 12,
-      "euclidean_distance": 5.2,
-      "total_time": 11.66,
-      "num_waypoints": 8
-    }
-  }
-}
-```
-
-## 六、GT 轨迹文件格式
-
-文件路径：`gt_trajectories/{episode_id}_gt.json`。轨迹每步包含 `step`（从 0 开始）、`position`、`rotation`、`timestamp`、`action`、`action_id`。顶层可选 `actions` 和 `action_names`。
-
-```json
-{
-  "episode_id": "train_000001",
-  "trajectory": [
-    {
-      "step": 0,
-      "position": [0.0, 0.0, 0.0],
-      "rotation": [0.0, 0.0, 0.0, 1.0],
-      "timestamp": 0.0,
-      "action": "start",
-      "action_id": 0
-    }
-  ],
-  "actions": [0, 1, 2],
-  "action_names": ["start", "forward", "turn"]
-}
-```
-
-## 七、完整示例
-
-### 7.1 PointNav 示例
-
-```json
-{
-  "episode_id": "train_000001",
+  "episode_id": "eval_000001",
   "scene_path": "x2robot/17dc3367",
-  "split": "train",
   "task_type": "pointnav",
   "start_state": {
     "position": [0.0, 0.0, 0.0],
@@ -156,158 +71,46 @@
   "goals": [
     {
       "goal_type": "position",
-      "position": [5.0, 3.0, 0.0],
+      "position": [5.0, 0.0, 0.0],
       "rotation": [0.0, 0.0, 0.383, 0.924]
     }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 5.83,
-      "num_steps": 12,
-      "euclidean_distance": 5.2,
-      "total_time": 11.66
-    }
-  }
+  ]
 }
 ```
 
-### 7.2 ImageNav 示例
+## 5. scene_path 解析规则
 
-```json
-{
-  "episode_id": "train_000001",
-  "scene_path": "x2robot/17dc3367",
-  "split": "train",
-  "task_type": "imagenav",
-  "start_state": {
-    "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.0, 0.0, 0.383, 0.924]
-  },
-  "goals": [
-    {
-      "goal_type": "image",
-      "image_goal": {
-        "image_path": "goal_images/train_000001_goal.jpg"
-      },
-      "position": [-0.9, -0.5, 0.0],
-      "rotation": [0.0, 0.0, -0.383, 0.924]
-    }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 6.2,
-      "num_steps": 15,
-      "euclidean_distance": 5.5,
-      "total_time": 12.4
-    }
-  }
-}
+评测框架将 `scene_path` 解析为 V1 资产目录的绝对路径：
+
+```
+绝对路径 = $NAVARENA_DATA_DIR/assets/{scene_path}
 ```
 
-### 7.3 ObjectNav 示例
+例如 `scene_path: "x2robot/17dc3367"` 对应 `$NAVARENA_DATA_DIR/assets/x2robot/17dc3367/`，该目录需包含 `manifest.json`、`aligned.ply`、`nav_map.pgm`、`nav_map.yaml` 等 V1 资产文件。
 
-```json
-{
-  "episode_id": "train_000001",
-  "scene_path": "x2robot/17dc3367",
-  "split": "train",
-  "task_type": "objectnav",
-  "start_state": {
-    "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.0, 0.0, 0.383, 0.924]
-  },
-  "goals": [
-    {
-      "goal_type": "object",
-      "object_category": "table",
-      "object_id": "table_0",
-      "position": [-2.78, -1.57, -0.50]
-    }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 4.5,
-      "num_steps": 10,
-      "euclidean_distance": 3.8,
-      "total_time": 9.0
-    }
-  }
-}
-```
+## 6. 评测数据文件组织结构
 
-### 7.4 VLN 示例
+评测数据按场景和任务类型组织，`scene_path` 为相对 `$NAVARENA_DATA_DIR/assets/` 的路径：
 
-```json
-{
-  "episode_id": "train_000001",
-  "scene_path": "x2robot/17dc3367",
-  "split": "train",
-  "task_type": "vln",
-  "start_state": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0, 1.0]
-  },
-  "instructions": [
-    {
-      "instruction_text": "走到走廊尽头，左转找到桌子",
-      "language": "zh-CN"
-    },
-    {
-      "instruction_text": "Go to the end of the hallway, turn left and find the table",
-      "language": "en-US"
-    }
-  ],
-  "goals": [
-    {
-      "goal_type": "position",
-      "position": [5.0, 3.0, 0.0]
-    }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 7.8,
-      "num_steps": 30,
-      "euclidean_distance": 6.5,
-      "total_time": 15.6
-    }
-  }
-}
-```
-
-## 八、文件组织结构
-
-评测数据采用与训练数据一致的层级结构，按场景和任务类型组织：
-
-```bash
+```text
 $NAVARENA_DATA_DIR/
-├── datasets/                        # 或自定义数据根目录
+├── datasets/                        # 或自定义数据根
 │   └── {dataset_name}/
 │       └── {dataset}/{scene_id}/    # 如 x2robot/17dc3367
-│           └── {task_type}/         # pointnav | imagenav | objectnav | vln
-│               ├── train.json       # Episodes 文件
+│           └── {task_type}/
+│               ├── train.json
 │               ├── val.json
 │               ├── gt_trajectories/
-│               │   ├── train_000000_gt.json
-│               │   └── ...
-│               └── goal_images/     # ImageNav 目标图像
-│                   └── train_000000_goal.jpg
-└── assets/                          # V1 格式场景资产
-    └── x2robot/
-        └── 17dc3367/
-            ├── manifest.json
-            ├── aligned.ply
-            ├── nav_map.pgm
-            ├── nav_map.yaml
-            ├── nav_mask.png
-            └── labels.json          # 可选
+│               │   └── {split}_{idx}_gt.json
+│               └── goal_images/    # ImageNav 必需
+└── assets/                          # V1 场景资产
 ```
 
-**说明**：`scene_path` 在 Episode 中为相对路径（如 `x2robot/17dc3367`），由评测框架根据 `$NAVARENA_DATA_DIR/assets/` 解析为完整路径。
+## 7. 完整示例
 
-## 九、注意事项
+PointNav、ImageNav、ObjectNav、VLN 的 Episode 示例见 [训练数据格式 - 完整示例](nav-data-format.md) 第 9 章。
 
-- 涉及到的所有路径都使用相对路径，因此数据文件必须按照**第八节**进行组织。
+## 8. 注意事项
+
+- 所有路径使用相对路径，需按上述目录组织。
+- 确保 `scene_path` 对应的 V1 资产目录存在且完整。

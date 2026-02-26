@@ -181,10 +181,8 @@ pip install -e ".[web]"
 !!! note "First Run"
     On first run of data generation or evaluation, gsplat may need to compile; this can take several minutes.
 
-## Next Steps
-
-After installation, continue reading:
-
-- **[Quickstart](quickstart.md)** - Learn how to use all modules
-- **[Data Generator Overview](../data-generator/overview.md)** - Deep dive into the data generation workflow
-- **[Evaluation Framework Overview](../navarena-bench/overview.md)** - Learn about the evaluation framework architecture
+!!! tip "Next Steps"
+    After installation, continue reading:
+    - **[Quickstart](quickstart.md)** - Learn how to use all modules
+    - **[Data Generator Overview](../data-generator/overview.md)** - Deep dive into the data generation workflow
+    - **[Evaluation Framework Overview](../navarena-bench/overview.md)** - Learn about the evaluation framework architecture

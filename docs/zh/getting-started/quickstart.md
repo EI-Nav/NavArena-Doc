@@ -1,6 +1,6 @@
 # 快速入门
 
-本教程将通过简单的示例帮助您快速上手 NavArena 具身导航基础设施的四个核心模块：**资产预处理**、**数据生成器**和**评测框架**。
+本教程将通过简单的示例帮助您快速上手 NavArena 具身导航基础设施的三个核心模块：**资产预处理**、**数据生成器**和**评测框架**。
 
 ## 资产预处理快速入门
 
@@ -303,23 +303,22 @@ python scripts/eval.py --config configs/eval/vint_eval.yaml
     - **数据生成**: 使用 `--parallel --num-workers 4` 启用多进程
     - **评测**: 对于大量 episodes，考虑分批处理并保存中间结果
 
-!!! tip "调试技巧"
+!!! info "调试技巧"
     - 设置 `num_episodes` 为较小值进行快速测试
     - 启用 `save_trajectories: true` 保存轨迹数据用于分析
 
-!!! tip "数据管理"
+!!! note "数据管理"
     - 定期清理输出目录中的旧数据
     - 为不同场景创建独立的配置文件
     - 确保 `NAVARENA_DATA_DIR` 环境变量正确设置
 
-!!! tip "错误处理"
+!!! warning "错误处理"
     - 检查 GPU 内存是否足够
     - 确保 V1 资产格式完整（manifest.json、nav_map.pgm 等）
     - 验证 episode JSON 格式是否符合要求
 
-## 下一步
-
-- 深入了解 **[数据生成器 Pipeline](../data-generator/pipeline.md)** 的各个阶段
-- 学习如何 **[配置评测框架](../navarena-bench/overview.md)**
-- 查看 **[API 参考](../api/reference.md)** 获取更多详细信息
-- 阅读 **[扩展指南](../navarena-bench/extending.md)** 了解如何自定义功能
+!!! tip "下一步"
+    - 深入了解 **[数据生成器 Pipeline](../data-generator/pipeline.md)** 的各个阶段
+    - 学习如何 **[配置评测框架](../navarena-bench/overview.md)**
+    - 查看 **[API 参考](../api/reference.md)** 获取更多详细信息
+    - 阅读 **[扩展指南](../navarena-bench/extending.md)** 了解如何自定义功能

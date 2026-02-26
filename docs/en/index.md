@@ -10,7 +10,7 @@
   </div>
 </div>
 
-Welcome to the NavArena embodied navigation infrastructure developer documentation! NavArena provides infrastructure for automated asset processing, data generation, and navigation evaluation. This documentation includes complete usage guides, API references, and best practices.
+Welcome to NavArena documentation! NavArena provides asset automation, data generation, and navigation evaluation capabilities. This documentation includes complete usage guides, API references, and best practices.
 
 ## Core Modules
 
@@ -34,83 +34,6 @@ Welcome to the NavArena embodied navigation infrastructure developer documentati
     <a href="navarena-bench/overview/">View Docs →</a>
   </div>
 </div>
-
-## Documentation Structure
-
-### Getting Started
-
-If you are new to NavArena, start here:
-
-- **[Installation Guide](getting-started/installation/)** - Learn how to install and configure all modules
-- **[Quickstart](getting-started/quickstart/)** - Get started quickly with simple examples
-
-### Specifications
-
-Learn about the project's data format specifications:
-
-- **[Core Concepts](definitions/concepts/)** - Terminology, workflow, and directory layout
-- **[3D GS Asset Specification](definitions/gs-assets/)** - Unified format definition for 3D Gaussian Splatting scene assets
-- **[Navigation Training Data Format](definitions/nav-data-format/)** - Directory structure and Episode format for training data
-- **[Navigation Evaluation Data Format](definitions/eval-data-format/)** - Episode and trajectory format for evaluation data
-
-### Asset Preprocessing · Data Generator · Evaluation Framework
-
-Overview docs: [Asset Preprocessing](asset-preprocessing/overview/) · [Data Generator](data-generator/overview/) · [Evaluation Framework](navarena-bench/overview/)
-
-### API Reference
-
-- **[API Reference](api/reference/)** - General API reference manual
-- **[Data Generator API](api/data-generator-api/)** - Data generator API documentation
-- **[Evaluation Framework API](api/navarena-bench-api/)** - Evaluation framework API documentation
-
-## Project Architecture
-
-```mermaid
-graph TB
-    subgraph NavArena[NavArena Embodied Navigation Infrastructure]
-        AP[Asset Preprocessing<br/>navarena-forge]
-        DG[Data Generator<br/>navarena-gen]
-        EF[Evaluation Framework<br/>navarena-bench]
-    end
-    
-    subgraph AP_Flow[Asset Preprocessing]
-        A1[Coordinate Normalize]
-        A2[PGM Generation]
-        A3[Valid Region]
-        A1 --> A2 --> A3
-    end
-    
-    subgraph DG_Flow[Data Generation]
-        D1[Env Init]
-        D2[Episode Gen]
-        D3[Instruction Gen]
-        D4[Data Write]
-        D1 --> D2 --> D3 --> D4
-    end
-    
-    subgraph EF_Flow[Evaluation Flow]
-        Dataset[Dataset] --> Eval[Evaluator]
-        Agent[Agent] --> Eval
-        Env[Environment] --> Eval
-        Eval --> Metrics[Metrics]
-        Eval --> Replay[Replay]
-    end
-    
-    AP --> AP_Flow
-    DG --> DG_Flow
-    EF --> EF_Flow
-    AP_Flow -.V1 Assets.-> DG_Flow
-    DG_Flow -.Episode Data.-> Dataset
-```
-
-## Key Features
-
-!!! success "Core Features"
-    - **Modular Design** - Easy to extend and maintain
-    - **High-Quality Rendering** - Based on 3D Gaussian Splatting
-    - **Infrastructure Toolchain** - Asset processing, data generation, and model evaluation
-    - **Comprehensive Documentation** - Detailed API and usage guides
-    - **Extensible Architecture** - Registry-driven, easy to integrate new environments, tasks, and agents
 
 ## Quick Examples
 
@@ -144,24 +67,18 @@ graph TB
     python scripts/replay_eval.py --results eval_results/ --output replay.mp4
     ```
 
-## Getting Help & Contributing
+## Getting Help
 
-If you encounter issues during use, you can get help through:
+- Browse this documentation and module READMEs
+- Submit an [Issue](https://github.com/EI-Nav/NavArena-Doc/issues) on GitHub
 
-- Browsing the relevant sections of this documentation
-- Reading the project README files
-- Submitting an Issue on GitHub
-- Contacting the project maintainers
+## Contributing
 
-We welcome community contributions! If you find documentation errors or wish to add new content, fork this repository, create your feature branch, commit your changes, and submit a Pull Request.
-
-## Related Projects
-
-- **navarena-forge** - Asset preprocessing pipeline
-- **navarena-gen** - Data generation tool
-- **navarena-bench** - Evaluation framework
-- **visualnav-transformer** - ViNT/GNM/NoMaD model support
+1. Fork this repository
+2. Create a feature branch
+3. Commit your changes and open a Pull Request
 
 ---
 
-Ready to get started? Let's begin with the [Installation Guide](getting-started/installation/)!
+!!! tip "Next Steps"
+    Start with the [Installation Guide](getting-started/installation/) or [Quickstart](getting-started/quickstart/) to get up and running.

@@ -2,7 +2,7 @@
 
 本文档介绍 NavArena 具身导航基础设施的核心概念、术语和工作流，帮助用户快速理解整体架构。
 
-## 一、NavArena 整体工作流
+## 1. NavArena 整体工作流
 
 NavArena 提供从 3DGS 场景到导航模型评测的完整工具链：
 
@@ -31,7 +31,7 @@ flowchart LR
 2. **数据生成**（navarena-gen）：基于 V1 资产生成训练/评测 Episode 数据
 3. **评测**（navarena-bench）：在仿真环境中评测导航模型
 
-## 二、核心术语
+## 2. 核心术语
 
 | 术语 | 说明 |
 |------|------|
@@ -43,7 +43,7 @@ flowchart LR
 | **Task Type** | 任务类型：pointnav（点目标）、imagenav（图像目标）、objectnav（物体目标）、vln（视觉语言导航） |
 | **scene_path** | 场景相对路径，格式为 `{dataset}/{scene_id}`，相对于 `$NAVARENA_DATA_DIR/assets/` |
 
-## 三、四个子项目职责
+## 3. 四个子项目职责
 
 | 项目 | 职责 |
 |------|------|
@@ -52,7 +52,7 @@ flowchart LR
 | **navarena-gen** | 数据生成，产出 Episode、GT 轨迹、目标图像、渲染视频 |
 | **navarena-bench** | 评测框架，加载 Episode，驱动智能体在 3D GS 环境中导航并计算指标 |
 
-## 四、NAVARENA_DATA_DIR 目录结构全景
+## 4. NAVARENA_DATA_DIR 目录结构全景
 
 ```
 $NAVARENA_DATA_DIR/
@@ -81,7 +81,7 @@ $NAVARENA_DATA_DIR/
 - **assets/**：navarena-forge 预处理后的场景，navarena-gen 和 navarena-bench 都依赖此目录
 - **datasets/**：navarena-gen 的输出目录，navarena-bench 从此加载 Episode
 
-## 五、数据流示意
+## 5. 数据流示意
 
 ```mermaid
 flowchart TB
@@ -127,7 +127,7 @@ flowchart TB
     end
 ```
 
-## 六、相关文档
+## 6. 相关文档
 
 - [3D GS 资产规范](gs-assets.md) - V1 资产格式详细定义
 - [导航训练数据格式](nav-data-format.md) - 训练数据完整规范

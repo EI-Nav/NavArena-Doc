@@ -123,7 +123,6 @@ graph LR
     E4 -.optional.-> E5[Render]
 ```
 
-## Next Steps
-
-- See **[Configuration](configuration.md)**
-- View **[Batch Processing](batch-processing.md)**
+!!! tip "Next Steps"
+    - See **[Configuration](configuration.md)**
+    - View **[Batch Processing](batch-processing.md)**

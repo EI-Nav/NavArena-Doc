@@ -135,7 +135,6 @@ python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \
     --parallel --num-workers 4 --io-workers 8
 ```
 
-## Next Steps
-
-- View **[Batch Processing](batch-processing.md)**
-- Learn **[Asset Preprocessing](../asset-preprocessing/overview.md)** for scene preparation
+!!! tip "Next Steps"
+    - View **[Batch Processing](batch-processing.md)**
+    - Learn **[Asset Preprocessing](../asset-preprocessing/overview.md)** for scene preparation

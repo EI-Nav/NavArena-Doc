@@ -129,7 +129,6 @@ graph LR
     E4 -.可选.-> E5[渲染]
 ```
 
-## 下一步
-
-- 学习 **[配置说明](configuration.md)**
-- 查看 **[批量处理](batch-processing.md)**
+!!! tip "下一步"
+    - 学习 **[配置说明](configuration.md)**
+    - 查看 **[批量处理](batch-processing.md)**

@@ -431,8 +431,7 @@ evaluator = Evaluator.init(config)
 !!! question "Episode 格式错误"
     验证 episode JSON 格式，确保必需字段存在。
 
-## 下一步
-
-- 了解 **[回放模块](replay.md)** 的功能
-- 学习如何 **[扩展框架](extending.md)**
-- 查看 **[环境模块](environment.md)** 的详细说明
+!!! tip "下一步"
+    - 了解 **[回放模块](replay.md)** 的功能
+    - 学习如何 **[扩展框架](extending.md)**
+    - 查看 **[环境模块](environment.md)** 的详细说明

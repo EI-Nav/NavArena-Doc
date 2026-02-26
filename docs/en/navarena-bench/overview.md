@@ -2,6 +2,9 @@
 
 navarena-bench is a navigation model evaluation framework based on 3D Gaussian Splatting and occupancy grids. It provides a modular, extensible evaluation system supporting multiple navigation tasks and agent types.
 
+!!! info "Prerequisites"
+    Before running evaluation, prepare: ① V1 format scene assets (under `$NAVARENA_DATA_DIR/assets/`); ② Episode data conforming to the [evaluation data format](../definitions/eval-data-format.md).
+
 ## Core Features
 
 The evaluation framework provides:
@@ -16,7 +19,7 @@ The evaluation framework provides:
 ## Architecture
 
 ```mermaid
-graph TB
+flowchart TB
     subgraph Core[Core Modules]
         Eval[Evaluator]
         Env[Environment]
@@ -300,10 +303,10 @@ The framework is designed for high extensibility:
 - **New metric**: Subclass `Metric` and register
 - **New replayer**: Subclass `BaseReplayer` and register
 
-## Next Steps
-
-- Learn about the **[Environment Module](environment.md)**
-- See how to configure the **[Agent Module](agents.md)**
-- View **[Evaluator Module](evaluators.md)** usage
-- Learn about the **[Replay Module](replay.md)**
+!!! tip "Next Steps"
+    - Learn about the **[Environment Module](environment.md)**
+    - See how to configure the **[Agent Module](agents.md)**
+    - View **[Evaluator Module](evaluators.md)** usage
+    - Learn about the **[Replay Module](replay.md)**
+    - Learn how to **[Extend the Framework](extending.md)**
 - Learn how to **[Extend the Framework](extending.md)**

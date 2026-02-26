@@ -258,8 +258,7 @@ replay:
 !!! question "Observation images missing"
     Ensure observation images were saved during evaluation and paths are correct.
 
-## Next Steps
-
-- Learn how to **[Extend the Framework](extending.md)**
-- View **[Evaluator Module](evaluators.md)** usage
-- Learn about the **[Environment Module](environment.md)**
+!!! tip "Next Steps"
+    - Learn how to **[Extend the Framework](extending.md)**
+    - View **[Evaluator Module](evaluators.md)** usage
+    - Learn about the **[Environment Module](environment.md)**

@@ -5,7 +5,7 @@
 !!! tip "评测数据格式"
     若只需了解评测框架（navarena-bench）所需的 Episode 与轨迹格式，可参阅 [评测数据格式](eval-data-format.md)，其中定义了精简的评测专用规范。
 
-## 一、数据目录结构
+## 1. 数据目录结构
 
 ```
 navarena_data/
@@ -37,7 +37,7 @@ navarena_data/
 - **单相机模式**（向后兼容）：当只使用一个相机渲染时，帧直接保存在 `rgb/` 目录
 - **多相机模式**（≥2个相机）：每个相机的渲染结果保存在以相机名命名的子目录中
 
-## 二、元数据文件格式
+## 2. 元数据文件格式
 
 ### 2.1 数据集元数据 (dataset_meta.json)
 
@@ -70,7 +70,7 @@ navarena_data/
 }
 ```
 
-## 三、Episodes 文件格式
+## 3. Episodes 文件格式
 
 位于 `navarena_data/scenes/{scene_id}/{task_type}/{split}.json`：
 
@@ -91,7 +91,7 @@ navarena_data/
 }
 ```
 
-## 四、Episode 核心字段定义
+## 4. Episode 核心字段定义
 
 ### 4.1 必需字段
 
@@ -118,7 +118,7 @@ navarena_data/
 }
 ```
 
-## 五、Goals 字段格式（根据 goal_type）
+## 5. Goals 字段格式（根据 goal_type）
 
 ### 5.1 Position 类型（点导航）
 
@@ -156,7 +156,7 @@ navarena_data/
 }
 ```
 
-## 六、Instructions 字段格式（VLN 任务）
+## 6. Instructions 字段格式（VLN 任务）
 
 ```json
 {
@@ -165,7 +165,7 @@ navarena_data/
 }
 ```
 
-## 七、GT Path 字段格式
+## 7. GT Path 字段格式
 
 ```json
 {
@@ -191,7 +191,7 @@ navarena_data/
 
 **注意**: `trajectory_file` 是相对于 episodes JSON 文件的路径
 
-## 八、GT 轨迹文件格式
+## 8. GT 轨迹文件格式
 
 位于 `navarena_data/scenes/{scene_id}/{task_type}/gt_trajectories/{episode_id}_gt.json`：
 
@@ -227,7 +227,7 @@ navarena_data/
 - 只有在轨迹生成时计算了动态信息时才会包含这些字段
 - 旧版本的轨迹数据可能不包含这些字段，保持向后兼容
 
-## 九、完整示例
+## 9. 完整示例
 
 ### 9.1 PointNav 示例
 
@@ -374,7 +374,7 @@ navarena_data/
 }
 ```
 
-## 十、完整文件组织结构
+## 10. 完整文件组织结构
 
 ```
 navarena-bench/
@@ -424,7 +424,7 @@ navarena-bench/
             └── ...
 ```
 
-## 十一、注意事项
+## 11. 注意事项
 
 1. **相对路径**: 所有文件引用（`trajectory_file`, `image_path`）都使用相对于 episodes JSON 文件的相对路径
 2. **场景隔离**: 每个场景的数据都在独立目录下，不会互相干扰
@@ -436,7 +436,7 @@ navarena-bench/
    - 目标图像（ImageNav）仍然使用单相机
    - 相机配置通过 YAML 文件统一管理
 
-## 十二、使用示例
+## 12. 使用示例
 
 ### 12.1 数据生成
 

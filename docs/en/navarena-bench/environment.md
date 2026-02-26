@@ -340,8 +340,7 @@ env_settings:
 !!! question "Multi-camera config error"
     Ensure camera config format is correct and intrinsics/extrinsics are set.
 
-## Next Steps
-
-- Learn how to configure the **[Agent Module](agents.md)**
-- View **[Evaluator Module](evaluators.md)** usage
-- Learn how to **[Extend the Framework](extending.md)**
+!!! tip "Next Steps"
+    - Learn how to configure the **[Agent Module](agents.md)**
+    - View **[Evaluator Module](evaluators.md)** usage
+    - Learn how to **[Extend the Framework](extending.md)**

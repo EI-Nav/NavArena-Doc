@@ -1,6 +1,6 @@
 # Quickstart
 
-This tutorial helps you get started quickly with the four core modules of the NavArena embodied navigation infrastructure: **Asset Preprocessing**, **Data Generator**, and **Evaluation Framework**.
+This tutorial helps you get started quickly with the three core modules of the NavArena embodied navigation infrastructure: **Asset Preprocessing**, **Data Generator**, and **Evaluation Framework**.
 
 ## Asset Preprocessing Quickstart
 
@@ -303,23 +303,22 @@ python scripts/eval.py --config configs/eval/vint_eval.yaml
     - **Data Generation**: Use `--parallel --num-workers 4` for multi-process generation
     - **Evaluation**: For large numbers of episodes, consider batch processing and saving intermediate results
 
-!!! tip "Debugging Tips"
+!!! info "Debugging Tips"
     - Set `num_episodes` to a small value for quick tests
     - Enable `save_trajectories: true` to save trajectory data for analysis
 
-!!! tip "Data Management"
+!!! note "Data Management"
     - Regularly clean old data in output directories
     - Create separate config files for different scenes
     - Ensure `NAVARENA_DATA_DIR` is set correctly
 
-!!! tip "Error Handling"
+!!! warning "Error Handling"
     - Check if GPU memory is sufficient
     - Ensure V1 asset format is complete (manifest.json, nav_map.pgm, etc.)
     - Verify episode JSON format meets requirements
 
-## Next Steps
-
-- Deep dive into **[Data Generator Pipeline](../data-generator/pipeline.md)** stages
-- Learn how to **[configure the evaluation framework](../navarena-bench/overview.md)**
-- See **[API Reference](../api/reference.md)** for more details
-- Read **[Extending Guide](../navarena-bench/extending.md)** to learn how to customize functionality
+!!! tip "Next Steps"
+    - Deep dive into **[Data Generator Pipeline](../data-generator/pipeline.md)** stages
+    - Learn how to **[configure the evaluation framework](../navarena-bench/overview.md)**
+    - See **[API Reference](../api/reference.md)** for more details
+    - Read **[Extending Guide](../navarena-bench/extending.md)** to learn how to customize functionality

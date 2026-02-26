@@ -136,7 +136,6 @@ graph LR
     S1 -.optional.-> S4[compress_ply]
 ```
 
-## Next Steps
-
-- See **[Configuration](configuration.md)**
-- Use **[CLI Commands](cli.md)** to run the pipeline
+!!! tip "Next Steps"
+    - See **[Configuration](configuration.md)**
+    - Use **[CLI Commands](cli.md)** to run the pipeline

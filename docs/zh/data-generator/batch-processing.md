@@ -102,12 +102,14 @@ python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --verbo
 
 ```bash
 python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
-
-# 可选参数
-# --port: 后端服务端口（默认 5000）
-# --skip-frontend: 只启动后端
-# --skip-backend: 只启动前端
 ```
+
+| 参数 | 说明 | 默认值 |
+|------|------|--------|
+| `--data-dir` | 数据目录路径 | - |
+| `--port` | 后端服务端口 | `5000` |
+| `--skip-frontend` | 只启动后端 | `false` |
+| `--skip-backend` | 只启动前端 | `false` |
 
 ## 输出目录结构
 
@@ -135,7 +137,6 @@ navarena_data/
 !!! question "并行内存不足"
     减小 `--num-workers` 或 `task_config.max_start_points`。
 
-## 下一步
-
-- 学习 **[配置说明](configuration.md)**
-- 了解 **[资产预处理](../asset-preprocessing/overview.md)** 流程
+!!! tip "下一步"
+    - 学习 **[配置说明](configuration.md)**
+    - 了解 **[资产预处理](../asset-preprocessing/overview.md)** 流程
