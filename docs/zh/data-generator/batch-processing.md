@@ -28,11 +28,10 @@ import subprocess
 
 scenes = ["17dc3367", "a1b2c3d4"]
 for scene_id in scenes:
-    scene_path = f"navarena_assets/x2robot/{scene_id}"
     subprocess.run([
         "python", "scripts/generate_data.py",
         "--config", "configs/examples/pointnav_example.yaml",
-        "--scene", scene_path,
+        "--scene", f"x2robot/{scene_id}",
     ], check=True)
 ```
 
@@ -64,30 +63,39 @@ python scripts/generate_data.py \
 
 ## 轨迹渲染
 
-生成完成后，可使用 `render_episodes.py` 批量渲染：
+生成完成后，可使用 `render_episodes.py` 批量渲染。所有路径基于 `$NAVARENA_DATA_DIR` 自动解析：
 
 ```bash
-python scripts/render_episodes.py \
-    --renderer gs \
-    --trajectories-dir navarena_data/scenes/17dc3367/imagenav/gt_trajectories \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --camera-config configs/examples/camera.yaml
+# 使用 --task 快捷方式（自动推导数据路径和相机配置）
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
+
+# 渲染其他任务类型的轨迹
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
+
+# 显式指定数据路径（相对于 $NAVARENA_DATA_DIR/datasets/）
+python scripts/render_episodes.py --scene x2robot/17dc3367 \
+    --trajectories-dir navarena_vln/x2robot/17dc3367/imagenav/gt_trajectories
 ```
 
 ## 数据验证
 
+路径相对于 `$NAVARENA_DATA_DIR/datasets/`：
+
 ```bash
-# 验证单个 JSON 文件
-python scripts/validate_data.py path/to/train.json
+# 使用 --scene + --task 快捷方式
+python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav
+
+# 相对路径
+python scripts/validate_data.py navarena_vln/x2robot/17dc3367/pointnav/train.json
 
 # 验证目录下所有 JSON 文件
-python scripts/validate_data.py path/to/datasets/ --all
+python scripts/validate_data.py navarena_vln/ --all
 
 # 检查引用的文件是否存在
-python scripts/validate_data.py path/to/train.json --check-files
+python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --check-files
 
 # 显示详细错误和警告
-python scripts/validate_data.py path/to/train.json --verbose
+python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --verbose
 ```
 
 ## Web 查看器

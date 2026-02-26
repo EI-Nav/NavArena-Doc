@@ -2,6 +2,9 @@
 
 本文档定义了具身导航训练数据的目录结构、元数据文件格式和 Episode 数据格式。
 
+!!! tip "评测数据格式"
+    若只需了解评测框架（navarena-bench）所需的 Episode 与轨迹格式，可参阅 [评测数据格式](eval-data-format.md)，其中定义了精简的评测专用规范。
+
 ## 一、数据目录结构
 
 ```
@@ -444,51 +447,40 @@ python scripts/generate_data.py --config configs/examples/imagenav_example.yaml
 
 ### 12.2 渲染目标图像（单相机）
 
+所有路径基于 `$NAVARENA_DATA_DIR` 自动解析，`--camera-config` 默认为 `shared/camera.yaml`。
+
 ```bash
-# 渲染 ImageNav 任务的目标图像（使用配置文件中的第一个相机）
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --episodes navarena_data/scenes/17dc3367/imagenav/train.json \
-    --camera-config <path_to_camera_config.yaml>
+# 使用 --task 快捷方式（自动推导 episodes 路径和相机配置）
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
+
+# 显式指定 episodes 文件（相对于 $NAVARENA_DATA_DIR/datasets/）
+python scripts/render_episodes.py --scene x2robot/17dc3367 \
+    --episodes navarena_vln/x2robot/17dc3367/imagenav/train.json
 ```
 
 ### 12.3 渲染轨迹视频（多相机支持）
 
 ```bash
-# 渲染所有相机
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
-    --camera-config <path_to_camera_config.yaml>
+# 使用 --task 快捷方式批量渲染轨迹（所有相机）
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
+
+# 渲染单个轨迹
+python scripts/render_episodes.py --scene x2robot/17dc3367 \
+    --trajectory navarena_vln/x2robot/17dc3367/imagenav/gt_trajectories/train_000001_gt.json
 
 # 只渲染指定相机
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
-    --camera-config <path_to_camera_config.yaml> \
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav \
     --camera-names left_gripper_camera_link camera_head_front_color_optical_frame
 
-# 批量渲染轨迹视频（所有相机）
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectories-dir navarena_data/scenes/17dc3367/imagenav/gt_trajectories \
-    --camera-config <path_to_camera_config.yaml>
+# 使用自定义相机配置（相对于 $NAVARENA_DATA_DIR/shared/）
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav \
+    --camera-config camera_v2.yaml
 
 # 同时渲染深度图
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
-    --camera-config <path_to_camera_config.yaml> \
-    --rgbd
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav --rgbd
 ```
 
 **多相机渲染说明**：
 - 默认渲染配置文件中的所有相机
 - 使用 `--camera-names` 参数可以只渲染指定的相机
 - 多相机模式下，每个相机的渲染结果保存在独立的子目录中
-- 单相机模式保持向后兼容的目录结构

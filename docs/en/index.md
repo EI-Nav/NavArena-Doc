@@ -19,19 +19,19 @@ Welcome to the NavArena embodied navigation infrastructure developer documentati
     <div class="feature-card-icon">🔧</div>
     <h3>Asset Preprocessing</h3>
     <p>Convert raw 3DGS scenes to standardized assets with coordinate normalization, PGM map generation, valid region estimation, V1 unified format, and web viewer.</p>
-    <a href="asset-preprocessing/overview.md">View Docs →</a>
+    <a href="asset-preprocessing/overview/">View Docs →</a>
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">📊</div>
     <h3>Data Generator</h3>
     <p>Generate data for PointNav, ImageNav, ObjectNav, VLN and more. Multi-task pipeline, 3D GS scene rendering, and parallel episode generation.</p>
-    <a href="data-generator/overview.md">View Docs →</a>
+    <a href="data-generator/overview/">View Docs →</a>
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">🎯</div>
     <h3>Evaluation Framework</h3>
     <p>Evaluation framework based on 3D Gaussian Splatting and occupancy grids, supporting multiple tasks and agents (ViNT, GNM, NoMaD) with replay and visualization.</p>
-    <a href="navarena-bench/overview.md">View Docs →</a>
+    <a href="navarena-bench/overview/">View Docs →</a>
   </div>
 </div>
 
@@ -41,26 +41,27 @@ Welcome to the NavArena embodied navigation infrastructure developer documentati
 
 If you are new to NavArena, start here:
 
-- **[Installation Guide](getting-started/installation.md)** - Learn how to install and configure all modules
-- **[Quickstart](getting-started/quickstart.md)** - Get started quickly with simple examples
+- **[Installation Guide](getting-started/installation/)** - Learn how to install and configure all modules
+- **[Quickstart](getting-started/quickstart/)** - Get started quickly with simple examples
 
 ### Specifications
 
 Learn about the project's data format specifications:
 
-- **[3D GS Asset Specification](definitions/gs-assets.md)** - Unified format definition for 3D Gaussian Splatting scene assets
-- **[Navigation Training Data Format](definitions/nav-data-format.md)** - Directory structure and Episode format for training data
-- **[Navigation Evaluation Data Format](definitions/eval-data-format.md)** - Episode and trajectory format for evaluation data
+- **[Core Concepts](definitions/concepts/)** - Terminology, workflow, and directory layout
+- **[3D GS Asset Specification](definitions/gs-assets/)** - Unified format definition for 3D Gaussian Splatting scene assets
+- **[Navigation Training Data Format](definitions/nav-data-format/)** - Directory structure and Episode format for training data
+- **[Navigation Evaluation Data Format](definitions/eval-data-format/)** - Episode and trajectory format for evaluation data
 
 ### Asset Preprocessing · Data Generator · Evaluation Framework
 
-Overview docs: [Asset Preprocessing](asset-preprocessing/overview.md) · [Data Generator](data-generator/overview.md) · [Evaluation Framework](navarena-bench/overview.md)
+Overview docs: [Asset Preprocessing](asset-preprocessing/overview/) · [Data Generator](data-generator/overview/) · [Evaluation Framework](navarena-bench/overview/)
 
 ### API Reference
 
-- **[API Reference](api/reference.md)** - General API reference manual
-- **[Data Generator API](api/data-generator-api.md)** - Data generator API documentation
-- **[Evaluation Framework API](api/navarena-bench-api.md)** - Evaluation framework API documentation
+- **[API Reference](api/reference/)** - General API reference manual
+- **[Data Generator API](api/data-generator-api/)** - Data generator API documentation
+- **[Evaluation Framework API](api/navarena-bench-api/)** - Evaluation framework API documentation
 
 ## Project Architecture
 
@@ -163,4 +164,4 @@ We welcome community contributions! If you find documentation errors or wish to 
 
 ---
 
-Ready to get started? Let's begin with the [Installation Guide](getting-started/installation.md)!
+Ready to get started? Let's begin with the [Installation Guide](getting-started/installation/)!

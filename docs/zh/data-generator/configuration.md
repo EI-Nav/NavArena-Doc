@@ -128,7 +128,7 @@ python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
 # 命令行参数
 python scripts/generate_data.py --env gs --task pointnav \
-    --scene navarena_assets/x2robot/17dc3367 --num-episodes 100
+    --scene x2robot/17dc3367 --num-episodes 100
 
 # 并行生成
 python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \

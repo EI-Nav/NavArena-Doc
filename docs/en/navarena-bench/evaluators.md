@@ -33,13 +33,17 @@ task:
 ```json
 {
   "episode_id": "001",
-  "scene_id": "scene_001",
-  "start_position": [0.0, 0.0, 0.0],
-  "start_rotation": [1.0, 0.0, 0.0, 0.0],
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "pointnav",
+  "start_state": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0, 1.0]
+  },
   "goals": [
     {
+      "goal_type": "position",
       "position": [5.0, 0.0, 0.0],
-      "rotation": [1.0, 0.0, 0.0, 0.0]  # optional
+      "rotation": [0.0, 0.0, 0.383, 0.924]
     }
   ]
 }
@@ -72,13 +76,18 @@ task:
 ```json
 {
   "episode_id": "001",
-  "scene_id": "scene_001",
-  "start_position": [0.0, 0.0, 0.0],
-  "start_rotation": [1.0, 0.0, 0.0, 0.0],
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "objectnav",
+  "start_state": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0, 1.0]
+  },
   "goals": [
     {
-      "position": [5.0, 0.0, 0.0],
-      "object_category": "bed"
+      "goal_type": "object",
+      "object_category": "bed",
+      "object_id": "bed_0",
+      "position": [5.0, 0.0, 0.0]
     }
   ]
 }
@@ -105,14 +114,20 @@ task:
 ```json
 {
   "episode_id": "001",
-  "scene_id": "scene_001",
-  "start_position": [0.0, 0.0, 0.0],
-  "start_rotation": [1.0, 0.0, 0.0, 0.0],
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "imagenav",
+  "start_state": {
+    "position": [-6.0, -1.58, 0.0],
+    "rotation": [0.0, 0.0, 0.383, 0.924]
+  },
   "goals": [
     {
-      "position": [5.0, 0.0, 0.0],
-      "rotation": [1.0, 0.0, 0.0, 0.0],  # required
-      "image": "/path/to/goal_image.jpg"  # optional
+      "goal_type": "image",
+      "image_goal": {
+        "image_path": "goal_images/train_000001_goal.jpg"
+      },
+      "position": [-0.9, -0.5, 0.0],
+      "rotation": [0.0, 0.0, -0.383, 0.924]
     }
   ]
 }
@@ -139,16 +154,29 @@ agent:
 
 #### VLN Episode Format
 
-VLN requires an `instructions` field:
+VLN requires an `instructions` field as an array of objects:
 
 ```json
 {
   "episode_id": "001",
-  "scene_id": "scene_001",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
-  "start_state": {"position": [...], "rotation": [...]},
-  "goals": [...],
-  "instructions": ["Walk about 8 meters to the northeast"]
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "vln",
+  "start_state": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0, 1.0]
+  },
+  "instructions": [
+    {
+      "instruction_text": "Walk about 8 meters to the northeast",
+      "language": "en-US"
+    }
+  ],
+  "goals": [
+    {
+      "goal_type": "position",
+      "position": [5.0, 3.0, 0.0]
+    }
+  ]
 }
 ```
 

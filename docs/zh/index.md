@@ -19,19 +19,19 @@
     <div class="feature-card-icon">🔧</div>
     <h3>资产预处理</h3>
     <p>将原始 3DGS 场景转换为标准化资产，支持坐标归一化、PGM 地图生成、可导航区域估计，提供 V1 统一资产格式与 Web 查看器。</p>
-    <a href="asset-preprocessing/overview.md">查看文档 →</a>
+    <a href="asset-preprocessing/overview/">查看文档 →</a>
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">📊</div>
     <h3>数据生成器</h3>
     <p>支持 PointNav、ImageNav、ObjectNav、VLN 等任务的数据生成，多任务 Pipeline、3D GS 场景渲染与并行 Episode 生成。</p>
-    <a href="data-generator/overview.md">查看文档 →</a>
+    <a href="data-generator/overview/">查看文档 →</a>
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">🎯</div>
     <h3>评测框架</h3>
     <p>基于 3D Gaussian Splatting 和占据栅格的评测框架，支持多种导航任务与智能体（ViNT、GNM、NoMaD），含回放与可视化。</p>
-    <a href="navarena-bench/overview.md">查看文档 →</a>
+    <a href="navarena-bench/overview/">查看文档 →</a>
   </div>
 </div>
 
@@ -41,26 +41,27 @@
 
 如果您是第一次使用 NavArena，建议从这里开始：
 
-- **[安装指南](getting-started/installation.md)** - 了解如何安装和配置各模块
-- **[快速入门](getting-started/quickstart.md)** - 通过简单示例快速上手
+- **[安装指南](getting-started/installation/)** - 了解如何安装和配置各模块
+- **[快速入门](getting-started/quickstart/)** - 通过简单示例快速上手
 
 ### 规范定义
 
 了解项目的数据格式规范：
 
-- **[3D GS 资产规范](definitions/gs-assets.md)** - 3D Gaussian Splatting 场景资产的统一格式定义
-- **[导航训练数据格式](definitions/nav-data-format.md)** - 训练数据的目录结构与 Episode 格式
-- **[导航评测数据格式](definitions/eval-data-format.md)** - 评测数据的 Episode 与轨迹格式
+- **[核心概念](definitions/concepts/)** - 术语、工作流与目录结构全景
+- **[3D GS 资产规范](definitions/gs-assets/)** - 3D Gaussian Splatting 场景资产的统一格式定义
+- **[导航训练数据格式](definitions/nav-data-format/)** - 训练数据的目录结构与 Episode 格式
+- **[导航评测数据格式](definitions/eval-data-format/)** - 评测数据的 Episode 与轨迹格式
 
 ### 资产预处理 · 数据生成器 · 评测框架
 
-详细文档入口： [资产预处理概述](asset-preprocessing/overview.md) · [数据生成器概述](data-generator/overview.md) · [评测框架概述](navarena-bench/overview.md)
+详细文档入口： [资产预处理概述](asset-preprocessing/overview/) · [数据生成器概述](data-generator/overview/) · [评测框架概述](navarena-bench/overview/)
 
 ### API 参考
 
-- **[API 文档](api/reference.md)** - 通用 API 参考手册
-- **[数据生成器 API](api/data-generator-api.md)** - 数据生成器 API 文档
-- **[评测框架 API](api/navarena-bench-api.md)** - 评测框架 API 文档
+- **[API 文档](api/reference/)** - 通用 API 参考手册
+- **[数据生成器 API](api/data-generator-api/)** - 数据生成器 API 文档
+- **[评测框架 API](api/navarena-bench-api/)** - 评测框架 API 文档
 
 ## 项目架构
 
@@ -163,4 +164,4 @@ graph TB
 
 ---
 
-准备好了吗？让我们从[安装指南](getting-started/installation.md)开始吧！
+准备好了吗？让我们从[安装指南](getting-started/installation/)开始吧！

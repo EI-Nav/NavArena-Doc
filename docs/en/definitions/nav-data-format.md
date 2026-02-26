@@ -2,6 +2,9 @@
 
 This document defines the directory structure, metadata file format, and Episode data format for embodied navigation training data.
 
+!!! tip "Evaluation Data Format"
+    For the Episode and trajectory format required by the evaluation framework (navarena-bench), see the [evaluation data format](eval-data-format.md), which defines a concise evaluation-specific specification.
+
 ## 1. Data Directory Structure
 
 ```
@@ -444,51 +447,40 @@ python scripts/generate_data.py --config configs/examples/imagenav_example.yaml
 
 ### 12.2 Render Goal Images (Single Camera)
 
+All paths resolve under `$NAVARENA_DATA_DIR`. `--camera-config` defaults to `shared/camera.yaml`.
+
 ```bash
-# Render ImageNav task goal images (using first camera in config)
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --episodes navarena_data/scenes/17dc3367/imagenav/train.json \
-    --camera-config <path_to_camera_config.yaml>
+# Shorthand via --task (auto-derives episodes path and camera config)
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
+
+# Explicit episodes file (relative to $NAVARENA_DATA_DIR/datasets/)
+python scripts/render_episodes.py --scene x2robot/17dc3367 \
+    --episodes navarena_vln/x2robot/17dc3367/imagenav/train.json
 ```
 
 ### 12.3 Render Trajectory Videos (Multi-Camera Support)
 
 ```bash
-# Render all cameras
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
-    --camera-config <path_to_camera_config.yaml>
+# Shorthand via --task to batch render trajectories (all cameras)
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
+
+# Render single trajectory
+python scripts/render_episodes.py --scene x2robot/17dc3367 \
+    --trajectory navarena_vln/x2robot/17dc3367/imagenav/gt_trajectories/train_000001_gt.json
 
 # Render only specified cameras
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
-    --camera-config <path_to_camera_config.yaml> \
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav \
     --camera-names left_gripper_camera_link camera_head_front_color_optical_frame
 
-# Batch render trajectory videos (all cameras)
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectories-dir navarena_data/scenes/17dc3367/imagenav/gt_trajectories \
-    --camera-config <path_to_camera_config.yaml>
+# Custom camera config (relative to $NAVARENA_DATA_DIR/shared/)
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav \
+    --camera-config camera_v2.yaml
 
 # Render with depth maps
-python scripts/render_episodes.py \
-    --renderer gs \
-    --scene navarena_assets/x2robot/17dc3367 \
-    --trajectory navarena_data/scenes/17dc3367/imagenav/gt_trajectories/train_000001_gt.json \
-    --camera-config <path_to_camera_config.yaml> \
-    --rgbd
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav --rgbd
 ```
 
 **Multi-camera rendering notes**:
 - Default: renders all cameras in config
 - Use `--camera-names` to render only specified cameras
 - In multi-camera mode, each camera's output is saved in a separate subdirectory
-- Single camera mode preserves backward-compatible directory structure

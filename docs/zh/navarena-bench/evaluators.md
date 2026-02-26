@@ -33,13 +33,17 @@ task:
 ```json
 {
   "episode_id": "001",
-  "scene_id": "scene_001",
-  "start_position": [0.0, 0.0, 0.0],
-  "start_rotation": [1.0, 0.0, 0.0, 0.0],
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "pointnav",
+  "start_state": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0, 1.0]
+  },
   "goals": [
     {
+      "goal_type": "position",
       "position": [5.0, 0.0, 0.0],
-      "rotation": [1.0, 0.0, 0.0, 0.0]  # 可选
+      "rotation": [0.0, 0.0, 0.383, 0.924]
     }
   ]
 }
@@ -72,13 +76,18 @@ task:
 ```json
 {
   "episode_id": "001",
-  "scene_id": "scene_001",
-  "start_position": [0.0, 0.0, 0.0],
-  "start_rotation": [1.0, 0.0, 0.0, 0.0],
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "objectnav",
+  "start_state": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0, 1.0]
+  },
   "goals": [
     {
-      "position": [5.0, 0.0, 0.0],
-      "object_category": "bed"
+      "goal_type": "object",
+      "object_category": "bed",
+      "object_id": "bed_0",
+      "position": [5.0, 0.0, 0.0]
     }
   ]
 }
@@ -100,6 +109,30 @@ task:
     success_angle: 0.5  # 成功角度（弧度）
 ```
 
+#### Episode 格式
+
+```json
+{
+  "episode_id": "001",
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "imagenav",
+  "start_state": {
+    "position": [-6.0, -1.58, 0.0],
+    "rotation": [0.0, 0.0, 0.383, 0.924]
+  },
+  "goals": [
+    {
+      "goal_type": "image",
+      "image_goal": {
+        "image_path": "goal_images/train_000001_goal.jpg"
+      },
+      "position": [-0.9, -0.5, 0.0],
+      "rotation": [0.0, 0.0, -0.383, 0.924]
+    }
+  ]
+}
+```
+
 ### VLNEvaluator
 
 视觉语言导航评测器，评测模型根据自然语言指令导航的能力。
@@ -119,36 +152,31 @@ agent:
     voronoi_closeness: 0.5
 ```
 
-#### Episode 格式
-
-```json
-{
-  "episode_id": "001",
-  "scene_id": "scene_001",
-  "start_position": [0.0, 0.0, 0.0],
-  "start_rotation": [1.0, 0.0, 0.0, 0.0],
-  "goals": [
-    {
-      "position": [5.0, 0.0, 0.0],
-      "rotation": [1.0, 0.0, 0.0, 0.0],  # 必需
-      "image": "/path/to/goal_image.jpg"  # 可选
-    }
-  ]
-}
-```
-
 #### VLN Episode 格式
 
-VLN 任务需要 `instructions` 字段：
+VLN 任务需要 `instructions` 字段，格式为对象数组：
 
 ```json
 {
   "episode_id": "001",
-  "scene_id": "scene_001",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
-  "start_state": {"position": [...], "rotation": [...]},
-  "goals": [...],
-  "instructions": ["向东北方向走约 8 米"]
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "vln",
+  "start_state": {
+    "position": [0.0, 0.0, 0.0],
+    "rotation": [0.0, 0.0, 0.0, 1.0]
+  },
+  "instructions": [
+    {
+      "instruction_text": "向东北方向走约 8 米",
+      "language": "zh-CN"
+    }
+  ],
+  "goals": [
+    {
+      "goal_type": "position",
+      "position": [5.0, 3.0, 0.0]
+    }
+  ]
 }
 ```
 

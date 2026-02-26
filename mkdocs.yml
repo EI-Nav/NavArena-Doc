@@ -86,6 +86,7 @@ plugins:
             安装指南: Installation
             快速入门: Quickstart
             规范定义: Specifications
+            核心概念: Core Concepts
             3D GS 资产规范: 3D GS Asset Specification
             导航训练数据格式: Navigation Training Data Format
             导航评测数据格式: Navigation Evaluation Data Format
@@ -187,6 +188,7 @@ nav:
     - 安装指南: getting-started/installation.md
     - 快速入门: getting-started/quickstart.md
   - 规范定义:
+    - 核心概念: definitions/concepts.md
     - 3D GS 资产规范: definitions/gs-assets.md
     - 导航训练数据格式: definitions/nav-data-format.md
     - 导航评测数据格式: definitions/eval-data-format.md
