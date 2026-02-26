@@ -92,11 +92,11 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/pipeline/"/>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/preprocessing/</loc>
+        <loc>https://ei-nav.github.io/NavArena-Doc/definitions/concepts/</loc>
         <lastmod>2026-02-26</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/preprocessing/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/preprocessing/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/concepts/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/concepts/"/>
     </url>
     <url>
         <loc>https://ei-nav.github.io/NavArena-Doc/definitions/eval-data-format/</loc>
@@ -267,11 +267,11 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/pipeline/"/>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/data-generator/preprocessing/</loc>
+        <loc>https://ei-nav.github.io/NavArena-Doc/en/definitions/concepts/</loc>
         <lastmod>2026-02-26</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/preprocessing/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/preprocessing/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/concepts/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/concepts/"/>
     </url>
     <url>
         <loc>https://ei-nav.github.io/NavArena-Doc/en/definitions/eval-data-format/</loc>
