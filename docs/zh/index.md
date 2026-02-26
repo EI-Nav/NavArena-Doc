@@ -1,7 +1,8 @@
 <div class="hero reveal">
   <div class="hero-content">
     <h1>NavArena</h1>
-    <p>具身导航全栈解决方案</p>
+    <p>具身导航基础设施</p>
+    <p class="hero-subtitle">资产自动化处理 · 数据生成 · 导航评测</p>
     <div class="hero-buttons">
       <a href="getting-started/installation/" class="md-button md-button--primary">快速开始</a>
       <a href="api/reference/" class="md-button">API 参考</a>
@@ -9,7 +10,7 @@
   </div>
 </div>
 
-欢迎来到 NavArena 具身导航项目的开发者文档！本文档提供了完整的项目指南、API 参考和最佳实践。
+欢迎来到 NavArena 具身导航基础设施的开发者文档！NavArena 提供资产自动化处理、数据生成和导航评测基础设施，本文档包含完整的使用指南、API 参考和最佳实践。
 
 ## 核心模块
 
@@ -40,7 +41,7 @@
 
 如果您是第一次使用 NavArena，建议从这里开始：
 
-- **[安装指南](getting-started/installation.md)** - 了解如何安装和配置两个项目
+- **[安装指南](getting-started/installation.md)** - 了解如何安装和配置各模块
 - **[快速入门](getting-started/quickstart.md)** - 通过简单示例快速上手
 
 ### 规范定义
@@ -48,8 +49,8 @@
 了解项目的数据格式规范：
 
 - **[3D GS 资产规范](definitions/gs-assets.md)** - 3D Gaussian Splatting 场景资产的统一格式定义
-- **[具身导航训练数据格式](definitions/nav-data-format.md)** - 训练数据的目录结构与 Episode 格式
-- **[具身导航评测数据格式](definitions/eval-data-format.md)** - 评测数据的 Episode 与轨迹格式
+- **[导航训练数据格式](definitions/nav-data-format.md)** - 训练数据的目录结构与 Episode 格式
+- **[导航评测数据格式](definitions/eval-data-format.md)** - 评测数据的 Episode 与轨迹格式
 
 ### 资产预处理 · 数据生成器 · 评测框架
 
@@ -65,10 +66,10 @@
 
 ```mermaid
 graph TB
-    subgraph NavArena[NavArena 具身导航]
-        AP[资产预处理<br/>NavArena-Forge]
-        DG[数据生成器<br/>NavArena-Gen]
-        EF[评测框架<br/>NavArena-Bench]
+    subgraph NavArena[NavArena 具身导航基础设施]
+        AP[资产预处理<br/>navarena-forge]
+        DG[数据生成器<br/>navarena-gen]
+        EF[评测框架<br/>navarena-bench]
     end
     
     subgraph AP_Flow[资产预处理流程]
@@ -106,16 +107,16 @@ graph TB
 !!! success "核心特性"
     - **模块化设计** - 易于扩展和维护
     - **高质量渲染** - 基于 3D Gaussian Splatting
-    - **完整工具链** - 从数据生成到模型评测
+    - **基础设施工具链** - 资产处理、数据生成、模型评测全覆盖
     - **丰富的文档** - 详细的 API 和使用指南
-    - **活跃的社区** - 持续更新和维护
+    - **可扩展架构** - 注册机制驱动，易于集成新环境、任务和智能体
 
 ## 快速示例
 
 === "资产预处理"
 
     ```bash
-    cd NavArena-Forge
+    cd navarena-forge
     python -m navarena_forge batch --scenes-root /path/to/scenes \
         --config pipeline.yaml --source-dataset InteriorGS
     ```
@@ -123,7 +124,7 @@ graph TB
 === "数据生成"
 
     ```bash
-    cd NavArena-Gen
+    cd navarena-gen
     python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
     # 并行生成
@@ -134,6 +135,7 @@ graph TB
 === "评测"
 
     ```bash
+    cd navarena-bench
     # 运行评测
     python scripts/eval.py --config configs/eval/default_eval.yaml
 
@@ -154,9 +156,9 @@ graph TB
 
 ## 相关项目
 
-- **NavArena-Forge** - 资产预处理 Pipeline
-- **NavArena-Gen** - 数据生成工具
-- **NavArena-Bench** - 评测框架
+- **navarena-forge** - 资产预处理 Pipeline
+- **navarena-gen** - 数据生成工具
+- **navarena-bench** - 评测框架
 - **visualnav-transformer** - ViNT/GNM/NoMaD 模型支持
 
 ---

@@ -77,7 +77,7 @@ Located at `navarena_data/scenes/{scene_id}/{task_type}/{split}.json`:
   "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-26 10:30:00",
-    "description": "X2Robot IMAGENAV dataset",
+    "description": "NavArena IMAGENAV dataset",
     "task_type": "imagenav",
     "split": "train",
     "scene_id": "17dc3367",
@@ -110,7 +110,7 @@ Located at `navarena_data/scenes/{scene_id}/{task_type}/{split}.json`:
 ```json
 {
   "split": "string",                // Dataset split: "train" | "val_seen" | "val_unseen" | "test"
-  "instructions": [...],            // Instruction list (required for embodied navigation tasks)
+  "instructions": [...],            // Instruction list (required for VLN tasks)
   "gt_path": {...}                  // Ground Truth trajectory info
 }
 ```
@@ -153,7 +153,7 @@ Located at `navarena_data/scenes/{scene_id}/{task_type}/{split}.json`:
 }
 ```
 
-## 6. Instructions Field Format (Embodied Navigation Tasks)
+## 6. Instructions Field Format (VLN Tasks)
 
 ```json
 {
@@ -329,7 +329,7 @@ File location: `navarena_data/scenes/17dc3367/objectnav/train.json`
 }
 ```
 
-### 9.4 Embodied Navigation Example
+### 9.4 VLN Example
 
 File location: `navarena_data/scenes/17dc3367/vln/train.json`
 
@@ -374,7 +374,7 @@ File location: `navarena_data/scenes/17dc3367/vln/train.json`
 ## 10. Complete File Organization
 
 ```
-NavArena-Bench/
+navarena-bench/
 ├── navarena_data/
 │   ├── dataset_meta.json                    # Dataset-level metadata
 │   └── scenes/
@@ -403,7 +403,7 @@ NavArena-Bench/
 │       │   │       └── ...
 │       │   ├── objectnav/                   # ObjectNav task
 │       │   │   └── ...
-│       │   └── vln/                         # Embodied navigation task
+│       │   └── vln/                         # VLN task
 │       │       └── ...
 │       └── b7c4d92e/                        # Scene 2
 │           └── ...
@@ -438,7 +438,7 @@ NavArena-Bench/
 ### 12.1 Data Generation
 
 ```bash
-# Generate embodied navigation data
+# Generate VLN data
 python scripts/generate_data.py --config configs/examples/imagenav_example.yaml
 ```
 

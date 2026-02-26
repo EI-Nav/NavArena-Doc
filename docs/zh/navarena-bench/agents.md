@@ -21,9 +21,8 @@
 ```yaml
 agent:
   agent_type: "local"
-  model_name: null
-  model_path: "/path/to/model.pth"
-  model_settings: {}
+  model_settings:
+    checkpoint_path: "/path/to/model.pth"  # 模型相关参数通过 model_settings 传入
   device: null  # null = 自动检测
 ```
 
@@ -35,7 +34,7 @@ from navarena_bench.configs.agent_config import AgentCfg
 
 config = AgentCfg(
     agent_type="local",
-    model_path="/path/to/model.pth"
+    model_settings={"checkpoint_path": "/path/to/model.pth"}
 )
 
 agent = Agent.init(config)

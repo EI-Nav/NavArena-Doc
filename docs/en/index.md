@@ -1,7 +1,8 @@
 <div class="hero reveal">
   <div class="hero-content">
     <h1>NavArena</h1>
-    <p>Embodied Navigation Full-Stack Solution</p>
+    <p>Embodied Navigation Infrastructure</p>
+    <p class="hero-subtitle">Automated Asset Processing · Data Generation · Evaluation</p>
     <div class="hero-buttons">
       <a href="getting-started/installation/" class="md-button md-button--primary">Get Started</a>
       <a href="api/reference/" class="md-button">API Reference</a>
@@ -9,7 +10,7 @@
   </div>
 </div>
 
-Welcome to the NavArena embodied navigation project developer documentation! This documentation provides complete project guides, API references, and best practices.
+Welcome to the NavArena embodied navigation infrastructure developer documentation! NavArena provides infrastructure for automated asset processing, data generation, and navigation evaluation. This documentation includes complete usage guides, API references, and best practices.
 
 ## Core Modules
 
@@ -40,7 +41,7 @@ Welcome to the NavArena embodied navigation project developer documentation! Thi
 
 If you are new to NavArena, start here:
 
-- **[Installation Guide](getting-started/installation.md)** - Learn how to install and configure both projects
+- **[Installation Guide](getting-started/installation.md)** - Learn how to install and configure all modules
 - **[Quickstart](getting-started/quickstart.md)** - Get started quickly with simple examples
 
 ### Specifications
@@ -65,10 +66,10 @@ Overview docs: [Asset Preprocessing](asset-preprocessing/overview.md) · [Data G
 
 ```mermaid
 graph TB
-    subgraph NavArena[NavArena]
-        AP[Asset Preprocessing<br/>NavArena-Forge]
-        DG[Data Generator<br/>NavArena-Gen]
-        EF[Evaluation Framework<br/>NavArena-Bench]
+    subgraph NavArena[NavArena Embodied Navigation Infrastructure]
+        AP[Asset Preprocessing<br/>navarena-forge]
+        DG[Data Generator<br/>navarena-gen]
+        EF[Evaluation Framework<br/>navarena-bench]
     end
     
     subgraph AP_Flow[Asset Preprocessing]
@@ -106,16 +107,16 @@ graph TB
 !!! success "Core Features"
     - **Modular Design** - Easy to extend and maintain
     - **High-Quality Rendering** - Based on 3D Gaussian Splatting
-    - **Complete Toolchain** - From data generation to model evaluation
+    - **Infrastructure Toolchain** - Asset processing, data generation, and model evaluation
     - **Comprehensive Documentation** - Detailed API and usage guides
-    - **Active Community** - Continuous updates and maintenance
+    - **Extensible Architecture** - Registry-driven, easy to integrate new environments, tasks, and agents
 
 ## Quick Examples
 
 === "Asset Preprocessing"
 
     ```bash
-    cd NavArena-Forge
+    cd navarena-forge
     python -m navarena_forge batch --scenes-root /path/to/scenes \
         --config pipeline.yaml --source-dataset InteriorGS
     ```
@@ -123,7 +124,7 @@ graph TB
 === "Data Generation"
 
     ```bash
-    cd NavArena-Gen
+    cd navarena-gen
     python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
     # Parallel generation
@@ -134,6 +135,7 @@ graph TB
 === "Evaluation"
 
     ```bash
+    cd navarena-bench
     # Run evaluation
     python scripts/eval.py --config configs/eval/default_eval.yaml
 
@@ -154,9 +156,9 @@ We welcome community contributions! If you find documentation errors or wish to 
 
 ## Related Projects
 
-- **NavArena-Forge** - Asset preprocessing pipeline
-- **NavArena-Gen** - Data generation tool
-- **NavArena-Bench** - Evaluation framework
+- **navarena-forge** - Asset preprocessing pipeline
+- **navarena-gen** - Data generation tool
+- **navarena-bench** - Evaluation framework
 - **visualnav-transformer** - ViNT/GNM/NoMaD model support
 
 ---

@@ -11,7 +11,7 @@ The asset preprocessing project includes a FastAPI-based 3DGS web viewer for bro
 ## Starting the Viewer
 
 ```bash
-cd NavArena-Forge
+cd navarena-forge
 python -m web_viewer.main --assets-dir /path/to/navarena_assets --port 41005
 ```
 
@@ -19,7 +19,7 @@ python -m web_viewer.main --assets-dir /path/to/navarena_assets --port 41005
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `--assets-dir` | V1 assets root directory | `/x2robot_v2/share/NavArena-Bench/navarena_assets` |
+| `--assets-dir` | V1 assets root directory | `/x2robot_v2/share/navarena-bench/navarena_assets` |
 | `--host` | Bind address | `0.0.0.0` |
 | `--port` | Bind port | `41005` |
 | `--log-level` | Log level | `info` |

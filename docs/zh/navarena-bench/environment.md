@@ -48,11 +48,11 @@ env = Env.init(env_config, task_config)
 env:
   env_type: "gs"
   env_settings:
-    scene_dir: "/path/to/scenes"           # 场景目录
-    camera_config: "/path/to/camera.yaml" # 相机配置
-    enable_occupancy: true                  # 启用占据栅格
-    success_distance: 0.5                   # 成功距离（米）
-    gpu_id: null                            # GPU ID（null=自动）
+    camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
+    enable_occupancy: true
+    success_distance: 0.5
+    rotation_threshold: 0.2           # 朝向成功判定阈值（弧度）
+    gpu_id: null
     enable_depth: true                      # 启用深度图
     enable_rgb: true                        # 启用 RGB 图像
     camera_names: ["face", "left", "right"] # 相机名称列表
@@ -68,11 +68,14 @@ env:
 
 ```python
 episode = {
-    "episode_id": "001",
-    "scene_id": "scene_001",
-    "start_position": [0.0, 0.0, 0.0],
-    "start_rotation": [1.0, 0.0, 0.0, 0.0],
-    "goals": [{"position": [5.0, 0.0, 0.0]}]
+    "episode_id": "train_000001",
+    "scene_path": "x2robot/17dc3367",
+    "task_type": "pointnav",
+    "start_state": {
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0, 1.0]
+    },
+    "goals": [{"goal_type": "position", "position": [5.0, 0.0, 0.0]}]
 }
 
 observation = env.reset(episode)
@@ -141,9 +144,9 @@ info = env.get_info()
 占据栅格从场景的 PGM 地图文件加载：
 
 ```python
-# 自动从场景目录加载
-# scene_dir/scene_XXX_transformed.pgm
-# scene_dir/scene_XXX_transformed.yaml
+# 自动从 V1 资产目录加载
+# {scene_dir}/nav_map.pgm
+# {scene_dir}/nav_map.yaml
 ```
 
 ### 碰撞检测
@@ -163,7 +166,7 @@ if info.get("collision"):
 PGM 地图配置文件格式：
 
 ```yaml
-image: scene_001_transformed.pgm
+image: nav_map.pgm
 resolution: 0.05
 origin: [-10.0, -10.0, 0.0]
 negate: 0

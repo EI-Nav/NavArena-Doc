@@ -21,9 +21,8 @@ Local model agent that loads model files directly.
 ```yaml
 agent:
   agent_type: "local"
-  model_name: null
-  model_path: "/path/to/model.pth"
-  model_settings: {}
+  model_settings:
+    checkpoint_path: "/path/to/model.pth"
   device: null  # null = auto-detect
 ```
 
@@ -35,7 +34,7 @@ from navarena_bench.configs.agent_config import AgentCfg
 
 config = AgentCfg(
     agent_type="local",
-    model_path="/path/to/model.pth"
+    model_settings={"checkpoint_path": "/path/to/model.pth"}
 )
 
 agent = Agent.init(config)

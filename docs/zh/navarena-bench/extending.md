@@ -314,7 +314,7 @@ def act(self, observation):
 使用日志记录调试信息：
 
 ```python
-from navarena_bench.utils.logger import get_logger
+from navarena_core.logging import get_logger
 
 class MyComponent(BaseComponent):
     def __init__(self, config):

@@ -43,7 +43,7 @@ mkdocs build
 ## 项目结构 / Project Structure
 
 ```
-NavArena-Doc/
+navarena-doc/
 ├── mkdocs.yml              # MkDocs 主配置文件 / Main config file
 ├── requirements.txt        # Python 依赖 / Python dependencies
 ├── README.md              # 本文件 / This file

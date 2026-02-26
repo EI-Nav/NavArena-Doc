@@ -77,7 +77,7 @@ navarena_data/
   "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-26 10:30:00",
-    "description": "X2Robot IMAGENAV dataset",
+    "description": "NavArena IMAGENAV dataset",
     "task_type": "imagenav",
     "split": "train",
     "scene_id": "17dc3367",
@@ -110,7 +110,7 @@ navarena_data/
 ```json
 {
   "split": "string",                // 数据集划分："train" | "val_seen" | "val_unseen" | "test"
-  "instructions": [...],            // 指令列表（具身导航任务必需）
+  "instructions": [...],            // 指令列表（VLN 任务必需）
   "gt_path": {...}                  // Ground Truth 轨迹信息
 }
 ```
@@ -153,7 +153,7 @@ navarena_data/
 }
 ```
 
-## 六、Instructions 字段格式（具身导航任务）
+## 六、Instructions 字段格式（VLN 任务）
 
 ```json
 {
@@ -329,7 +329,7 @@ navarena_data/
 }
 ```
 
-### 9.4 具身导航示例
+### 9.4 VLN 示例
 
 文件位置: `navarena_data/scenes/17dc3367/vln/train.json`
 
@@ -374,7 +374,7 @@ navarena_data/
 ## 十、完整文件组织结构
 
 ```
-NavArena-Bench/
+navarena-bench/
 ├── navarena_data/
 │   ├── dataset_meta.json                    # 数据集级别元数据
 │   └── scenes/
@@ -403,7 +403,7 @@ NavArena-Bench/
 │       │   │       └── ...
 │       │   ├── objectnav/                   # ObjectNav 任务
 │       │   │   └── ...
-│       │   └── vln/                         # 具身导航任务
+│       │   └── vln/                         # VLN 任务
 │       │       └── ...
 │       └── b7c4d92e/                        # 场景2
 │           └── ...
@@ -438,7 +438,7 @@ NavArena-Bench/
 ### 12.1 数据生成
 
 ```bash
-# 生成具身导航数据
+# 生成 VLN 数据
 python scripts/generate_data.py --config configs/examples/imagenav_example.yaml
 ```
 

@@ -1,6 +1,6 @@
 # 数据生成器概述
 
-数据生成器（NavArena-Gen）是多任务视觉语言导航（VLN）数据生成框架，用于生成 PointNav、ImageNav、ObjectNav、VLN 等任务的训练和评测数据集。基于 3D Gaussian Splatting 场景，采用网格采样、路径规划与指令生成等模块生成高质量 Episode 数据。
+数据生成器（navarena-gen）是多任务视觉语言导航（VLN）数据生成框架，用于生成 PointNav、ImageNav、ObjectNav、VLN 等任务的训练和评测数据集。基于 3D Gaussian Splatting 场景，采用网格采样、路径规划与指令生成等模块生成高质量 Episode 数据。
 
 ## 核心功能
 
@@ -76,18 +76,20 @@ navarena_data/
 
 ```json
 {
-  "episode_id": "ep_xxx",
-  "scene_id": "17dc3367",
+  "episode_id": "train_000001",
   "scene_path": "navarena_assets/x2robot/17dc3367",
   "task_type": "vln",
   "start_state": {
     "position": [x, y, z],
-    "rotation": [w, x, y, z]
+    "rotation": [qx, qy, qz, qw]
   },
   "goals": [...],
-  "instruction": "向东北方向走约 8 米",
+  "instructions": [
+    {"instruction_text": "向东北方向走约 8 米", "language": "zh-CN"}
+  ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/train_0_gt.json"
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
+    "stats": {"geodesic_distance": 8.0, "num_steps": 25}
   }
 }
 ```
@@ -100,7 +102,7 @@ navarena_data/
 
 ## 依赖关系
 
-数据生成器依赖 **资产预处理** 输出的 V1 格式场景。请先使用 [NavArena-Forge](../asset-preprocessing/overview.md) 完成场景预处理。
+数据生成器依赖 **资产预处理** 输出的 V1 格式场景。请先使用 [navarena-forge](../asset-preprocessing/overview.md) 完成场景预处理。
 
 ## 下一步
 

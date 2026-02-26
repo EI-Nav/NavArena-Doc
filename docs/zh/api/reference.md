@@ -1,6 +1,6 @@
 # API 参考
 
-本文档提供 NavArena 项目的 API 参考。NavArena 项目包含三个核心子项目：资产预处理、数据生成器和评测框架。
+本文档提供 NavArena 具身导航基础设施的 API 参考。NavArena 包含四个子项目：**核心库** (navarena-core)、**资产预处理** (navarena-forge)、**数据生成器** (navarena-gen) 和 **评测框架** (navarena-bench)。
 
 ## 数据生成器 API
 
@@ -8,11 +8,13 @@
 
 ### 主要类
 
-- `VLNDataPipeline` - Pipeline 主类
-- `SceneMetadata` - 场景元数据类
-- `TargetSampler` - 目标采样器
-- `SemanticDetector` - 语义检测器
-- `PathPlanner` - 路径规划器
+- `BaseGenerator` - 生成器基类，注册子类：`PointNavGenerator`、`ImageNavGenerator`、`ObjectNavGenerator`、`VLNGenerator`
+- `BaseSimEnv` - 仿真环境基类，`GSSimEnv` 为 3D GS 实现
+- `BaseInstructionGenerator` - 指令生成器基类（VLN），注册子类：`SimpleDirectionInstructionGenerator`、`PathBasedInstructionGenerator`、`ObjectGoalInstructionGenerator`
+- `GridAStarPlanner` - 全局 A* 路径规划器
+- `TwoStageTrajectoryPlanner` - 两阶段轨迹规划器（A* + 局部平滑）
+- `DatasetWriter`、`TrajectoryWriter` - 数据写入器
+- `GeneratorConfig` - 数据生成配置类
 
 ## 评测框架 API
 
@@ -20,27 +22,28 @@
 
 ### 主要类
 
-- `Evaluator` - 评测器基类
-- `Env` - 环境基类
-- `Agent` - 智能体基类
-- `Dataset` - 数据集基类
-- `Metric` - 指标基类
+- `Evaluator` - 评测器基类，注册子类：`PointNavEvaluator`、`ImageNavEvaluator`、`ObjectNavEvaluator`、`VLNEvaluator`
+- `Env` - 环境基类，`GaussianSplattingEnv` 为 3D GS 实现
+- `Agent` - 智能体基类，注册子类：`LocalAgent`、`RemoteAgent`、`ViNTAgent`、`GNMAgent`、`NoMaDAgent`、`MultiModalNavAgent`、`LanguageNavAgent`
+- `Dataset` - 数据集基类，`EpisodeDataset` 实现
+- `Metric` - 指标基类，`NavigationMetrics` 实现
 
 ## 快速参考
 
 ### 数据生成器
 
 ```python
-from src.pipeline.navarena_gen import VLNDataPipeline
+from navarena_gen.generators.base import BaseGenerator
+from navarena_gen.config.base_config import GeneratorConfig
 
-# 创建 Pipeline
-pipeline = VLNDataPipeline(
-    config_path="configs/main/pipeline.yaml",
-    use_labels_file=False
-)
+# 加载配置
+config = GeneratorConfig.from_yaml("configs/examples/pointnav_example.yaml")
 
-# 运行 Pipeline
-results = pipeline.run(stages=['stage1', 'stage2', 'stage3'])
+# 创建生成器
+generator = BaseGenerator.init(config.task_type, config)
+
+# 生成 episodes
+episodes = generator.generate()
 ```
 
 ### 评测框架
@@ -49,8 +52,10 @@ results = pipeline.run(stages=['stage1', 'stage2', 'stage3'])
 from navarena_bench.evaluator import Evaluator
 from navarena_bench.configs.eval_config import EvalCfg
 
-# 创建评测器
+# 加载配置
 config = EvalCfg.from_yaml("configs/eval/default_eval.yaml")
+
+# 创建评测器
 evaluator = Evaluator.init(config)
 
 # 运行评测

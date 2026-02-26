@@ -10,7 +10,7 @@
   "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-14",
-    "description": "X2Robot通用具身导航数据集",
+    "description": "NavArena通用具身导航数据集",
     "task_types": ["pointnav", "imagenav", "objectnav", "vln"], // 其中一种
     "total_episodes": 100,
     "splits": ["train", "val_seen", "val_unseen", "test"] // 其中一种
@@ -26,7 +26,7 @@
 ```json
 {
   "episode_id": "string",           // 唯一标识符，格式：{split}_{序号}，如 "train_001"
-  "scene_path": "string",           // 场景文件夹路径，如 "3d_gs_assets/x2robot/scene_001"
+  "scene_path": "string",           // 场景路径，如 "x2robot/17dc3367"（相对于 $NAVARENA_DATA_DIR/assets/）
   "task_type": "string",            // 任务类型："pointnav" | "imagenav" | "objectnav" | "vln"
   "start_state": {
     "position": [float, float, float],      // 起始位置 [x, y, z]
@@ -41,7 +41,7 @@
 ```json
 {
   "split": "string",                // 数据集划分："train" | "val_seen" | "val_unseen" | "test"
-  "instructions": [...],            // 指令列表（具身导航任务必需）
+  "instructions": [...],            // 指令列表（VLN 任务必需）
   "gt_path": {...}                  // Ground Truth 轨迹信息
 }
 ```
@@ -82,7 +82,7 @@
 }
 ```
 
-## 四、Instructions 字段格式（具身导航任务）
+## 四、Instructions 字段格式（VLN 任务）
 
 ```json
 {
@@ -103,11 +103,13 @@
       "num_steps": int,            // GT动作步数
       
       // 推荐统计指标
-      "num_waypoints": int,        // GT轨迹路点数量
+      "euclidean_distance": float,  // 欧几里得距离（米）
+      "total_time": float,          // 总时间（秒）
+      "num_waypoints": int,         // GT轨迹路点数量
       
       // 可选统计指标
-      "avg_speed": float,               // 平均速度（米/秒）
-      "max_speed": float                // 最大速度（米/秒）
+      "avg_speed": float,           // 平均速度（米/秒）
+      "max_speed": float            // 最大速度（米/秒）
     }
   }
 }
@@ -141,13 +143,13 @@ gt_trajectories/{episode_id}_gt.json:
 
 ```json
 {
-  "episode_id": "pointnav_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "pointnav",
   "start_state": {
     "position": [0.0, 0.0, 0.0],
-    "rotation": [1.0, 0.0, 0.0, 0.0]
+    "rotation": [0.0, 0.0, 0.0, 1.0]
   },
   "goals": [
     {
@@ -157,10 +159,12 @@ gt_trajectories/{episode_id}_gt.json:
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/pointnav_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 5.83,
-      "num_waypoints": 12,
+      "num_steps": 12,
+      "euclidean_distance": 5.2,
+      "total_time": 11.66
     }
   }
 }
@@ -170,29 +174,31 @@ gt_trajectories/{episode_id}_gt.json:
 
 ```json
 {
-  "episode_id": "imagenav_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "imagenav",
   "start_state": {
     "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.924, 0.0, 0.0, 0.383]
+    "rotation": [0.0, 0.0, 0.383, 0.924]
   },
   "goals": [
     {
       "goal_type": "image",
       "image_goal": {
-        "image_path": "goal_images/target_001.jpg"
+        "image_path": "goal_images/train_000001_goal.jpg"
       },
       "position": [-0.9, -0.5, 0.0],
-      "rotation": [0.924, 0.0, 0.0, -0.383]
+      "rotation": [0.0, 0.0, -0.383, 0.924]
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/imagenav_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 6.2,
-      "num_waypoints": 15,
+      "num_steps": 15,
+      "euclidean_distance": 5.5,
+      "total_time": 12.4
     }
   }
 }
@@ -202,13 +208,13 @@ gt_trajectories/{episode_id}_gt.json:
 
 ```json
 {
-  "episode_id": "objectnav_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "objectnav",
   "start_state": {
     "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.924, 0.0, 0.0, 0.383]
+    "rotation": [0.0, 0.0, 0.383, 0.924]
   },
   "goals": [
     {
@@ -219,26 +225,28 @@ gt_trajectories/{episode_id}_gt.json:
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/objectnav_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 4.5,
-      "num_waypoints": 10,
+      "num_steps": 10,
+      "euclidean_distance": 3.8,
+      "total_time": 9.0
     }
   }
 }
 ```
 
-### 7.4 具身导航示例
+### 7.4 VLN 示例
 
 ```json
 {
-  "episode_id": "vln_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "vln",
   "start_state": {
     "position": [0.0, 0.0, 0.0],
-    "rotation": [1.0, 0.0, 0.0, 0.0]
+    "rotation": [0.0, 0.0, 0.0, 1.0]
   },
   "instructions": [
     {
@@ -257,10 +265,12 @@ gt_trajectories/{episode_id}_gt.json:
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/vln_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 7.8,
-      "num_waypoints": 30,
+      "num_steps": 30,
+      "euclidean_distance": 6.5,
+      "total_time": 15.6
     }
   }
 }
@@ -268,30 +278,33 @@ gt_trajectories/{episode_id}_gt.json:
 
 ## 八、文件组织结构
 
+评测数据采用与训练数据一致的层级结构，按场景和任务类型组织：
+
 ```bash
-NavArena-Bench/
-├── navarena_data/
-│   ├── pointnav_episodes.json       # PointNav任务数据
-│   ├── imagenav_episodes.json       # ImageNav任务数据
-│   ├── objectnav_episodes.json      # ObjectNav任务数据
-│   ├── vln_episodes.json            # 具身导航任务数据
-│   ├── goal_images/                 # 目标图像文件夹
-│   │   ├── target_001.jpg
-│   │   └── ...
-│   └── gt_trajectories/             # GT轨迹文件夹
-│       ├── train_001_gt.json
-│       ├── train_002_gt.json
-│       └── ...
-└── 3d_gs_assets/
+$NAVARENA_DATA_DIR/
+├── datasets/                        # 或自定义数据根目录
+│   └── {dataset_name}/
+│       └── {dataset}/{scene_id}/    # 如 x2robot/17dc3367
+│           └── {task_type}/         # pointnav | imagenav | objectnav | vln
+│               ├── train.json       # Episodes 文件
+│               ├── val.json
+│               ├── gt_trajectories/
+│               │   ├── train_000000_gt.json
+│               │   └── ...
+│               └── goal_images/     # ImageNav 目标图像
+│                   └── train_000000_goal.jpg
+└── assets/                          # V1 格式场景资产
     └── x2robot/
-        └── scene_001/
-            ├── scene_001_transformed.ply
-            ├── scene_001_transformed.pgm
-            ├── scene_001_transformed.yaml
-            ├── scene_001_labels.json
-            ├── scene_001_metadata.json
-            └── scene_001_transformed_mask_*.png
+        └── 17dc3367/
+            ├── manifest.json
+            ├── aligned.ply
+            ├── nav_map.pgm
+            ├── nav_map.yaml
+            ├── nav_mask.png
+            └── labels.json          # 可选
 ```
+
+**说明**：`scene_path` 在 Episode 中为相对路径（如 `x2robot/17dc3367`），由评测框架根据 `$NAVARENA_DATA_DIR/assets/` 解析为完整路径。
 
 ## 九、注意事项
 

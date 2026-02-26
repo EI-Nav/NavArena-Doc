@@ -1,6 +1,6 @@
 # 评测框架概述
 
-NavArena-Bench 是一个基于 3D Gaussian Splatting 和占据栅格的导航模型评测框架。它提供了模块化、可扩展的评测系统，支持多种导航任务和智能体类型。
+navarena-bench 是一个基于 3D Gaussian Splatting 和占据栅格的导航模型评测框架。它提供了模块化、可扩展的评测系统，支持多种导航任务和智能体类型。
 
 ## 核心特性
 
@@ -203,14 +203,18 @@ class MyEvaluator(Evaluator):
 {
   "episodes": [
     {
-      "episode_id": "001",
-      "scene_id": "scene_001",
-      "start_position": [0.0, 0.0, 0.0],
-      "start_rotation": [1.0, 0.0, 0.0, 0.0],
+      "episode_id": "train_000001",
+      "scene_path": "x2robot/17dc3367",
+      "task_type": "pointnav",
+      "start_state": {
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0, 1.0]
+      },
       "goals": [
         {
+          "goal_type": "position",
           "position": [5.0, 0.0, 0.0],
-          "rotation": [1.0, 0.0, 0.0, 0.0]
+          "rotation": [0.0, 0.0, 0.383, 0.924]
         }
       ]
     }
@@ -220,12 +224,10 @@ class MyEvaluator(Evaluator):
 
 **字段说明：**
 - `episode_id`: Episode 唯一标识符
-- `scene_id`: 场景标识符
-- `start_position`: 起始位置 [x, y, z]
-- `start_rotation`: 起始朝向，四元数 [w, x, y, z]
-- `goals`: 目标列表
-  - `position`: 目标位置 [x, y, z]
-  - `rotation`: 目标朝向（可选，PointNav 可选，ImageNav 必需）
+- `scene_path`: 场景路径（相对于 `$NAVARENA_DATA_DIR/assets/`）
+- `task_type`: 任务类型（pointnav | imagenav | objectnav | vln）
+- `start_state`: 起始状态，四元数格式 `[qx, qy, qz, qw]`
+- `goals`: 目标列表，需包含 `goal_type`（position | image | object）
 
 ## 评测配置
 
@@ -237,18 +239,21 @@ eval_type: "pointnav"
 env:
   env_type: "gs"
   env_settings:
-    scene_dir: "/path/to/scenes"
-    camera_config: "/path/to/camera.yaml"
+    camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
     enable_occupancy: true
     success_distance: 0.5
 
 agent:
   agent_type: "local"
-  model_path: null
+  model_settings: {}
+  device: null
+
+task:
+  task_type: "pointnav"
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "navarena_data/episodes.json"
+  dataset_path: "vln_data/scenes/"
 
 eval_settings:
   num_episodes: 100

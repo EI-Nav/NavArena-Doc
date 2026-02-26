@@ -304,12 +304,12 @@ def close(self):
 class Dataset(ABC):
     datasets = {}
     
-    def __init__(self, config: DatasetCfg):
+    def __init__(self, config: Dict[str, Any]):
         """
         初始化数据集。
         
         Args:
-            config: 数据集配置
+            config: 数据集配置字典（含 dataset_type、dataset_path 等）
         """
 ```
 
@@ -424,20 +424,25 @@ def reset(self):
 
 ## 配置类
 
+所有配置类继承自 `navarena_core.config.BaseConfig`，支持 `from_yaml()`、`to_dict()`、`save_yaml()` 等方法。
+
 ### EvalCfg
 
 评测配置。
 
 ```python
 @dataclass
-class EvalCfg:
-    eval_type: str
-    env: EnvCfg
-    agent: AgentCfg
-    task: TaskCfg
-    dataset: DatasetCfg
-    eval_settings: Dict[str, Any]
+class EvalCfg(BaseConfig):
+    eval_type: str = ""  # "pointnav", "objectnav", "imagenav", "vln"
+    run_id: str = ""     # 默认自动生成时间戳
+    env: EnvCfg = field(default_factory=EnvCfg)
+    agent: AgentCfg = field(default_factory=AgentCfg)
+    task: TaskCfg = field(default_factory=TaskCfg)
+    dataset: Optional[Dict[str, Any]] = None  # 数据集配置字典
+    eval_settings: Dict[str, Any] = field(default_factory=dict)
 ```
+
+`eval_settings` 默认包含：`num_episodes`、`max_steps_per_episode`、`save_trajectories`、`output_path`。
 
 ### EnvCfg
 
@@ -445,22 +450,40 @@ class EvalCfg:
 
 ```python
 @dataclass
-class EnvCfg:
-    env_type: str
-    env_settings: Dict[str, Any]
+class EnvCfg(BaseConfig):
+    env_type: str = ""
+    env_settings: Dict[str, Any] = field(default_factory=dict)
+```
+
+### GSEnvConfig
+
+3D GS 环境配置（用于 `env_settings`）。
+
+```python
+@dataclass
+class GSEnvConfig(BaseConfig):
+    camera_config: str = ""
+    enable_occupancy: bool = True
+    success_distance: float = 0.5
+    rotation_threshold: float = 0.2
+    gpu_id: Optional[int] = None
+    enable_depth: bool = True
+    enable_rgb: bool = True
+    camera_names: list = field(default_factory=lambda: ["face", "left", "right"])
+    image_width: int = 640
+    image_height: int = 480
 ```
 
 ### AgentCfg
 
-智能体配置。
+智能体配置。模型相关参数（如 `checkpoint_path`、`remote_url`）通过 `model_settings` 传入。
 
 ```python
 @dataclass
-class AgentCfg:
-    agent_type: str
-    model_path: Optional[str]
-    model_settings: Dict[str, Any]
-    device: Optional[str]
+class AgentCfg(BaseConfig):
+    agent_type: str = ""
+    model_settings: Dict[str, Any] = field(default_factory=dict)
+    device: Optional[str] = None  # "cuda", "cpu", 或 null 自动检测
 ```
 
 ### TaskCfg
@@ -469,21 +492,8 @@ class AgentCfg:
 
 ```python
 @dataclass
-class TaskCfg:
-    task_type: str
-    task_settings: Dict[str, Any]
-```
-
-### DatasetCfg
-
-数据集配置。
-
-```python
-@dataclass
-class DatasetCfg:
-    dataset_type: str
-    dataset_path: str
-    shuffle: bool
+class TaskCfg(BaseConfig):
+    task_type: str = ""  # "pointnav", "objectnav", "imagenav"
 ```
 
 ## 工具函数

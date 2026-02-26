@@ -1,6 +1,6 @@
 # CLI Commands
 
-Asset preprocessing exposes a command-line interface via `navarena_forge`. From the `NavArena-Forge` directory, run `python -m navarena_forge`.
+Asset preprocessing exposes a command-line interface via `navarena_forge`. From the `navarena-forge` directory, run `python -m navarena_forge`.
 
 ## Command Overview
 

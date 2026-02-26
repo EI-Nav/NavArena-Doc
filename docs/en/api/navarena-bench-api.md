@@ -304,12 +304,12 @@ Dataset base class.
 class Dataset(ABC):
     datasets = {}
     
-    def __init__(self, config: DatasetCfg):
+    def __init__(self, config: Dict[str, Any]):
         """
         Initialize dataset.
         
         Args:
-            config: Dataset configuration
+            config: Dataset configuration dict (dataset_type, dataset_path, etc.)
         """
 ```
 
@@ -424,20 +424,25 @@ def reset(self):
 
 ## Configuration Classes
 
+All configuration classes inherit from `navarena_core.config.BaseConfig` and support `from_yaml()`, `to_dict()`, `save_yaml()`, etc.
+
 ### EvalCfg
 
 Evaluation configuration.
 
 ```python
 @dataclass
-class EvalCfg:
-    eval_type: str
-    env: EnvCfg
-    agent: AgentCfg
-    task: TaskCfg
-    dataset: DatasetCfg
-    eval_settings: Dict[str, Any]
+class EvalCfg(BaseConfig):
+    eval_type: str = ""  # "pointnav", "objectnav", "imagenav", "vln"
+    run_id: str = ""     # Auto-generated from timestamp by default
+    env: EnvCfg = field(default_factory=EnvCfg)
+    agent: AgentCfg = field(default_factory=AgentCfg)
+    task: TaskCfg = field(default_factory=TaskCfg)
+    dataset: Optional[Dict[str, Any]] = None  # Dataset config dict
+    eval_settings: Dict[str, Any] = field(default_factory=dict)
 ```
+
+`eval_settings` defaults include: `num_episodes`, `max_steps_per_episode`, `save_trajectories`, `output_path`.
 
 ### EnvCfg
 
@@ -445,22 +450,40 @@ Environment configuration.
 
 ```python
 @dataclass
-class EnvCfg:
-    env_type: str
-    env_settings: Dict[str, Any]
+class EnvCfg(BaseConfig):
+    env_type: str = ""
+    env_settings: Dict[str, Any] = field(default_factory=dict)
+```
+
+### GSEnvConfig
+
+3D GS environment configuration (used in `env_settings`).
+
+```python
+@dataclass
+class GSEnvConfig(BaseConfig):
+    camera_config: str = ""
+    enable_occupancy: bool = True
+    success_distance: float = 0.5
+    rotation_threshold: float = 0.2
+    gpu_id: Optional[int] = None
+    enable_depth: bool = True
+    enable_rgb: bool = True
+    camera_names: list = field(default_factory=lambda: ["face", "left", "right"])
+    image_width: int = 640
+    image_height: int = 480
 ```
 
 ### AgentCfg
 
-Agent configuration.
+Agent configuration. Model-related parameters (e.g., `checkpoint_path`, `remote_url`) are passed via `model_settings`.
 
 ```python
 @dataclass
-class AgentCfg:
-    agent_type: str
-    model_path: Optional[str]
-    model_settings: Dict[str, Any]
-    device: Optional[str]
+class AgentCfg(BaseConfig):
+    agent_type: str = ""
+    model_settings: Dict[str, Any] = field(default_factory=dict)
+    device: Optional[str] = None  # "cuda", "cpu", or null for auto-detect
 ```
 
 ### TaskCfg
@@ -469,21 +492,8 @@ Task configuration.
 
 ```python
 @dataclass
-class TaskCfg:
-    task_type: str
-    task_settings: Dict[str, Any]
-```
-
-### DatasetCfg
-
-Dataset configuration.
-
-```python
-@dataclass
-class DatasetCfg:
-    dataset_type: str
-    dataset_path: str
-    shuffle: bool
+class TaskCfg(BaseConfig):
+    task_type: str = ""  # "pointnav", "objectnav", "imagenav"
 ```
 
 ## Utility Functions

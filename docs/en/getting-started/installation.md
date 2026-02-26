@@ -1,6 +1,6 @@
 # Installation Guide
 
-This page guides you through the installation and configuration of the NavArena project. The project consists of three sub-projects: **Asset Preprocessing** (NavArena-Forge), **Data Generator** (NavArena-Gen), and **Evaluation Framework** (NavArena-Bench).
+This page guides you through the installation and configuration of the NavArena embodied navigation infrastructure. NavArena uses a uv workspace to manage four sub-projects: **Core Library** (navarena-core), **Asset Preprocessing** (navarena-forge), **Data Generator** (navarena-gen), and **Evaluation Framework** (navarena-bench).
 
 ## System Requirements
 
@@ -9,135 +9,97 @@ Before starting installation, ensure your system meets the following requirement
 | Requirement | Minimum Version | Recommended |
 |-------------|------------------|-------------|
 | Python | 3.9+ | 3.10+ |
+| uv | 0.4+ | Latest |
 | CUDA | 11.0+ | 12.1+ |
 | GPU | CUDA-capable NVIDIA GPU | - |
 | OS | Linux | Ubuntu 20.04+ |
 
 !!! warning "GPU Required"
-    Both projects require a CUDA-capable GPU to run properly. Ensure your system has the correct CUDA drivers installed.
+    The Data Generator and Evaluation Framework require a CUDA-capable GPU to run properly. Ensure your system has the correct CUDA drivers installed.
 
-## Data Generator Installation
+!!! info "Installing uv"
+    If uv is not installed:
+    ```bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
+    Or via pip: `pip install uv`
 
-### 1. Create Virtual Environment
+## Quick Install (Recommended)
+
+Install all sub-projects at once using the uv workspace:
 
 ```bash
-conda create -n navarena_gen python=3.9
-conda activate navarena_gen
+# After cloning the repo, enter the project root
+cd NavArena
+
+# Install workspace with uv (installs navarena-core, navarena-forge, navarena-gen, navarena-bench)
+uv sync --all-packages
+
+# Or use Makefile
+make install
 ```
 
-### 2. Install Base Dependencies
+## Per-Module Installation
+
+To install only specific modules, enter each sub-directory and install:
 
 ```bash
-cd NavArena-Gen
-pip install -r requirements.txt
-```
-
-### 3. Install CLIP
-
-```bash
-pip install git+https://github.com/ultralytics/CLIP.git
-```
-
-!!! note "First Run"
-    On first Pipeline run, gsplat will perform some compilation, which may take a few minutes.
-
-### 4. Verify Installation
-
-```bash
-python run_pipeline.py --help
-```
-
-If you see the help message, installation was successful.
-
-## Evaluation Framework Installation
-
-### 1. Create Virtual Environment
-
-```bash
-conda create -n navarena_bench python=3.10
-conda activate navarena_bench
-```
-
-### 2. Install PyTorch
-
-```bash
-# PyTorch (CUDA 12.1)
-pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
-    --index-url https://download.pytorch.org/whl/cu121
-```
-
-### 3. Install Base Dependencies
-
-```bash
-cd NavArena-Bench
-pip install pyyaml pytest requests plyfile gsplat scipy skan \
-    -i https://mirrors.cloud.aliyuncs.com/pypi/simple \
-    --trusted-host mirrors.cloud.aliyuncs.com
-```
-
-### 4. Install ViNT Agent Dependencies (Optional)
-
-If you need to use ViNT/GNM/NoMaD agents:
-
-```bash
-# Clone visualnav-transformer repo (alongside NavArena-Bench)
-git clone ssh://git@gitlab.zbl.local:50022/jake/visualnav-transformer.git
-
-# Install extra dependencies
-pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
-    einops vit_pytorch lmdb prettytable matplotlib opencv-python \
-    fastapi uvicorn imageio "imageio[ffmpeg]"
-
-# Install diffusion_policy
-pip install -e visualnav-transformer/src/diffusion_policy/
-```
-
-!!! tip "Optional Dependencies"
-    If not using ViNT agents, you can skip step 4.
-
-### 5. Install Project
-
-```bash
+# 1. Core library (dependency for other sub-projects)
+cd navarena-core
 pip install -e .
-```
-
-### 6. Verify Installation
-
-```bash
-python scripts/eval.py --help
-```
-
-If you see the help message, installation was successful.
-
-## Full Installation Flow
-
-If you need to install both projects simultaneously:
-
-```bash
-# 1. Create main environment
-conda create -n navarena python=3.10
-conda activate navarena
-
-# 2. Install PyTorch
-pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
-    --index-url https://download.pytorch.org/whl/cu121
-
-# 3. Install Data Generator dependencies
-cd NavArena-Gen
-pip install -r requirements.txt
-pip install git+https://github.com/ultralytics/CLIP.git
 cd ..
 
-# 4. Install Evaluation Framework dependencies
-cd NavArena-Bench
-pip install pyyaml pytest requests plyfile gsplat scipy skan \
-    -i https://mirrors.cloud.aliyuncs.com/pypi/simple \
-    --trusted-host mirrors.cloud.aliyuncs.com
+# 2. Asset preprocessing (optional, required before data generation)
+cd navarena-forge
+pip install -e .
+cd ..
+
+# 3. Data generator (depends on navarena-core[rendering])
+cd navarena-gen
+pip install -e .
+cd ..
+
+# 4. Evaluation framework (depends on navarena-core[rendering])
+cd navarena-bench
 pip install -e .
 cd ..
 ```
+
+## Verify Installation
+
+```bash
+# Data generator
+cd navarena-gen && python scripts/generate_data.py --help
+
+# Evaluation framework
+cd navarena-bench && python scripts/eval.py --help
+# Or use CLI entry point
+navarena-bench-eval --help
+
+# Asset preprocessing
+cd navarena-forge && python -m navarena_forge list-steps
+```
+
+If you see the help output, installation was successful.
 
 ## Environment Variable Configuration
+
+### NAVARENA_DATA_DIR
+
+NavArena uses `NAVARENA_DATA_DIR` as the data root directory. Shared resources (e.g., camera config, assets) should reside under the `shared/` subdirectory:
+
+```bash
+export NAVARENA_DATA_DIR=/path/to/your/navarena_data
+# Suggested directory structure:
+# $NAVARENA_DATA_DIR/
+# ├── shared/           # Shared resources
+# │   ├── camera.yaml   # Camera config
+# │   └── ...
+# └── assets/           # V1 format scene assets
+#     ├── x2robot/
+#     │   └── 17dc3367/
+#     └── ...
+```
 
 ### CUDA Setup
 
@@ -149,59 +111,80 @@ export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 ```
 
-### Python Path
+## Optional Dependencies
 
-If you need to share code between projects, set PYTHONPATH:
+### ViNT/GNM/NoMaD Agents (Evaluation Framework)
+
+To use ViNT, GNM, or NoMaD pre-trained navigation agents, install the visualnav-transformer project and its dependencies:
 
 ```bash
-export PYTHONPATH=/path/to/NavArena-Gen:$PYTHONPATH
-export PYTHONPATH=/path/to/NavArena-Bench:$PYTHONPATH
+# Clone visualnav-transformer (alongside navarena-bench)
+git clone <visualnav-transformer-repo-url>
+
+# Install extra dependencies
+pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
+    einops vit_pytorch lmdb prettytable matplotlib opencv-python \
+    fastapi uvicorn imageio "imageio[ffmpeg]"
+
+# Install diffusion_policy
+pip install -e visualnav-transformer/src/diffusion_policy/
+```
+
+!!! tip "Optional Dependencies"
+    If not using ViNT-style agents, skip the above. LocalAgent, RemoteAgent, and LanguageNavAgent require no extra dependencies.
+
+### Data Generator Optional Features
+
+```bash
+cd navarena-gen
+
+# Semantic detection (optional when using labels.json for ObjectNav)
+pip install -e ".[detection]"
+
+# Web viewer
+pip install -e ".[web]"
+```
+
+### Asset Preprocessing Web Viewer
+
+```bash
+cd navarena-forge
+pip install -e ".[web]"
 ```
 
 ## FAQ
 
 !!! question "Permission Errors"
-    If you encounter permission-related errors, try using the `--user` flag:
+    If you encounter permission-related errors, try:
     ```bash
-    pip install --user -r requirements.txt
+    pip install --user -e .
     ```
 
 !!! question "CUDA Version Mismatch"
-    Ensure the installed PyTorch version matches your CUDA version. Check with:
+    Ensure the installed PyTorch version matches your CUDA version:
     ```bash
     python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
     ```
 
-!!! question "Dependency Conflicts"
-    We recommend using separate virtual environments for each project to avoid dependency conflicts:
-    ```bash
-    # Data Generator
-    conda create -n navarena_gen python=3.9
-    conda activate navarena_gen
-    # ... install data generator dependencies
-    
-    # Evaluation Framework
-    conda create -n navarena_bench python=3.10
-    conda activate navarena_bench
-    # ... install evaluation framework dependencies
-    ```
-
-!!! question "Network Issues"
-    If you encounter network issues, try using a mirror:
-    ```bash
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
-    ```
-
 !!! question "gsplat Compilation Failed"
-    If gsplat compilation fails, ensure:
+    If gsplat fails to compile, ensure:
     1. Correct CUDA version is installed
     2. C++ compiler (gcc/g++) is installed
     3. Sufficient disk space (compilation requires temporary space)
+
+!!! question "Network Issues"
+    If you encounter network issues, use a mirror:
+    ```bash
+    uv pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e .
+    ```
+
+!!! note "First Run"
+    On first run of data generation or evaluation, gsplat may need to compile; this can take several minutes.
 
 ## Next Steps
 
 After installation, continue reading:
 
-- **[Quickstart](quickstart.md)** - Learn how to use both projects
+- **[Quickstart](quickstart.md)** - Learn how to use all modules
 - **[Data Generator Overview](../data-generator/overview.md)** - Deep dive into the data generation workflow
 - **[Evaluation Framework Overview](../navarena-bench/overview.md)** - Learn about the evaluation framework architecture

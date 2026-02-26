@@ -1,109 +1,152 @@
 # Quickstart
 
-This tutorial helps you get started quickly with the two core components of the NavArena project: **Data Generator** and **Evaluation Framework**.
+This tutorial helps you get started quickly with the four core modules of the NavArena embodied navigation infrastructure: **Asset Preprocessing**, **Data Generator**, and **Evaluation Framework**.
+
+## Asset Preprocessing Quickstart
+
+Before data generation, raw 3DGS scenes must be converted to the V1 unified asset format.
+
+### 1. Prepare Raw Scenes
+
+Ensure you have raw 3D Gaussian Splatting PLY point cloud files, e.g.:
+
+```
+/path/to/scenes/
+└── 17dc3367/
+    └── scene.ply   # or any .ply file
+```
+
+### 2. Run Pipeline on a Single Scene
+
+```bash
+cd navarena-forge
+python -m navarena_forge run-pipeline \
+    --config navarena_forge/configs/pipeline.yaml \
+    --scene-dir /path/to/scenes/17dc3367 \
+    --source-dataset x2robot
+```
+
+### 3. Batch Process Multiple Scenes
+
+```bash
+python -m navarena_forge batch \
+    --scenes-root /path/to/scenes \
+    --config navarena_forge/configs/pipeline.yaml \
+    --source-dataset x2robot
+```
+
+### 4. View Output
+
+After the pipeline completes, each scene will have V1-format assets:
+
+```
+{output_root}/{scene_id}/
+├── manifest.json
+├── source.ply
+├── aligned.ply
+├── nav_map.pgm
+├── nav_map.yaml
+├── nav_mask.png
+└── compressed.splat  # optional
+```
 
 ## Data Generator Quickstart
 
-### 1. Prepare Scene Data
+### 1. Prepare V1 Asset Scenes
 
-Ensure you have 3D Gaussian Splatting scene data with the following directory structure:
+Ensure asset preprocessing is done; V1 assets should be under `$NAVARENA_DATA_DIR/assets/`, e.g.:
 
 ```
-3d_gs_assets/
-└── scene_001/
-    ├── scene_001_metadata.json  # Scene metadata
-    ├── scene_001.ply            # Point cloud file
-    └── scene_001_labels.json   # Optional: labels file
+$NAVARENA_DATA_DIR/assets/x2robot/17dc3367/
+├── manifest.json
+├── aligned.ply
+├── nav_map.pgm
+├── nav_map.yaml
+└── nav_mask.png
 ```
 
-### 2. Configure Pipeline
+### 2. Configure Generation Task
 
-Edit `configs/main/pipeline.yaml`:
+Edit `configs/examples/pointnav_example.yaml`:
 
 ```yaml
-input:
-  scene_dir: "3d_gs_assets/scene_001"
-  camera_config: "../pipeline/camera.yaml"
+env_type: gs
+scene_path: x2robot/17dc3367  # relative to $NAVARENA_DATA_DIR/assets/
 
-output:
-  base_dir: "output"
-  data_collection_mode: "3D_GS_MODE"
-  nav_type: "obj_nav"
+task_type: pointnav
+num_episodes: 10
+split: train
+
+task_config:
+  min_distance: 5.0
+  max_distance: 12.0
+  grid_spacing: 1.0
 ```
 
-### 3. Run Full Pipeline
-
-Run all 6 stages:
+### 3. Run Data Generation
 
 ```bash
-cd NavArena-Gen
-python run_pipeline.py --config configs/main/pipeline.yaml
+cd navarena-gen
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 ```
 
-### 4. Run Stages Separately
-
-If Stage 6 is time-consuming, you can run stages separately:
+### 4. Parallel Generation
 
 ```bash
-# Run first 5 stages
-python run_pipeline.py --config configs/main/pipeline.yaml \
-    --stages stage1 stage2 stage3 stage4 stage5
-
-# Then run Stage 6 alone
-python run_pipeline.py --config configs/main/pipeline.yaml \
-    --stages stage6 \
-    --previous-output-dir output/20260114-day-obj_nav/3D_GS_MODE/2026_01_14_15_06_scene_001
+python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \
+    --parallel --num-workers 4 --io-workers 8
 ```
 
-### 5. Using Labels File
+### 5. View Output
 
-If the scene directory contains a `labels.json` file, you can skip semantic detection:
-
-```bash
-python run_pipeline.py --config configs/main/pipeline.yaml --use-labels
-```
-
-### 6. View Output
-
-After Pipeline completion, the output directory structure:
+After generation, the output directory structure:
 
 ```
-output/
-└── 20260114-day-obj_nav/
-    └── 3D_GS_MODE/
-        └── 2026_01_14_15_06_scene_001/
-            ├── scene_metadata/
-            ├── sampled_targets/
-            ├── target_renders/
-            ├── semantic_detections/
-            ├── planned_trajectories/
-            └── final_renders/
+navarena_data/
+├── dataset_meta.json
+└── scenes/
+    └── 17dc3367/
+        ├── scene_meta.json
+        └── pointnav/
+            ├── train.json
+            ├── gt_trajectories/
+            │   ├── train_000000_gt.json
+            │   └── ...
+            └── rendered_videos/   # optional, requires separate rendering
 ```
 
 ## Evaluation Framework Quickstart
 
 ### 1. Prepare Episode Data
 
-Create an episode JSON file in the correct format:
+Episodes must follow the standard format with `start_state` and `scene_path`:
 
 ```json
 {
+  "version": "2.0.0",
+  "metadata": {},
   "episodes": [
     {
-      "episode_id": "001",
-      "scene_id": "scene_001",
-      "start_position": [0.0, 0.0, 0.0],
-      "start_rotation": [1.0, 0.0, 0.0, 0.0],
+      "episode_id": "train_000001",
+      "scene_path": "x2robot/17dc3367",
+      "task_type": "pointnav",
+      "start_state": {
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0, 1.0]
+      },
       "goals": [
         {
+          "goal_type": "position",
           "position": [5.0, 0.0, 0.0],
-          "rotation": [1.0, 0.0, 0.0, 0.0]
+          "rotation": [0.0, 0.0, 0.383, 0.924]
         }
       ]
     }
   ]
 }
 ```
+
+Quaternion format is `[qx, qy, qz, qw]`.
 
 ### 2. Configure Evaluation
 
@@ -115,18 +158,22 @@ eval_type: "pointnav"
 env:
   env_type: "gs"
   env_settings:
-    scene_dir: "/path/to/scenes"
-    camera_config: "/path/to/camera.yaml"
+    camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
     enable_occupancy: true
     success_distance: 0.5
+    camera_names: ["camera_head_front_color_optical_frame"]
 
 agent:
   agent_type: "local"
-  model_path: null
+  model_settings: {}
+  device: null
+
+task:
+  task_type: "pointnav"
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "navarena_data/episodes.json"
+  dataset_path: "vln_data/scenes/"
 
 eval_settings:
   num_episodes: 100
@@ -137,8 +184,14 @@ eval_settings:
 ### 3. Run Evaluation
 
 ```bash
-cd NavArena-Bench
+cd navarena-bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
+```
+
+Or use the CLI entry point:
+
+```bash
+navarena-bench-eval --config configs/eval/default_eval.yaml
 ```
 
 ### 4. Override Config with Command-Line Arguments
@@ -156,7 +209,7 @@ After evaluation, generate replay videos:
 ```bash
 # Single episode replay
 python scripts/replay_eval.py \
-    --episode 001 \
+    --episode train_000001 \
     --results eval_results/ \
     --output replay.mp4
 
@@ -168,18 +221,22 @@ python scripts/replay_eval.py \
 
 ## Complete Workflow Example
 
-### From Data Generation to Evaluation
+### From Asset Preprocessing to Evaluation
 
 ```bash
-# 1. Generate data
-cd NavArena-Gen
-python run_pipeline.py --config configs/main/pipeline.yaml
+# 1. Asset preprocessing (raw PLY -> V1 format)
+cd navarena-forge
+python -m navarena_forge run-pipeline \
+    --config navarena_forge/configs/pipeline.yaml \
+    --scene-dir /path/to/raw_scenes/17dc3367 \
+    --source-dataset x2robot
 
-# 2. Organize data (optional)
-python organize_x2robot_data.py --output-dir output --target-dir ../NavArena-Bench/navarena_data
+# 2. Data generation (generate Episodes)
+cd ../navarena-gen
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
 # 3. Run evaluation
-cd ../NavArena-Bench
+cd ../navarena-bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
 
 # 4. Generate replay
@@ -192,25 +249,22 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 
 ```bash
 # Data generation
-python run_pipeline.py --config configs/main/pipeline.yaml \
-    --stages stage1 stage2 stage3 stage4 stage5
+cd navarena-gen
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --num-episodes 5
 
 # Evaluation
-python scripts/eval.py --config configs/eval/default_eval.yaml \
-    --num-episodes 10
+cd navarena-bench
+python scripts/eval.py --config configs/eval/default_eval.yaml --num-episodes 10
 ```
 
-### Case 2: Batch Processing Multiple Scenes
+### Case 2: Batch Preprocessing Multiple Scenes
 
 ```bash
-# Use batch preprocessing script
-./batch_preprocess_scenes.sh --scenes_root ./3d_gs_assets/scenes
-
-# Batch run Pipeline (requires custom script)
-for scene in scene_001 scene_002 scene_003; do
-    python run_pipeline.py --config configs/main/pipeline.yaml \
-        --scene-dir "3d_gs_assets/$scene"
-done
+cd navarena-forge
+python -m navarena_forge batch \
+    --scenes-root /path/to/raw_scenes \
+    --config navarena_forge/configs/pipeline.yaml \
+    --source-dataset x2robot
 ```
 
 ### Case 3: Using Remote Agent
@@ -219,9 +273,10 @@ done
 # configs/eval/remote_eval.yaml
 agent:
   agent_type: "remote"
-  remote_url: "http://localhost:8000/api/v1/navigate"
-  remote_timeout: 30.0
-  remote_retries: 3
+  model_settings:
+    remote_url: "http://localhost:8000/api/v1/navigate"
+    remote_timeout: 30.0
+    remote_retries: 3
 ```
 
 ```bash
@@ -234,7 +289,6 @@ python scripts/eval.py --config configs/eval/remote_eval.yaml
 # configs/eval/vint_eval.yaml
 agent:
   agent_type: "vint"
-  model_path: "/path/to/vint_model.pth"
   model_settings:
     checkpoint_path: "/path/to/checkpoint.pth"
 ```
@@ -246,23 +300,21 @@ python scripts/eval.py --config configs/eval/vint_eval.yaml
 ## Best Practices
 
 !!! tip "Performance Optimization"
-    - **Data Generation**: Use multi-GPU parallel processing, set `gpu_ids` and `enable_parallel` appropriately
+    - **Data Generation**: Use `--parallel --num-workers 4` for multi-process generation
     - **Evaluation**: For large numbers of episodes, consider batch processing and saving intermediate results
-    - **Stage 6**: Running Stage 6 alone can save time, especially when debugging
 
 !!! tip "Debugging Tips"
-    - Use `--stages` to run only the needed stages
-    - Set `num_episodes` to a small value for quick testing
-    - Enable `save_trajectories` to save trajectory data for analysis
+    - Set `num_episodes` to a small value for quick tests
+    - Enable `save_trajectories: true` to save trajectory data for analysis
 
 !!! tip "Data Management"
-    - Regularly clean old data in the `output` directory
-    - Use `organize_x2robot_data.py` to organize data format
+    - Regularly clean old data in output directories
     - Create separate config files for different scenes
+    - Ensure `NAVARENA_DATA_DIR` is set correctly
 
 !!! tip "Error Handling"
-    - Check if GPU memory is sufficient (Stage 3 and Stage 6 require more memory)
-    - Ensure scene metadata file format is correct
+    - Check if GPU memory is sufficient
+    - Ensure V1 asset format is complete (manifest.json, nav_map.pgm, etc.)
     - Verify episode JSON format meets requirements
 
 ## Next Steps

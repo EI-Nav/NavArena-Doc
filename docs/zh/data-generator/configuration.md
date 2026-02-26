@@ -29,6 +29,9 @@ configs/
     ├── objectnav_example.yaml
     ├── vln_zh_example.yaml
     ├── vln_en_example.yaml
+    ├── vln_path_based_example.yaml
+    ├── vln_object_goal_example.yaml
+    ├── vln_object_goal_zh_example.yaml
     └── camera.yaml
 ```
 
@@ -56,7 +59,7 @@ task_config:
   num_goals_per_start: 1
 
 output_dir: navarena_data
-dataset_name: x2robot_pointnav
+dataset_name: navarena_pointnav
 ```
 
 ### VLN（中文指令）
@@ -81,7 +84,7 @@ task_config:
   num_instructions_per_episode: 1
 
 output_dir: navarena_data
-dataset_name: x2robot_vln_zh
+dataset_name: navarena_vln_zh
 ```
 
 ## 参数参考
@@ -102,7 +105,10 @@ dataset_name: x2robot_vln_zh
 | `max_distance` | 目标最大距离（米） | `12.0` |
 | `grid_spacing` | 起点网格间距（米） | `1.0` |
 | `max_start_points` | 最大起点数量，null 表示不限制 | `null` |
-| `start_rotation_num` | 每起点朝向数量（1/4/8） | 任务相关 |
+| `max_goal_sampling_attempts` | 每起点最大目标采样尝试次数 | `1` |
+| `num_goals_per_start` | 每起点生成的目标数量 | `1` |
+| `require_gt_path` | 是否要求 GT 路径可规划 | `true` |
+| `planner_config` | 轨迹规划器配置（传递给 plan_full_trajectory） | `{}` |
 | `instruction_type` | VLN 必需：simple_direction / path_based / object_goal | - |
 | `language` | VLN 语言：zh-CN / en-US | - |
 

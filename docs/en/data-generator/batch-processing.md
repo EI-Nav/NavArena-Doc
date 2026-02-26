@@ -14,7 +14,7 @@ The data generator supports single-scene and multi-scene batch generation, paral
 ## Single Scene
 
 ```bash
-cd NavArena-Gen
+cd navarena-gen
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 ```
 
@@ -77,10 +77,26 @@ python scripts/render_episodes.py \
 ## Data Validation
 
 ```bash
-python scripts/validate_data.py
+# Validate single JSON file
+python scripts/validate_data.py path/to/train.json
+
+# Validate all JSON files in directory
+python scripts/validate_data.py path/to/datasets/ --all
+
+# Check if referenced files exist
+python scripts/validate_data.py path/to/train.json --check-files
+
+# Verbose output
+python scripts/validate_data.py path/to/train.json --verbose
 ```
 
-Checks Episode JSON and file references.
+## Web Viewer
+
+```bash
+python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
+
+# Optional: --port, --skip-frontend, --skip-backend
+```
 
 ## Output Structure
 

@@ -1,6 +1,6 @@
 # Data Generator Overview
 
-The Data Generator (NavArena-Gen) is a multi-task Vision-Language Navigation (VLN) data generation framework for PointNav, ImageNav, ObjectNav, and VLN tasks. It generates high-quality Episode data from 3D Gaussian Splatting scenes using grid sampling, path planning, and instruction generation.
+The Data Generator (navarena-gen) is a multi-task Vision-Language Navigation (VLN) data generation framework for PointNav, ImageNav, ObjectNav, and VLN tasks. It generates high-quality Episode data from 3D Gaussian Splatting scenes using grid sampling, path planning, and instruction generation.
 
 ## Core Features
 
@@ -76,18 +76,20 @@ navarena_data/
 
 ```json
 {
-  "episode_id": "ep_xxx",
-  "scene_id": "17dc3367",
+  "episode_id": "train_000001",
   "scene_path": "navarena_assets/x2robot/17dc3367",
   "task_type": "vln",
   "start_state": {
     "position": [x, y, z],
-    "rotation": [w, x, y, z]
+    "rotation": [qx, qy, qz, qw]
   },
   "goals": [...],
-  "instruction": "Walk about 8 meters to the northeast",
+  "instructions": [
+    {"instruction_text": "Walk about 8 meters to the northeast", "language": "en-US"}
+  ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/train_0_gt.json"
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
+    "stats": {"geodesic_distance": 8.0, "num_steps": 25}
   }
 }
 ```
@@ -100,7 +102,7 @@ navarena_data/
 
 ## Dependencies
 
-The data generator depends on **asset preprocessing** output in V1 format. Use [NavArena-Forge](../asset-preprocessing/overview.md) first to preprocess scenes.
+The data generator depends on **asset preprocessing** output in V1 format. Use [navarena-forge](../asset-preprocessing/overview.md) first to preprocess scenes.
 
 ## Next Steps
 

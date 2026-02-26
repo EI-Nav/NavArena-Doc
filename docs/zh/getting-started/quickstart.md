@@ -1,109 +1,152 @@
 # 快速入门
 
-本教程将通过简单的示例帮助您快速上手 NavArena 项目的两个核心组件：**数据生成器**和**评测框架**。
+本教程将通过简单的示例帮助您快速上手 NavArena 具身导航基础设施的四个核心模块：**资产预处理**、**数据生成器**和**评测框架**。
+
+## 资产预处理快速入门
+
+数据生成前，需要将原始 3DGS 场景转换为 V1 统一资产格式。
+
+### 1. 准备原始场景
+
+确保您有原始 3D Gaussian Splatting PLY 点云文件，例如：
+
+```
+/path/to/scenes/
+└── 17dc3367/
+    └── scene.ply   # 或任意 .ply 文件
+```
+
+### 2. 运行单场景 Pipeline
+
+```bash
+cd navarena-forge
+python -m navarena_forge run-pipeline \
+    --config navarena_forge/configs/pipeline.yaml \
+    --scene-dir /path/to/scenes/17dc3367 \
+    --source-dataset x2robot
+```
+
+### 3. 批量处理多场景
+
+```bash
+python -m navarena_forge batch \
+    --scenes-root /path/to/scenes \
+    --config navarena_forge/configs/pipeline.yaml \
+    --source-dataset x2robot
+```
+
+### 4. 查看输出
+
+Pipeline 完成后，每个场景将生成 V1 格式资产：
+
+```
+{output_root}/{scene_id}/
+├── manifest.json
+├── source.ply
+├── aligned.ply
+├── nav_map.pgm
+├── nav_map.yaml
+├── nav_mask.png
+└── compressed.splat  # 可选
+```
 
 ## 数据生成器快速入门
 
-### 1. 准备场景数据
+### 1. 准备 V1 资产场景
 
-确保您有 3D Gaussian Splatting 场景数据，目录结构如下：
+确保已完成资产预处理，V1 资产位于 `$NAVARENA_DATA_DIR/assets/` 下，例如：
 
 ```
-3d_gs_assets/
-└── scene_001/
-    ├── scene_001_metadata.json  # 场景元数据
-    ├── scene_001.ply            # 点云文件
-    └── scene_001_labels.json    # 可选：标注文件
+$NAVARENA_DATA_DIR/assets/x2robot/17dc3367/
+├── manifest.json
+├── aligned.ply
+├── nav_map.pgm
+├── nav_map.yaml
+└── nav_mask.png
 ```
 
-### 2. 配置 Pipeline
+### 2. 配置生成任务
 
-编辑 `configs/main/pipeline.yaml`：
+编辑 `configs/examples/pointnav_example.yaml`：
 
 ```yaml
-input:
-  scene_dir: "3d_gs_assets/scene_001"
-  camera_config: "../pipeline/camera.yaml"
+env_type: gs
+scene_path: x2robot/17dc3367  # 相对于 $NAVARENA_DATA_DIR/assets/
 
-output:
-  base_dir: "output"
-  data_collection_mode: "3D_GS_MODE"
-  nav_type: "obj_nav"
+task_type: pointnav
+num_episodes: 10
+split: train
+
+task_config:
+  min_distance: 5.0
+  max_distance: 12.0
+  grid_spacing: 1.0
 ```
 
-### 3. 运行完整 Pipeline
-
-运行所有 6 个阶段：
+### 3. 运行数据生成
 
 ```bash
-cd NavArena-Gen
-python run_pipeline.py --config configs/main/pipeline.yaml
+cd navarena-gen
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 ```
 
-### 4. 分阶段运行
-
-如果 Stage 6 耗时较长，可以分阶段运行：
+### 4. 并行生成
 
 ```bash
-# 先运行前 5 个阶段
-python run_pipeline.py --config configs/main/pipeline.yaml \
-    --stages stage1 stage2 stage3 stage4 stage5
-
-# 然后单独运行 Stage 6
-python run_pipeline.py --config configs/main/pipeline.yaml \
-    --stages stage6 \
-    --previous-output-dir output/20260114-day-obj_nav/3D_GS_MODE/2026_01_14_15_06_scene_001
+python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \
+    --parallel --num-workers 4 --io-workers 8
 ```
 
-### 5. 使用 Labels 文件
+### 5. 查看输出
 
-如果场景目录中有 `labels.json` 文件，可以跳过语义检测：
-
-```bash
-python run_pipeline.py --config configs/main/pipeline.yaml --use-labels
-```
-
-### 6. 查看输出
-
-Pipeline 完成后，输出目录结构：
+生成完成后，输出目录结构：
 
 ```
-output/
-└── 20260114-day-obj_nav/
-    └── 3D_GS_MODE/
-        └── 2026_01_14_15_06_scene_001/
-            ├── scene_metadata/
-            ├── sampled_targets/
-            ├── target_renders/
-            ├── semantic_detections/
-            ├── planned_trajectories/
-            └── final_renders/
+navarena_data/
+├── dataset_meta.json
+└── scenes/
+    └── 17dc3367/
+        ├── scene_meta.json
+        └── pointnav/
+            ├── train.json
+            ├── gt_trajectories/
+            │   ├── train_000000_gt.json
+            │   └── ...
+            └── rendered_videos/   # 可选，需单独渲染
 ```
 
 ## 评测框架快速入门
 
 ### 1. 准备 Episode 数据
 
-创建符合格式的 episode JSON 文件：
+Episode 需符合标准格式，使用 `start_state` 和 `scene_path`：
 
 ```json
 {
+  "version": "2.0.0",
+  "metadata": {},
   "episodes": [
     {
-      "episode_id": "001",
-      "scene_id": "scene_001",
-      "start_position": [0.0, 0.0, 0.0],
-      "start_rotation": [1.0, 0.0, 0.0, 0.0],
+      "episode_id": "train_000001",
+      "scene_path": "x2robot/17dc3367",
+      "task_type": "pointnav",
+      "start_state": {
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0, 1.0]
+      },
       "goals": [
         {
+          "goal_type": "position",
           "position": [5.0, 0.0, 0.0],
-          "rotation": [1.0, 0.0, 0.0, 0.0]
+          "rotation": [0.0, 0.0, 0.383, 0.924]
         }
       ]
     }
   ]
 }
 ```
+
+四元数格式为 `[qx, qy, qz, qw]`。
 
 ### 2. 配置评测
 
@@ -115,18 +158,22 @@ eval_type: "pointnav"
 env:
   env_type: "gs"
   env_settings:
-    scene_dir: "/path/to/scenes"
-    camera_config: "/path/to/camera.yaml"
+    camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
     enable_occupancy: true
     success_distance: 0.5
+    camera_names: ["camera_head_front_color_optical_frame"]
 
 agent:
   agent_type: "local"
-  model_path: null
+  model_settings: {}
+  device: null
+
+task:
+  task_type: "pointnav"
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "navarena_data/episodes.json"
+  dataset_path: "vln_data/scenes/"
 
 eval_settings:
   num_episodes: 100
@@ -137,8 +184,14 @@ eval_settings:
 ### 3. 运行评测
 
 ```bash
-cd NavArena-Bench
+cd navarena-bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
+```
+
+或使用 CLI 入口：
+
+```bash
+navarena-bench-eval --config configs/eval/default_eval.yaml
 ```
 
 ### 4. 使用命令行参数覆盖配置
@@ -156,7 +209,7 @@ python scripts/eval.py --config configs/eval/default_eval.yaml \
 ```bash
 # 单个 episode 回放
 python scripts/replay_eval.py \
-    --episode 001 \
+    --episode train_000001 \
     --results eval_results/ \
     --output replay.mp4
 
@@ -168,18 +221,22 @@ python scripts/replay_eval.py \
 
 ## 完整工作流程示例
 
-### 从数据生成到评测
+### 从资产预处理到评测
 
 ```bash
-# 1. 生成数据
-cd NavArena-Gen
-python run_pipeline.py --config configs/main/pipeline.yaml
+# 1. 资产预处理（原始 PLY -> V1 格式）
+cd navarena-forge
+python -m navarena_forge run-pipeline \
+    --config navarena_forge/configs/pipeline.yaml \
+    --scene-dir /path/to/raw_scenes/17dc3367 \
+    --source-dataset x2robot
 
-# 2. 组织数据（可选）
-python organize_x2robot_data.py --output-dir output --target-dir ../NavArena-Bench/navarena_data
+# 2. 数据生成（生成 Episodes）
+cd ../navarena-gen
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
 # 3. 运行评测
-cd ../NavArena-Bench
+cd ../navarena-bench
 python scripts/eval.py --config configs/eval/default_eval.yaml
 
 # 4. 生成回放
@@ -192,25 +249,22 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 
 ```bash
 # 数据生成
-python run_pipeline.py --config configs/main/pipeline.yaml \
-    --stages stage1 stage2 stage3 stage4 stage5
+cd navarena-gen
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --num-episodes 5
 
 # 评测
-python scripts/eval.py --config configs/eval/default_eval.yaml \
-    --num-episodes 10
+cd navarena-bench
+python scripts/eval.py --config configs/eval/default_eval.yaml --num-episodes 10
 ```
 
-### 场景 2: 批量处理多个场景
+### 场景 2: 批量预处理多个场景
 
 ```bash
-# 使用批量预处理脚本
-./batch_preprocess_scenes.sh --scenes_root ./3d_gs_assets/scenes
-
-# 批量运行 Pipeline（需要自定义脚本）
-for scene in scene_001 scene_002 scene_003; do
-    python run_pipeline.py --config configs/main/pipeline.yaml \
-        --scene-dir "3d_gs_assets/$scene"
-done
+cd navarena-forge
+python -m navarena_forge batch \
+    --scenes-root /path/to/raw_scenes \
+    --config navarena_forge/configs/pipeline.yaml \
+    --source-dataset x2robot
 ```
 
 ### 场景 3: 使用远程智能体
@@ -219,9 +273,10 @@ done
 # configs/eval/remote_eval.yaml
 agent:
   agent_type: "remote"
-  remote_url: "http://localhost:8000/api/v1/navigate"
-  remote_timeout: 30.0
-  remote_retries: 3
+  model_settings:
+    remote_url: "http://localhost:8000/api/v1/navigate"
+    remote_timeout: 30.0
+    remote_retries: 3
 ```
 
 ```bash
@@ -234,7 +289,6 @@ python scripts/eval.py --config configs/eval/remote_eval.yaml
 # configs/eval/vint_eval.yaml
 agent:
   agent_type: "vint"
-  model_path: "/path/to/vint_model.pth"
   model_settings:
     checkpoint_path: "/path/to/checkpoint.pth"
 ```
@@ -246,23 +300,21 @@ python scripts/eval.py --config configs/eval/vint_eval.yaml
 ## 最佳实践
 
 !!! tip "性能优化"
-    - **数据生成**: 使用多 GPU 并行处理，合理设置 `gpu_ids` 和 `enable_parallel`
+    - **数据生成**: 使用 `--parallel --num-workers 4` 启用多进程
     - **评测**: 对于大量 episodes，考虑分批处理并保存中间结果
-    - **Stage 6**: 单独运行 Stage 6 可以节省时间，特别是在调试时
 
 !!! tip "调试技巧"
-    - 使用 `--stages` 参数只运行需要的阶段
     - 设置 `num_episodes` 为较小值进行快速测试
-    - 启用 `save_trajectories` 保存轨迹数据用于分析
+    - 启用 `save_trajectories: true` 保存轨迹数据用于分析
 
 !!! tip "数据管理"
-    - 定期清理 `output` 目录中的旧数据
-    - 使用 `organize_x2robot_data.py` 整理数据格式
+    - 定期清理输出目录中的旧数据
     - 为不同场景创建独立的配置文件
+    - 确保 `NAVARENA_DATA_DIR` 环境变量正确设置
 
 !!! tip "错误处理"
-    - 检查 GPU 内存是否足够（Stage 3 和 Stage 6 需要较多内存）
-    - 确保场景元数据文件格式正确
+    - 检查 GPU 内存是否足够
+    - 确保 V1 资产格式完整（manifest.json、nav_map.pgm 等）
     - 验证 episode JSON 格式是否符合要求
 
 ## 下一步

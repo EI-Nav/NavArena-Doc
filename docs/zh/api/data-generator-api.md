@@ -1,384 +1,480 @@
 # 数据生成器 API
 
-数据生成器的完整 API 参考文档。
+数据生成器的完整 API 参考文档。数据生成器（navarena-gen）基于注册机制，提供多任务 Episode 生成、仿真环境、路径规划与数据写入等核心功能。
 
-## VLNDataPipeline
+## BaseGenerator
 
-Pipeline 主类，协调所有阶段的执行。
+生成器基类，按任务类型（pointnav、imagenav、objectnav、vln）生成 Episode 数据。
 
 ### 类定义
 
 ```python
-class VLNDataPipeline:
-    def __init__(
-        self,
-        config_path: str,
-        use_labels_file: bool = False,
-        previous_output_dir: Optional[str] = None
-    ):
-        """
-        初始化 Pipeline。
-        
-        Args:
-            config_path: Pipeline 配置文件路径
-            use_labels_file: 是否使用 labels.json 文件
-            previous_output_dir: 之前运行的输出目录（用于 Stage 6）
-        """
+from navarena_gen.generators.base import BaseGenerator
+
+class BaseGenerator(ABC):
+    _registry: Dict[str, Type["BaseGenerator"]] = {}
+```
+
+### 类方法
+
+#### register()
+
+注册生成器类。
+
+```python
+@classmethod
+def register(cls, task_type: str):
+    """
+    注册生成器类。
+    
+    Args:
+        task_type: 任务类型标识符 ("pointnav", "imagenav", "objectnav", "vln")
+    """
+```
+
+#### init()
+
+创建生成器实例。
+
+```python
+@classmethod
+def init(cls, task_type: str, config) -> "BaseGenerator":
+    """
+    根据任务类型创建生成器实例。
+    
+    Args:
+        task_type: 任务类型
+        config: GeneratorConfig 配置对象
+    
+    Returns:
+        生成器实例
+    """
 ```
 
 ### 方法
 
-#### run()
+#### generate()
 
-运行 Pipeline 或选定的阶段。
+生成 episodes。
 
 ```python
-def run(self, stages: Optional[list] = None) -> PipelineResults:
+def generate(self, env: BaseSimEnv, num_episodes: int) -> List[Episode]:
     """
-    运行 Pipeline。
+    生成指定数量的 episodes。
     
     Args:
-        stages: 要运行的阶段列表，如 ['stage1', 'stage2']
-               如果为 None，运行所有阶段
+        env: 仿真环境实例
+        num_episodes: 要生成的 episode 数量
     
     Returns:
-        PipelineResults 对象
+        Episode 对象列表
     """
 ```
 
-### 使用示例
+#### generate_parallel()
+
+并行生成 episodes。
 
 ```python
-from src.pipeline.navarena_gen import VLNDataPipeline
-
-# 创建 Pipeline
-pipeline = VLNDataPipeline("configs/main/pipeline.yaml")
-
-# 运行所有阶段
-results = pipeline.run()
-
-# 运行选定阶段
-results = pipeline.run(stages=['stage1', 'stage2', 'stage3'])
+def generate_parallel(
+    self,
+    env: BaseSimEnv,
+    num_episodes: int,
+    num_workers: int = 4
+) -> List[Episode]:
+    """
+    使用多进程并行生成 episodes。
+    
+    Args:
+        env: 仿真环境实例
+        num_episodes: 要生成的 episode 数量
+        num_workers: 工作进程数
+    
+    Returns:
+        Episode 对象列表
+    """
 ```
 
-## SceneMetadata
+### 已注册子类
 
-场景元数据类。
+| 注册名 | 类名 | 说明 |
+|--------|------|------|
+| `pointnav` | `PointNavGenerator` | 点目标导航 |
+| `imagenav` | `ImageNavGenerator` | 图像目标导航 |
+| `objectnav` | `ObjectNavGenerator` | 物体目标导航 |
+| `vln` | `VLNGenerator` | 视觉语言导航 |
+
+---
+
+## BaseSimEnv
+
+仿真环境基类，提供与具体实现（3D GS / Habitat / Isaac）无关的统一接口。
 
 ### 类定义
 
 ```python
-class SceneMetadata:
-    def __init__(self, scene_directory: str):
-        """
-        初始化场景元数据。
-        
-        Args:
-            scene_directory: 场景目录路径
-        """
+from navarena_gen.envs.base import BaseSimEnv
+
+class BaseSimEnv(ABC):
+    _registry: Dict[str, Type["BaseSimEnv"]] = {}
 ```
 
-### 属性
+### 类方法
 
-- `pgm_file`: PGM 地图文件路径
-- `yaml_file`: YAML 配置文件路径
-- `ply_file`: PLY 点云文件路径
-- `ground_height`: 地面高度
-- `is_normalized`: 是否已归一化
+#### init()
 
-## TargetSampler
+创建环境实例。
 
-目标采样器。
+```python
+@classmethod
+def init(cls, env_type: str, config) -> "BaseSimEnv":
+    """
+    根据类型创建环境实例。
+    
+    Args:
+        env_type: 环境类型 ("gs", "habitat", "isaac")
+        config: 配置对象
+    
+    Returns:
+        环境实例
+    """
+```
+
+### 主要方法
+
+```python
+def load_scene(self, scene_path: str) -> SceneInfo:
+    """加载场景"""
+
+def get_scene_info(self) -> SceneInfo:
+    """获取当前场景信息"""
+
+def sample_navigable_point(self) -> NavPoint:
+    """在可导航区域内采样点"""
+
+def generate_grid_points(self, spacing: float) -> List[NavPoint]:
+    """按网格间距生成可导航点"""
+
+def get_shortest_path(self, start: NavPoint, goal: NavPoint) -> Optional[List[NavPoint]]:
+    """计算最短路径"""
+
+def plan_full_trajectory(
+    self,
+    path: List[NavPoint],
+    planner_config: Optional[Dict] = None
+) -> List[TrajectoryStep]:
+    """规划完整轨迹（含速度、动作等）"""
+
+def get_objects(self) -> List[Dict]:
+    """获取场景中的物体列表（ObjectNav 用）"""
+```
+
+### 已注册子类
+
+| 注册名 | 类名 | 说明 |
+|--------|------|------|
+| `gs` | `GSSimEnv` | 3D Gaussian Splatting 仿真环境（已实现） |
+| `habitat` | `HabitatSimEnv` | Habitat 环境（占位） |
+| `isaac` | `IsaacSimEnv` | Isaac Sim 环境（占位） |
+
+---
+
+## BaseInstructionGenerator
+
+指令生成器基类，为 VLN 任务生成自然语言指令。采用 Strategy 模式。
 
 ### 类定义
 
 ```python
-class TargetSampler:
+from navarena_gen.generators.instructions.base import BaseInstructionGenerator
+
+class BaseInstructionGenerator(ABC):
+    _registry: Dict[str, Type["BaseInstructionGenerator"]] = {}
+```
+
+### 类方法
+
+#### init()
+
+创建指令生成器实例。
+
+```python
+@classmethod
+def init(cls, instruction_type: str, config) -> "BaseInstructionGenerator":
+    """
+    根据类型创建指令生成器。
+    
+    Args:
+        instruction_type: 指令类型 ("simple_direction", "path_based", "object_goal")
+        config: 配置字典
+    
+    Returns:
+        指令生成器实例
+    """
+```
+
+### 已注册子类
+
+| 注册名 | 类名 | 说明 |
+|--------|------|------|
+| `simple_direction` | `SimpleDirectionInstructionGenerator` | 方向 + 距离指令 |
+| `path_based` | `PathBasedInstructionGenerator` | 基于路径的分步指令 |
+| `object_goal` | `ObjectGoalInstructionGenerator` | 物体目标指令（"找到xxx"） |
+
+---
+
+## GridAStarPlanner
+
+全局 A* 路径规划器，基于占据栅格地图。
+
+### 类定义
+
+```python
+from navarena_gen.planning.global_planner import GridAStarPlanner
+
+class GridAStarPlanner:
     def __init__(
         self,
         pgm_map: np.ndarray,
-        mask: np.ndarray,
         resolution: float,
         origin: List[float],
         free_thresh: float,
-        occupied_thresh: float
+        occupied_thresh: float,
+        robot_radius: float,
+        heuristic_weight: float = 1.0,
+        allow_diagonal: bool = True
     ):
         """
-        初始化采样器。
-        
         Args:
-            pgm_map: PGM 地图数组
-            mask: 区域掩码
-            resolution: 地图分辨率
-            origin: 地图原点
+            pgm_map: PGM 占据栅格地图
+            resolution: 地图分辨率（米/像素）
+            origin: 地图原点 [x, y, theta]
             free_thresh: 自由空间阈值
             occupied_thresh: 占据空间阈值
+            robot_radius: 机器人半径
+            heuristic_weight: 启发式权重
+            allow_diagonal: 是否允许对角移动
         """
 ```
 
 ### 方法
 
-#### sample_targets()
-
-采样目标点。
+#### plan()
 
 ```python
-def sample_targets(
-    self,
-    target_count: int,
-    clearance_radius: float,
-    min_distance: float,
-    max_distance: float,
-    max_attempts: int = 10000
-) -> List[SampledTarget]:
-    """
-    采样目标点。
-    
-    Args:
-        target_count: 目标数量
-        clearance_radius: 安全半径
-        min_distance: 最小距离
-        max_distance: 最大距离
-        max_attempts: 最大尝试次数
-    
-    Returns:
-        采样目标列表
-    """
-```
-
-## SemanticDetector
-
-语义检测器。
-
-### 类定义
-
-```python
-class SemanticDetector:
-    def __init__(
-        self,
-        yolo_model_path: str,
-        sam_model_path: str,
-        confidence_threshold: float = 0.5
-    ):
-        """
-        初始化检测器。
-        
-        Args:
-            yolo_model_path: YOLO 模型路径
-            sam_model_path: SAM 模型路径
-            confidence_threshold: 置信度阈值
-        """
-```
-
-### 方法
-
-#### detect()
-
-检测语义对象。
-
-```python
-def detect(
-    self,
-    images: List[np.ndarray],
-    camera_poses: List[Dict]
-) -> List[Detection3D]:
-    """
-    检测语义对象。
-    
-    Args:
-        images: 图像列表
-        camera_poses: 相机位姿列表
-    
-    Returns:
-        3D 检测结果列表
-    """
-```
-
-## PathPlanner
-
-路径规划器。
-
-### 类定义
-
-```python
-class PathPlanner:
-    def __init__(
-        self,
-        pgm_map: np.ndarray,
-        resolution: float,
-        origin: List[float],
-        obstacle_clearance: float = 0.3
-    ):
-        """
-        初始化规划器。
-        
-        Args:
-            pgm_map: PGM 地图
-            resolution: 地图分辨率
-            origin: 地图原点
-            obstacle_clearance: 障碍物安全距离
-        """
-```
-
-### 方法
-
-#### plan_path()
-
-规划路径。
-
-```python
-def plan_path(
+def plan(
     self,
     start: Tuple[float, float],
     goal: Tuple[float, float]
-) -> List[Tuple[float, float]]:
+) -> Optional[List[Tuple[float, float]]]:
     """
     规划从起点到目标的路径。
     
     Args:
-        start: 起点坐标 (x, y)
-        goal: 目标坐标 (x, y)
+        start: 起点 (x, y) 世界坐标
+        goal: 目标 (x, y) 世界坐标
     
     Returns:
-        路径点列表
+        路径点列表，或 None 表示无路径
     """
 ```
 
-## 工具函数
+---
 
-### load_scene_metadata()
+## TwoStageTrajectoryPlanner
 
-加载场景元数据。
+两阶段轨迹规划器：全局 A* + 局部平滑（MPC/DWA/TEB）。
+
+### 类定义
 
 ```python
-def load_scene_metadata(scene_directory: str) -> Dict[str, Any]:
+from navarena_gen.planning.trajectory_planner import TwoStageTrajectoryPlanner
+
+class TwoStageTrajectoryPlanner:
+    def __init__(
+        self,
+        astar: GridAStarPlanner,
+        robot_config: RobotConfig,
+        local_planner: str = "mpc",  # "mpc" | "dwa" | "teb"
+        **kwargs
+    ):
+        """初始化轨迹规划器"""
+```
+
+### 方法
+
+#### plan()
+
+```python
+def plan(
+    self,
+    path: List[Tuple[float, float]],
+    start_rotation: float,
+    goal_rotation: Optional[float] = None
+) -> List[TrajectoryStep]:
     """
-    加载场景元数据。
+    将路径规划为完整轨迹（含速度、动作）。
     
     Args:
-        scene_directory: 场景目录路径
+        path: 2D 路径点列表
+        start_rotation: 起点朝向（弧度）
+        goal_rotation: 目标朝向（可选）
     
     Returns:
-        元数据字典
+        TrajectoryStep 列表
     """
 ```
 
-### sample_navigation_targets()
+---
 
-采样导航目标。
+## DatasetWriter
+
+数据集写入器，将 Episode 序列化为 JSON。
+
+### 静态方法
+
+#### write_dataset()
 
 ```python
-def sample_navigation_targets(config: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    采样导航目标。
-    
-    Args:
-        config: 配置字典
-    
-    Returns:
-        结果字典
-    """
+@staticmethod
+def write_dataset(
+    dataset: VLNDataset,
+    output_path: str,
+    indent: int = 2,
+    ensure_ascii: bool = False
+) -> None:
+    """将 VLNDataset 写入 JSON 文件"""
 ```
 
-### detect_semantic_objects()
-
-检测语义对象。
+#### write_episodes()
 
 ```python
-def detect_semantic_objects(config: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    检测语义对象。
-    
-    Args:
-        config: 配置字典
-    
-    Returns:
-        检测结果字典
-    """
+@staticmethod
+def write_episodes(
+    episodes: List[Episode],
+    output_path: str,
+    dataset_name: str = "navarena_vln",
+    version: str = "1.0.0",
+    metadata: Dict[str, Any] = None,
+    indent: int = 2,
+    ensure_ascii: bool = False
+) -> None:
+    """将 Episode 列表写入 JSON 文件"""
 ```
 
-### plan_navigation_paths()
+---
 
-规划导航路径。
+## TrajectoryWriter
+
+GT 轨迹文件写入器。
+
+### 静态方法
+
+#### write_trajectory()
 
 ```python
-def plan_navigation_paths(config: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    规划导航路径。
-    
-    Args:
-        config: 配置字典
-    
-    Returns:
-        规划结果字典
-    """
+@staticmethod
+def write_trajectory(
+    episode_id: str,
+    trajectory: List[TrajectoryStep],
+    output_path: str,
+    actions: List[int] = None,
+    action_names: List[str] = None,
+    indent: int = 2,
+    ensure_ascii: bool = False
+) -> None:
+    """将 GT 轨迹写入 JSON 文件"""
 ```
 
-## 配置类
-
-### PipelineConfig
-
-Pipeline 配置类。
+#### get_trajectory_filename()
 
 ```python
+@staticmethod
+def get_trajectory_filename(episode_id: str) -> str:
+    """生成轨迹文件名，如 train_000001_gt.json"""
+```
+
+---
+
+## GeneratorConfig
+
+数据生成配置类，继承自 `navarena_core.config.BaseConfig`。
+
+### 类定义
+
+```python
+from navarena_gen.config.base_config import GeneratorConfig
+
 @dataclass
-class PipelineConfig:
-    scene_directory: str
-    camera_config: str
-    base_output_directory: str
-    data_collection_mode: str
-    nav_type: str
+class GeneratorConfig(BaseConfig):
+    env_type: str = "gs"
+    scene_path: str = ""
+    task_type: str = "pointnav"
+    num_episodes: int = 100
+    split: str = "train"
+    dataset_name: str = "navarena_vln"
+    env_config: Dict[str, Any] = field(default_factory=dict)
+    task_config: Dict[str, Any] = field(default_factory=dict)
 ```
 
-### StageConfig
-
-阶段配置基类。
+### 方法
 
 ```python
-class StageConfig:
-    pass
+@classmethod
+def from_yaml(cls, path, **overrides) -> "GeneratorConfig":
+    """从 YAML 文件加载配置"""
+
+def validate(self) -> None:
+    """验证配置有效性"""
+
+def get_resolved_scene_path(self) -> str:
+    """返回场景资产的绝对路径"""
+
+def get_scene_id(self) -> str:
+    """从 manifest.json 获取 scene_id"""
+
+def get_output_base_dir(self) -> str:
+    """返回输出基础目录（含 task_type）"""
+
+def get_dataset_root(self) -> str:
+    """返回数据集根目录"""
 ```
 
-## 数据类
+---
 
-### PipelineResults
-
-Pipeline 执行结果。
+## 使用示例
 
 ```python
-@dataclass
-class PipelineResults:
-    status: str
-    stage_results: Dict[str, Dict]
-    stage_timings: Dict[str, float]
-    error: Optional[str] = None
-    
-    def add_stage_result(self, stage_name: str, result: Dict):
-        """添加阶段结果"""
-        
-    def get_stage_result(self, stage_name: str) -> Optional[Dict]:
-        """获取阶段结果"""
-        
-    def is_stage_successful(self, stage_name: str) -> bool:
-        """检查阶段是否成功"""
-```
+from navarena_gen.config.base_config import GeneratorConfig
+from navarena_gen.envs.base import BaseSimEnv
+from navarena_gen.generators.base import BaseGenerator
+from navarena_gen.data.writer import DatasetWriter, TrajectoryWriter
 
-## 异常类
+# 加载配置
+config = GeneratorConfig.from_yaml("configs/examples/pointnav_example.yaml")
+config.validate()
 
-### PipelineError
+# 创建环境
+env = BaseSimEnv.init(config.env_type, config)
+scene_info = env.load_scene(config.get_resolved_scene_path())
 
-Pipeline 基础异常。
+# 创建生成器
+generator = BaseGenerator.init(config.task_type, config)
 
-```python
-class PipelineError(Exception):
-    pass
-```
+# 生成 episodes
+episodes = generator.generate(env, config.num_episodes)
 
-### StageError
+# 写入数据
+output_path = config.get_output_base_dir()
+DatasetWriter.write_episodes(
+    episodes,
+    f"{output_path}/{config.split}.json",
+    dataset_name=config.dataset_name,
+    metadata={"scene_id": scene_info.scene_id}
+)
 
-阶段执行异常。
-
-```python
-class StageError(PipelineError):
-    pass
+for ep in episodes:
+    if ep.gt_path and ep.gt_path.trajectory:
+        traj_path = f"{output_path}/gt_trajectories/{TrajectoryWriter.get_trajectory_filename(ep.episode_id)}"
+        TrajectoryWriter.write_trajectory(ep.episode_id, ep.gt_path.trajectory, traj_path)
 ```

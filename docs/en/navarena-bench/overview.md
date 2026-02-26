@@ -1,6 +1,6 @@
 # Evaluation Framework Overview
 
-NavArena-Bench is a navigation model evaluation framework based on 3D Gaussian Splatting and occupancy grids. It provides a modular, extensible evaluation system supporting multiple navigation tasks and agent types.
+navarena-bench is a navigation model evaluation framework based on 3D Gaussian Splatting and occupancy grids. It provides a modular, extensible evaluation system supporting multiple navigation tasks and agent types.
 
 ## Core Features
 
@@ -203,14 +203,18 @@ The framework uses a standard Episode JSON format:
 {
   "episodes": [
     {
-      "episode_id": "001",
-      "scene_id": "scene_001",
-      "start_position": [0.0, 0.0, 0.0],
-      "start_rotation": [1.0, 0.0, 0.0, 0.0],
+      "episode_id": "train_000001",
+      "scene_path": "x2robot/17dc3367",
+      "task_type": "pointnav",
+      "start_state": {
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0, 1.0]
+      },
       "goals": [
         {
+          "goal_type": "position",
           "position": [5.0, 0.0, 0.0],
-          "rotation": [1.0, 0.0, 0.0, 0.0]
+          "rotation": [0.0, 0.0, 0.383, 0.924]
         }
       ]
     }
@@ -220,12 +224,10 @@ The framework uses a standard Episode JSON format:
 
 **Field descriptions:**
 - `episode_id`: Episode unique identifier
-- `scene_id`: Scene identifier
-- `start_position`: Start position [x, y, z]
-- `start_rotation`: Start orientation, quaternion [w, x, y, z]
-- `goals`: Goal list
-  - `position`: Goal position [x, y, z]
-  - `rotation`: Goal orientation (optional for PointNav, required for ImageNav)
+- `scene_path`: Scene path (relative to `$NAVARENA_DATA_DIR/assets/`)
+- `task_type`: Task type (pointnav | imagenav | objectnav | vln)
+- `start_state`: Start state, quaternion format `[qx, qy, qz, qw]`
+- `goals`: Goal list, must include `goal_type` (position | image | object)
 
 ## Evaluation Configuration
 
@@ -237,18 +239,21 @@ eval_type: "pointnav"
 env:
   env_type: "gs"
   env_settings:
-    scene_dir: "/path/to/scenes"
-    camera_config: "/path/to/camera.yaml"
+    camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
     enable_occupancy: true
     success_distance: 0.5
 
 agent:
   agent_type: "local"
-  model_path: null
+  model_settings: {}
+  device: null
+
+task:
+  task_type: "pointnav"
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "navarena_data/episodes.json"
+  dataset_path: "vln_data/scenes/"
 
 eval_settings:
   num_episodes: 100

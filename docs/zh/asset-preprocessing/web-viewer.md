@@ -11,7 +11,7 @@
 ## 启动方式
 
 ```bash
-cd NavArena-Forge
+cd navarena-forge
 python -m web_viewer.main --assets-dir /path/to/navarena_assets --port 41005
 ```
 
@@ -19,7 +19,7 @@ python -m web_viewer.main --assets-dir /path/to/navarena_assets --port 41005
 
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
-| `--assets-dir` | V1 资产根目录 | `/x2robot_v2/share/NavArena-Bench/navarena_assets` |
+| `--assets-dir` | V1 资产根目录 | `/x2robot_v2/share/navarena-bench/navarena_assets` |
 | `--host` | 监听地址 | `0.0.0.0` |
 | `--port` | 监听端口 | `41005` |
 | `--log-level` | 日志级别 | `info` |

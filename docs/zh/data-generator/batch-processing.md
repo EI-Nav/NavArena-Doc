@@ -14,7 +14,7 @@
 ## 单场景生成
 
 ```bash
-cd NavArena-Gen
+cd navarena-gen
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 ```
 
@@ -77,10 +77,29 @@ python scripts/render_episodes.py \
 ## 数据验证
 
 ```bash
-python scripts/validate_data.py
+# 验证单个 JSON 文件
+python scripts/validate_data.py path/to/train.json
+
+# 验证目录下所有 JSON 文件
+python scripts/validate_data.py path/to/datasets/ --all
+
+# 检查引用的文件是否存在
+python scripts/validate_data.py path/to/train.json --check-files
+
+# 显示详细错误和警告
+python scripts/validate_data.py path/to/train.json --verbose
 ```
 
-用于检查生成的 Episode JSON 和文件引用是否正确。
+## Web 查看器
+
+```bash
+python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
+
+# 可选参数
+# --port: 后端服务端口（默认 5000）
+# --skip-frontend: 只启动后端
+# --skip-backend: 只启动前端
+```
 
 ## 输出目录结构
 

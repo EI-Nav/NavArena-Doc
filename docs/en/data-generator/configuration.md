@@ -29,6 +29,9 @@ configs/
     ├── objectnav_example.yaml
     ├── vln_zh_example.yaml
     ├── vln_en_example.yaml
+    ├── vln_path_based_example.yaml
+    ├── vln_object_goal_example.yaml
+    ├── vln_object_goal_zh_example.yaml
     └── camera.yaml
 ```
 
@@ -56,7 +59,7 @@ task_config:
   num_goals_per_start: 1
 
 output_dir: navarena_data
-dataset_name: x2robot_pointnav
+dataset_name: navarena_pointnav
 ```
 
 ### VLN (Chinese Instructions)
@@ -81,7 +84,7 @@ task_config:
   num_instructions_per_episode: 1
 
 output_dir: navarena_data
-dataset_name: x2robot_vln_zh
+dataset_name: navarena_vln_zh
 ```
 
 ## Parameter Reference
@@ -102,7 +105,10 @@ dataset_name: x2robot_vln_zh
 | `max_distance` | Goal max distance (meters) | `12.0` |
 | `grid_spacing` | Start point grid spacing (meters) | `1.0` |
 | `max_start_points` | Max start points, null = unlimited | `null` |
-| `start_rotation_num` | Orientations per grid point (1/4/8) | task-specific |
+| `max_goal_sampling_attempts` | Max goal sampling attempts per start | `1` |
+| `num_goals_per_start` | Goals per start point | `1` |
+| `require_gt_path` | Require valid GT path | `true` |
+| `planner_config` | Trajectory planner config | `{}` |
 | `instruction_type` | VLN: simple_direction / path_based / object_goal | - |
 | `language` | VLN: zh-CN / en-US | - |
 

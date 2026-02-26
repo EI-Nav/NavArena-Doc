@@ -1,6 +1,6 @@
 # CLI 命令
 
-资产预处理通过 `navarena_forge` 模块提供命令行接口。进入 `NavArena-Forge` 目录后，使用 `python -m navarena_forge` 调用。
+资产预处理通过 `navarena_forge` 模块提供命令行接口。进入 `navarena-forge` 目录后，使用 `python -m navarena_forge` 调用。
 
 ## 命令概览
 

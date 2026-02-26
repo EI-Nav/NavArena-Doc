@@ -1,6 +1,6 @@
 # 资产预处理概述
 
-资产预处理（NavArena-Forge / navarena_forge）是将原始 3D Gaussian Splatting 场景转换为标准化具身导航资产的一套模块化 Pipeline。它将 PLY 点云转换为坐标对齐、占据栅格、可导航区域掩码以及可选的压缩格式，供数据生成器和评测框架使用。
+资产预处理（navarena-forge / navarena_forge）是将原始 3D Gaussian Splatting 场景转换为标准化具身导航资产的一套模块化 Pipeline。它将 PLY 点云转换为坐标对齐、占据栅格、可导航区域掩码以及可选的压缩格式，供数据生成器和评测框架使用。
 
 ## 项目定位
 

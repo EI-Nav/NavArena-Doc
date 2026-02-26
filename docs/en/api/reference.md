@@ -1,6 +1,6 @@
 # API Reference
 
-This document provides API reference for the NavArena project. The project consists of three core sub-projects: Asset Preprocessing, Data Generator, and Evaluation Framework.
+This document provides API reference for the NavArena embodied navigation infrastructure. NavArena consists of four sub-projects: **Core Library** (navarena-core), **Asset Preprocessing** (navarena-forge), **Data Generator** (navarena-gen), and **Evaluation Framework** (navarena-bench).
 
 ## Data Generator API
 
@@ -8,11 +8,13 @@ For the complete Data Generator API, see [Data Generator API](data-generator-api
 
 ### Main Classes
 
-- `VLNDataPipeline` - Pipeline main class
-- `SceneMetadata` - Scene metadata class
-- `TargetSampler` - Target sampler
-- `SemanticDetector` - Semantic detector
-- `PathPlanner` - Path planner
+- `BaseGenerator` - Generator base class; registered subclasses: `PointNavGenerator`, `ImageNavGenerator`, `ObjectNavGenerator`, `VLNGenerator`
+- `BaseSimEnv` - Simulation environment base class; `GSSimEnv` for 3D GS
+- `BaseInstructionGenerator` - Instruction generator base class (VLN); registered subclasses: `SimpleDirectionInstructionGenerator`, `PathBasedInstructionGenerator`, `ObjectGoalInstructionGenerator`
+- `GridAStarPlanner` - Global A* path planner
+- `TwoStageTrajectoryPlanner` - Two-stage trajectory planner (A* + local smoothing)
+- `DatasetWriter`, `TrajectoryWriter` - Data writers
+- `GeneratorConfig` - Data generation configuration class
 
 ## Evaluation Framework API
 
@@ -20,27 +22,28 @@ For the complete Evaluation Framework API, see [Evaluation Framework API](navare
 
 ### Main Classes
 
-- `Evaluator` - Evaluator base class
-- `Env` - Environment base class
-- `Agent` - Agent base class
-- `Dataset` - Dataset base class
-- `Metric` - Metric base class
+- `Evaluator` - Evaluator base class; registered subclasses: `PointNavEvaluator`, `ImageNavEvaluator`, `ObjectNavEvaluator`, `VLNEvaluator`
+- `Env` - Environment base class; `GaussianSplattingEnv` for 3D GS
+- `Agent` - Agent base class; registered subclasses: `LocalAgent`, `RemoteAgent`, `ViNTAgent`, `GNMAgent`, `NoMaDAgent`, `MultiModalNavAgent`, `LanguageNavAgent`
+- `Dataset` - Dataset base class; `EpisodeDataset` implementation
+- `Metric` - Metric base class; `NavigationMetrics` implementation
 
 ## Quick Reference
 
 ### Data Generator
 
 ```python
-from src.pipeline.navarena_gen import VLNDataPipeline
+from navarena_gen.generators.base import BaseGenerator
+from navarena_gen.config.base_config import GeneratorConfig
 
-# Create Pipeline
-pipeline = VLNDataPipeline(
-    config_path="configs/main/pipeline.yaml",
-    use_labels_file=False
-)
+# Load config
+config = GeneratorConfig.from_yaml("configs/examples/pointnav_example.yaml")
 
-# Run Pipeline
-results = pipeline.run(stages=['stage1', 'stage2', 'stage3'])
+# Create generator
+generator = BaseGenerator.init(config.task_type, config)
+
+# Generate episodes
+episodes = generator.generate()
 ```
 
 ### Evaluation Framework
@@ -49,8 +52,10 @@ results = pipeline.run(stages=['stage1', 'stage2', 'stage3'])
 from navarena_bench.evaluator import Evaluator
 from navarena_bench.configs.eval_config import EvalCfg
 
-# Create evaluator
+# Load config
 config = EvalCfg.from_yaml("configs/eval/default_eval.yaml")
+
+# Create evaluator
 evaluator = Evaluator.init(config)
 
 # Run evaluation

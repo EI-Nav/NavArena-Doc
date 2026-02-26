@@ -10,7 +10,7 @@ This document defines the Episode format and trajectory data format for embodied
   "dataset_name": "navarena_bench",
   "metadata": {
     "created_date": "2026-01-14",
-    "description": "X2Robot general embodied navigation dataset",
+    "description": "NavArena general embodied navigation dataset",
     "task_types": ["pointnav", "imagenav", "objectnav", "vln"], // one of these
     "total_episodes": 100,
     "splits": ["train", "val_seen", "val_unseen", "test"] // one of these
@@ -26,7 +26,7 @@ This document defines the Episode format and trajectory data format for embodied
 ```json
 {
   "episode_id": "string",           // Unique identifier, format: {split}_{index}, e.g. "train_001"
-  "scene_path": "string",           // Scene folder path, e.g. "3d_gs_assets/x2robot/scene_001"
+  "scene_path": "string",           // Scene path, e.g. "x2robot/17dc3367" (relative to $NAVARENA_DATA_DIR/assets/)
   "task_type": "string",            // Task type: "pointnav" | "imagenav" | "objectnav" | "vln"
   "start_state": {
     "position": [float, float, float],      // Start position [x, y, z]
@@ -41,7 +41,7 @@ This document defines the Episode format and trajectory data format for embodied
 ```json
 {
   "split": "string",                // Dataset split: "train" | "val_seen" | "val_unseen" | "test"
-  "instructions": [...],            // Instruction list (required for embodied navigation tasks)
+  "instructions": [...],            // Instruction list (required for VLN tasks)
   "gt_path": {...}                  // Ground Truth trajectory info
 }
 ```
@@ -82,7 +82,7 @@ This document defines the Episode format and trajectory data format for embodied
 }
 ```
 
-## 4. Instructions Field Format (Embodied Navigation Tasks)
+## 4. Instructions Field Format (VLN Tasks)
 
 ```json
 {
@@ -103,11 +103,13 @@ This document defines the Episode format and trajectory data format for embodied
       "num_steps": int,            // GT action step count
       
       // Recommended statistics
+      "euclidean_distance": float, // Euclidean distance (meters)
+      "total_time": float,         // Total time (seconds)
       "num_waypoints": int,        // GT trajectory waypoint count
       
       // Optional statistics
-      "avg_speed": float,               // Average speed (m/s)
-      "max_speed": float                // Maximum speed (m/s)
+      "avg_speed": float,          // Average speed (m/s)
+      "max_speed": float           // Maximum speed (m/s)
     }
   }
 }
@@ -141,13 +143,13 @@ gt_trajectories/{episode_id}_gt.json:
 
 ```json
 {
-  "episode_id": "pointnav_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "pointnav",
   "start_state": {
     "position": [0.0, 0.0, 0.0],
-    "rotation": [1.0, 0.0, 0.0, 0.0]
+    "rotation": [0.0, 0.0, 0.0, 1.0]
   },
   "goals": [
     {
@@ -157,10 +159,12 @@ gt_trajectories/{episode_id}_gt.json:
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/pointnav_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 5.83,
-      "num_waypoints": 12
+      "num_steps": 12,
+      "euclidean_distance": 5.2,
+      "total_time": 11.66
     }
   }
 }
@@ -170,29 +174,31 @@ gt_trajectories/{episode_id}_gt.json:
 
 ```json
 {
-  "episode_id": "imagenav_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "imagenav",
   "start_state": {
     "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.924, 0.0, 0.0, 0.383]
+    "rotation": [0.0, 0.0, 0.383, 0.924]
   },
   "goals": [
     {
       "goal_type": "image",
       "image_goal": {
-        "image_path": "goal_images/target_001.jpg"
+        "image_path": "goal_images/train_000001_goal.jpg"
       },
       "position": [-0.9, -0.5, 0.0],
-      "rotation": [0.924, 0.0, 0.0, -0.383]
+      "rotation": [0.0, 0.0, -0.383, 0.924]
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/imagenav_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 6.2,
-      "num_waypoints": 15
+      "num_steps": 15,
+      "euclidean_distance": 5.5,
+      "total_time": 12.4
     }
   }
 }
@@ -202,13 +208,13 @@ gt_trajectories/{episode_id}_gt.json:
 
 ```json
 {
-  "episode_id": "objectnav_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "objectnav",
   "start_state": {
     "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.924, 0.0, 0.0, 0.383]
+    "rotation": [0.0, 0.0, 0.383, 0.924]
   },
   "goals": [
     {
@@ -219,26 +225,28 @@ gt_trajectories/{episode_id}_gt.json:
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/objectnav_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 4.5,
-      "num_waypoints": 10
+      "num_steps": 10,
+      "euclidean_distance": 3.8,
+      "total_time": 9.0
     }
   }
 }
 ```
 
-### 7.4 Embodied Navigation Example
+### 7.4 VLN Example
 
 ```json
 {
-  "episode_id": "vln_001",
-  "scene_path": "3d_gs_assets/x2robot/scene_001",
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
   "split": "train",
   "task_type": "vln",
   "start_state": {
     "position": [0.0, 0.0, 0.0],
-    "rotation": [1.0, 0.0, 0.0, 0.0]
+    "rotation": [0.0, 0.0, 0.0, 1.0]
   },
   "instructions": [
     {
@@ -257,10 +265,12 @@ gt_trajectories/{episode_id}_gt.json:
     }
   ],
   "gt_path": {
-    "trajectory_file": "gt_trajectories/vln_001_gt.json",
+    "trajectory_file": "gt_trajectories/train_000001_gt.json",
     "stats": {
       "geodesic_distance": 7.8,
-      "num_waypoints": 30
+      "num_steps": 30,
+      "euclidean_distance": 6.5,
+      "total_time": 15.6
     }
   }
 }
@@ -268,31 +278,35 @@ gt_trajectories/{episode_id}_gt.json:
 
 ## 8. File Organization
 
+Evaluation data uses the same hierarchical structure as training data, organized by scene and task type:
+
 ```bash
-NavArena-Bench/
-├── navarena_data/
-│   ├── pointnav_episodes.json       # PointNav task data
-│   ├── imagenav_episodes.json       # ImageNav task data
-│   ├── objectnav_episodes.json      # ObjectNav task data
-│   ├── vln_episodes.json            # Embodied navigation task data
-│   ├── goal_images/                 # Goal images folder
-│   │   ├── target_001.jpg
-│   │   └── ...
-│   └── gt_trajectories/             # GT trajectories folder
-│       ├── train_001_gt.json
-│       ├── train_002_gt.json
-│       └── ...
-└── 3d_gs_assets/
+$NAVARENA_DATA_DIR/
+├── datasets/                        # Or custom data root
+│   └── {dataset_name}/
+│       └── {dataset}/{scene_id}/    # e.g. x2robot/17dc3367
+│           └── {task_type}/         # pointnav | imagenav | objectnav | vln
+│               ├── train.json       # Episodes file
+│               ├── val.json
+│               ├── gt_trajectories/
+│               │   ├── train_000000_gt.json
+│               │   └── ...
+│               └── goal_images/     # ImageNav goal images
+│                   └── train_000000_goal.jpg
+└── assets/                          # V1 format scene assets
     └── x2robot/
-        └── scene_001/
-            ├── scene_001_transformed.ply
-            ├── scene_001_transformed.pgm
-            ├── scene_001_transformed.yaml
-            ├── scene_001_labels.json
-            ├── scene_001_metadata.json
-            └── scene_001_transformed_mask_*.png
+        └── 17dc3367/
+            ├── manifest.json
+            ├── aligned.ply
+            ├── nav_map.pgm
+            ├── nav_map.yaml
+            ├── nav_mask.png
+            └── labels.json          # optional
 ```
+
+**Note**: `scene_path` in episodes is a relative path (e.g., `x2robot/17dc3367`), resolved by the evaluation framework using `$NAVARENA_DATA_DIR/assets/`.
 
 ## 9. Notes
 
-- All paths involved use relative paths; therefore data files must be organized according to **Section 8**.
+- All paths use relative paths; data files must be organized according to **Section 8**.
+- Quaternion format is consistently `[qx, qy, qz, qw]`.
