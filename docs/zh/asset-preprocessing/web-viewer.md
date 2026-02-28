@@ -106,5 +106,5 @@ GET /api/scenes/{dataset}/{scene_id}/labels
 - 轨道 / 平移 / 缩放控制
 
 !!! tip "下一步"
-    - 返回 **[概述](overview.md)** 了解整体架构
+    - 返回 **[概述](index.md)** 了解整体架构
     - 使用 **[CLI 命令](cli.md)** 处理场景

@@ -72,7 +72,7 @@ cd ..
 cd navarena-gen && python scripts/generate_data.py --help
 
 # Evaluation framework
-cd navarena-bench && python scripts/eval.py --help
+cd navarena-bench && python -m navarena_bench.scripts.eval --help
 # Or use CLI entry point
 navarena-bench-eval --help
 
@@ -184,5 +184,5 @@ pip install -e ".[web]"
 !!! tip "Next Steps"
     After installation, continue reading:
     - **[Quickstart](quickstart.md)** - Learn how to use all modules
-    - **[Data Generator Overview](../data-generator/overview.md)** - Deep dive into the data generation workflow
-    - **[Evaluation Framework Overview](../navarena-bench/overview.md)** - Learn about the evaluation framework architecture
+    - **[Data Generator Overview](../data-generator/)** - Deep dive into the data generation workflow
+    - **[Evaluation Framework Overview](../navarena-bench/)** - Learn about the evaluation framework architecture

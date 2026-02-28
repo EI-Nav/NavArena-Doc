@@ -44,22 +44,38 @@ Use `--parallel` for multi-process episode generation:
 ```bash
 python scripts/generate_data.py \
     --config configs/examples/vln_zh_example.yaml \
-    --parallel --num-workers 4 --io-workers 8
+    --parallel --num-workers 4 --batch-size 20
 ```
 
-### Arguments
+### Parallel and Chunking Arguments
 
 | Argument | Description | Default |
 |----------|-------------|---------|
 | `--parallel` | Enable parallel episode generation | `false` |
 | `--num-workers` | Worker process count | `4` |
-| `--io-workers` | Parallel I/O threads | `8` |
+| `--batch-size` | Episodes per batch per worker | `20` |
+| `--chunk-size` | Episodes per Parquet chunk | `1000` |
+
+## Resume and Append Modes
+
+- **`--resume`**: Resume from checkpoint. If `.{split}_checkpoint.json` exists, continue from last progress and skip completed episodes.
+- **`--append`**: Append to existing dataset. Reads `meta/episodes.parquet`; new episode IDs start from max index + 1.
+- **`--checkpoint-interval`**: Save checkpoint every N episodes (default 50).
+
+```bash
+# Resume after crash
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --resume
+
+# Append 500 episodes to existing dataset
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml \
+    --num-episodes 500 --append
+```
 
 ## Resumable Processing
 
-- Output is organized by scene_id and task_type
-- Re-running the same scene + task may append or overwrite episodes
-- Use different `split` or output dirs to separate runs
+- Output is organized by scene_path and task_type
+- Use `--resume` to recover from checkpoint
+- Use `--append` to add to existing dataset
 
 ## Trajectory Rendering
 
@@ -72,9 +88,9 @@ python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
 # Render trajectories for other task types
 python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
 
-# Explicit data path (relative to $NAVARENA_DATA_DIR/datasets/)
+# Explicit task dir (relative to $NAVARENA_DATA_DIR/datasets/, contains meta/ and data/)
 python scripts/render_episodes.py --scene x2robot/17dc3367 \
-    --trajectories-dir navarena_vln/x2robot/17dc3367/imagenav/gt_trajectories
+    --dataset-name navarena_dataset_v1 --task pointnav
 ```
 
 ## Data Validation
@@ -85,11 +101,11 @@ Paths are relative to `$NAVARENA_DATA_DIR/datasets/`:
 # Shorthand via --scene + --task
 python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav
 
-# Relative path
-python scripts/validate_data.py navarena_vln/x2robot/17dc3367/pointnav/train.json
+# Via --scene + --task + --dataset-name
+python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --dataset-name navarena_dataset_v1
 
-# Validate all JSON files in directory
-python scripts/validate_data.py navarena_vln/ --all
+# Validate all datasets in directory
+python scripts/validate_data.py navarena_dataset_v1/ --all
 
 # Check if referenced files exist
 python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --check-files
@@ -113,23 +129,29 @@ python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
 
 ## Output Structure
 
+All paths relative to `$NAVARENA_DATA_DIR/datasets/`:
+
 ```
-navarena_data/
+{dataset_name}/
 ├── dataset_meta.json
-└── scenes/
-    └── {scene_id}/
-        ├── scene_meta.json
-        └── {task_type}/
-            ├── train.json
-            ├── gt_trajectories/
-            ├── goal_images/        # ImageNav
-            └── rendered_videos/
+└── {scene_path}/
+    ├── scene_meta.json
+    └── {task_type}/
+        ├── meta/
+        │   ├── info.json
+        │   └── episodes.parquet
+        ├── data/
+        │   └── chunk-NNN/
+        │       ├── trajectories.parquet
+        │       └── episodes.parquet
+        ├── goal_images/        # ImageNav (optional)
+        └── rendered_videos/    # optional
 ```
 
 ## FAQ
 
 !!! question "Scene not preprocessed"
-    Ensure scenes are in V1 format via [Asset Preprocessing](../asset-preprocessing/overview.md) (manifest.json, nav_map.pgm, etc.).
+    Ensure scenes are in V1 format via [Asset Preprocessing](../asset-preprocessing/) (manifest.json, nav_map.pgm, etc.).
 
 !!! question "ObjectNav has no objects"
     Scene needs labels.json from asset preprocessing or semantic detection.
@@ -139,4 +161,4 @@ navarena_data/
 
 !!! tip "Next Steps"
     - See **[Configuration](configuration.md)**
-    - Learn **[Asset Preprocessing](../asset-preprocessing/overview.md)**
+    - Learn **[Asset Preprocessing](../asset-preprocessing/)**

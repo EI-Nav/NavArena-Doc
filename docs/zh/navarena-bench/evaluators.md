@@ -266,7 +266,7 @@ eval_settings:
 ### 命令行运行
 
 ```bash
-python scripts/eval.py --config configs/eval/default_eval.yaml
+python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
 ```
 
 ### 覆盖配置参数

@@ -55,43 +55,45 @@ def init(cls, task_type: str, config) -> "BaseGenerator":
 
 #### generate()
 
-生成 episodes。
+流式生成 episodes（迭代器，支持低内存写入）。
 
 ```python
-def generate(self, env: BaseSimEnv, num_episodes: int) -> List[Episode]:
+def generate(self, env: BaseSimEnv, num_episodes: int) -> Iterator[Episode]:
     """
-    生成指定数量的 episodes。
+    逐个 yield episodes，最多 num_episodes 个。
     
     Args:
         env: 仿真环境实例
         num_episodes: 要生成的 episode 数量
     
-    Returns:
-        Episode 对象列表
+    Yields:
+        Episode 对象
     """
 ```
 
 #### generate_parallel()
 
-并行生成 episodes。
+并行生成 episodes（迭代器）。
 
 ```python
 def generate_parallel(
     self,
     env: BaseSimEnv,
     num_episodes: int,
-    num_workers: int = 4
-) -> List[Episode]:
+    num_workers: int = 4,
+    batch_size: int = 20
+) -> Iterator[Episode]:
     """
-    使用多进程并行生成 episodes。
+    多进程并行生成，使用小批次动态调度。
     
     Args:
         env: 仿真环境实例
         num_episodes: 要生成的 episode 数量
         num_workers: 工作进程数
+        batch_size: 每进程每批 episode 数量
     
-    Returns:
-        Episode 对象列表
+    Yields:
+        Episode 对象
     """
 ```
 
@@ -149,21 +151,35 @@ def load_scene(self, scene_path: str) -> SceneInfo:
 def get_scene_info(self) -> SceneInfo:
     """获取当前场景信息"""
 
-def sample_navigable_point(self) -> NavPoint:
+def is_navigable(self, position: List[float], radius: float = 0.0) -> bool:
+    """检查位置是否可导航"""
+
+def sample_navigable_point(
+    self,
+    region_mask: Optional[Any] = None,
+    max_attempts: int = 100
+) -> Optional[NavPoint]:
     """在可导航区域内采样点"""
 
-def generate_grid_points(self, spacing: float) -> List[NavPoint]:
-    """按网格间距生成可导航点"""
+def get_shortest_path(
+    self,
+    start: List[float],   # [x, y, z]
+    goal: List[float]
+) -> Optional[List[NavPoint]]:
+    """计算最短路径（仅全局 A*）"""
 
-def get_shortest_path(self, start: NavPoint, goal: NavPoint) -> Optional[List[NavPoint]]:
-    """计算最短路径"""
+def check_path_exists(self, start: List[float], goal: List[float]) -> bool:
+    """快速检查起点到终点是否存在可行路径"""
 
 def plan_full_trajectory(
     self,
-    path: List[NavPoint],
+    start: List[float],
+    goal: List[float],
+    start_theta: Optional[float] = None,
+    goal_theta: Optional[float] = None,
     planner_config: Optional[Dict] = None
-) -> List[TrajectoryStep]:
-    """规划完整轨迹（含速度、动作等）"""
+) -> Optional[List[Dict]]:
+    """规划完整轨迹（全局 A* + 局部平滑 + 速度规划）"""
 
 def get_objects(self) -> List[Dict]:
     """获取场景中的物体列表（ObjectNav 用）"""
@@ -242,7 +258,8 @@ class GridAStarPlanner:
         occupied_thresh: float,
         robot_radius: float,
         heuristic_weight: float = 1.0,
-        allow_diagonal: bool = True
+        allow_diagonal: bool = True,
+        snap_search_radius: float = 1.0
     ):
         """
         Args:
@@ -254,6 +271,7 @@ class GridAStarPlanner:
             robot_radius: 机器人半径
             heuristic_weight: 启发式权重
             allow_diagonal: 是否允许对角移动
+            snap_search_radius: 无效点修正时的最大搜索半径（米）
         """
 ```
 
@@ -264,41 +282,57 @@ class GridAStarPlanner:
 ```python
 def plan(
     self,
-    start: Tuple[float, float],
-    goal: Tuple[float, float]
-) -> Optional[List[Tuple[float, float]]]:
+    start_world: Tuple[float, float],
+    goal_world: Tuple[float, float]
+) -> PlanResult:
     """
     规划从起点到目标的路径。
     
     Args:
-        start: 起点 (x, y) 世界坐标
-        goal: 目标 (x, y) 世界坐标
+        start_world: 起点 (x, y) 世界坐标
+        goal_world: 目标 (x, y) 世界坐标
     
     Returns:
-        路径点列表，或 None 表示无路径
+        PlanResult: 含 path、start_adjusted、goal_adjusted、actual_start、actual_goal
     """
 ```
+
+`PlanResult` 为 dataclass，包含 `path`、`start_adjusted`、`goal_adjusted`、`actual_start`、`actual_goal` 等字段。
 
 ---
 
 ## TwoStageTrajectoryPlanner
 
-两阶段轨迹规划器：全局 A* + 局部平滑（MPC/DWA/TEB）。
+两阶段轨迹规划器：全局 A* + 局部平滑（MPC/DWA/TEB）+ S 曲线速度规划。
 
 ### 类定义
 
 ```python
-from navarena_gen.planning.trajectory_planner import TwoStageTrajectoryPlanner
+from navarena_gen.planning.trajectory_planner import TwoStageTrajectoryPlanner, RobotConfig
 
 class TwoStageTrajectoryPlanner:
     def __init__(
         self,
-        astar: GridAStarPlanner,
-        robot_config: RobotConfig,
-        local_planner: str = "mpc",  # "mpc" | "dwa" | "teb"
-        **kwargs
+        config: RobotConfig,
+        pgm_map: np.ndarray,
+        resolution: float,
+        origin: List[float],
+        free_thresh: float,
+        occupied_thresh: float,
+        z_coordinate: float = -0.9,
+        planner_config: Optional[Dict] = None
     ):
-        """初始化轨迹规划器"""
+        """
+        Args:
+            config: 机器人配置（RobotConfig）
+            pgm_map: PGM 占据栅格
+            resolution: 地图分辨率
+            origin: 地图原点
+            free_thresh: 自由空间阈值
+            occupied_thresh: 占据空间阈值
+            z_coordinate: Z 坐标
+            planner_config: 规划器配置（local_planner、astar、mpc/dwa/teb 等）
+        """
 ```
 
 ### 方法
@@ -308,20 +342,22 @@ class TwoStageTrajectoryPlanner:
 ```python
 def plan(
     self,
-    path: List[Tuple[float, float]],
-    start_rotation: float,
-    goal_rotation: Optional[float] = None
-) -> List[TrajectoryStep]:
+    start_world: Tuple[float, float],
+    goal_world: Tuple[float, float],
+    start_theta: float = 0.0,
+    goal_theta: float = 0.0
+) -> List[Dict]:
     """
-    将路径规划为完整轨迹（含速度、动作）。
+    从起点到终点规划完整轨迹。
     
     Args:
-        path: 2D 路径点列表
-        start_rotation: 起点朝向（弧度）
-        goal_rotation: 目标朝向（可选）
+        start_world: 起点 (x, y) 世界坐标
+        goal_world: 终点 (x, y) 世界坐标
+        start_theta: 起点朝向（弧度）
+        goal_theta: 终点朝向（弧度）
     
     Returns:
-        TrajectoryStep 列表
+        轨迹点列表（含 position、rotation、velocity 等）
     """
 ```
 
@@ -329,69 +365,76 @@ def plan(
 
 ## DatasetWriter
 
-数据集写入器，将 Episode 序列化为 JSON。
+Episode 元数据写入器（Parquet 格式 v1.0.0）。
+
+### 实例方法
+
+```python
+ds_writer = DatasetWriter(base_dir: str)
+
+def add_episode(self, episode: Episode, chunk_index: int) -> None:
+    """添加 episode 元数据"""
+
+def write(self) -> str:
+    """写入 meta/episodes.parquet，返回路径"""
+
+def write_info(
+    self,
+    *,
+    dataset_name: str,
+    scene_path: str,
+    task_type: str,
+    split: str,
+    num_episodes: int,
+    num_chunks: int,
+    chunk_size: int = 1000,
+    extra: Optional[Dict] = None
+) -> str:
+    """写入 meta/info.json，返回路径"""
+```
 
 ### 静态方法
 
-#### write_dataset()
-
 ```python
-@staticmethod
-def write_dataset(
-    dataset: VLNDataset,
-    output_path: str,
-    indent: int = 2,
-    ensure_ascii: bool = False
-) -> None:
-    """将 VLNDataset 写入 JSON 文件"""
-```
-
-#### write_episodes()
-
-```python
-@staticmethod
-def write_episodes(
-    episodes: List[Episode],
-    output_path: str,
-    dataset_name: str = "navarena_vln",
-    version: str = "1.0.0",
-    metadata: Dict[str, Any] = None,
-    indent: int = 2,
-    ensure_ascii: bool = False
-) -> None:
-    """将 Episode 列表写入 JSON 文件"""
+DatasetWriter.write_checkpoint(state: CheckpointState, path: str) -> None
+DatasetWriter.read_checkpoint(path: str) -> Optional[CheckpointState]
+DatasetWriter.consolidate_episode_metadata(base_dir: str) -> List[Episode]
+DatasetWriter.consolidate_chunks_to_meta(base_dir: str) -> str
+DatasetWriter.get_max_episode_index(episodes: List[Episode], split: str) -> int
 ```
 
 ---
 
 ## TrajectoryWriter
 
-GT 轨迹文件写入器。
+GT 轨迹写入器（Parquet 分块格式）。
+
+### 实例方法
+
+```python
+traj_writer = TrajectoryWriter(
+    base_dir: str,
+    chunk_size: int = 1000,
+    start_chunk_index: int = 0,
+    episode_writer: Optional[ParquetEpisodeWriter] = None
+)
+
+def add_episode(
+    self,
+    episode_id: str,
+    trajectory: List[TrajectoryStep]
+) -> int:
+    """缓冲轨迹步骤，返回 chunk 索引"""
+
+def close(self) -> int:
+    """刷新剩余数据，返回写入的 chunk 总数"""
+```
 
 ### 静态方法
 
-#### write_trajectory()
-
 ```python
-@staticmethod
-def write_trajectory(
-    episode_id: str,
-    trajectory: List[TrajectoryStep],
-    output_path: str,
-    actions: List[int] = None,
-    action_names: List[str] = None,
-    indent: int = 2,
-    ensure_ascii: bool = False
-) -> None:
-    """将 GT 轨迹写入 JSON 文件"""
-```
-
-#### get_trajectory_filename()
-
-```python
-@staticmethod
-def get_trajectory_filename(episode_id: str) -> str:
-    """生成轨迹文件名，如 train_000001_gt.json"""
+TrajectoryWriter.scan_existing_chunks(base_dir: str) -> int
+"""返回已完整写入的 chunk 目录数量"""
 ```
 
 ---
@@ -424,20 +467,35 @@ class GeneratorConfig(BaseConfig):
 def from_yaml(cls, path, **overrides) -> "GeneratorConfig":
     """从 YAML 文件加载配置"""
 
+@classmethod
+def from_files(
+    cls,
+    base_config: str,
+    env_config: Optional[str] = None,
+    task_config: Optional[str] = None
+) -> "GeneratorConfig":
+    """从多个 YAML 文件合并加载"""
+
 def validate(self) -> None:
     """验证配置有效性"""
 
 def get_resolved_scene_path(self) -> str:
     """返回场景资产的绝对路径"""
 
+def get_scene_relative_path(self) -> str:
+    """返回 scene_path（相对路径）"""
+
 def get_scene_id(self) -> str:
     """从 manifest.json 获取 scene_id"""
 
 def get_output_base_dir(self) -> str:
-    """返回输出基础目录（含 task_type）"""
+    """返回输出基础目录：datasets/{dataset_name}/{scene_path}/{task_type}"""
+
+def get_scene_dir(self) -> str:
+    """返回数据集场景目录：datasets/{dataset_name}/{scene_path}"""
 
 def get_dataset_root(self) -> str:
-    """返回数据集根目录"""
+    """返回数据集根目录：datasets/{dataset_name}"""
 ```
 
 ---
@@ -455,26 +513,34 @@ config = GeneratorConfig.from_yaml("configs/examples/pointnav_example.yaml")
 config.validate()
 
 # 创建环境
-env = BaseSimEnv.init(config.env_type, config)
+env = BaseSimEnv.init(config.env_type, config.env_config)
 scene_info = env.load_scene(config.get_resolved_scene_path())
 
-# 创建生成器
-generator = BaseGenerator.init(config.task_type, config)
-
-# 生成 episodes
-episodes = generator.generate(env, config.num_episodes)
-
-# 写入数据
-output_path = config.get_output_base_dir()
-DatasetWriter.write_episodes(
-    episodes,
-    f"{output_path}/{config.split}.json",
-    dataset_name=config.dataset_name,
-    metadata={"scene_id": scene_info.scene_id}
+# 创建生成器和写入器
+generator = BaseGenerator.init(config.task_type, config.task_config)
+output_dir = config.get_output_base_dir()
+ds_writer = DatasetWriter(output_dir)
+traj_writer = TrajectoryWriter(
+    output_dir,
+    chunk_size=1000,
+    episode_writer=ds_writer.episode_writer,
 )
 
-for ep in episodes:
-    if ep.gt_path and ep.gt_path.trajectory:
-        traj_path = f"{output_path}/gt_trajectories/{TrajectoryWriter.get_trajectory_filename(ep.episode_id)}"
-        TrajectoryWriter.write_trajectory(ep.episode_id, ep.gt_path.trajectory, traj_path)
+# 流式生成并写入 Parquet
+for episode in generator.generate(env, config.num_episodes):
+    if episode.gt_path and episode.gt_path.trajectory:
+        chunk_idx = traj_writer.add_episode(episode.episode_id, episode.gt_path.trajectory)
+        ds_writer.add_episode(episode, chunk_index=chunk_idx)
+
+traj_writer.close()
+ds_writer.consolidate_chunks_to_meta(output_dir)
+ds_writer.write_info(
+    dataset_name=config.dataset_name,
+    scene_path=config.get_scene_relative_path(),
+    task_type=config.task_type,
+    split=config.split,
+    num_episodes=...,
+    num_chunks=...,
+    chunk_size=1000,
+)
 ```

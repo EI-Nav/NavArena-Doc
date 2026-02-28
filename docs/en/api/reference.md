@@ -34,16 +34,20 @@ For the complete Evaluation Framework API, see [Evaluation Framework API](navare
 
 ```python
 from navarena_gen.generators.base import BaseGenerator
+from navarena_gen.envs.base import BaseSimEnv
 from navarena_gen.config.base_config import GeneratorConfig
 
 # Load config
 config = GeneratorConfig.from_yaml("configs/examples/pointnav_example.yaml")
 
-# Create generator
-generator = BaseGenerator.init(config.task_type, config)
+# Create env and generator
+env = BaseSimEnv.init(config.env_type, config.env_config)
+env.load_scene(config.get_resolved_scene_path())
+generator = BaseGenerator.init(config.task_type, config.task_config)
 
-# Generate episodes
-episodes = generator.generate()
+# Stream episodes
+for episode in generator.generate(env, config.num_episodes):
+    ...
 ```
 
 ### Evaluation Framework

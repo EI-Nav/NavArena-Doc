@@ -3,31 +3,30 @@
 This document defines the Episode and trajectory format required by the evaluation framework (navarena-bench). **Episode core fields, Goals, Instructions, GT Path, and GT trajectory file format** are identical to the [Navigation Training Data Format](nav-data-format.md). This page only describes evaluation-specific differences and organization.
 
 !!! info "Relationship to Training Data"
-    The evaluation data format is a **subset** of the [training data format](nav-data-format.md) Episode structure. Training data from navarena-gen includes goal_images, rendered_videos, etc.; the evaluation framework only requires Episodes JSON and gt_trajectories.
+    The evaluation data format uses the **same Parquet format** as the [training data format](nav-data-format.md). Training data from navarena-gen includes goal_images, rendered_videos, etc.; the evaluation framework loads Episodes and GT trajectories from `meta/episodes.parquet` and `data/chunk-NNN/trajectories.parquet`.
 
 ## 1. Differences from Training Format
 
 | Aspect | Training Data (navarena-gen) | Evaluation Data (navarena-bench) |
 |--------|------------------------------|----------------------------------|
-| Directory structure | `scenes/{scene_id}/{task_type}/` | May be `datasets/{name}/{dataset}/{scene_id}/{task_type}/` or flat |
-| Metadata | dataset_meta.json, scene_meta.json | Optional; Episodes file metadata is sufficient |
-| Episode fields | Same as evaluation | Same as training; see [nav-data-format](nav-data-format.md) |
-| Additional files | goal_images, rendered_videos | Only gt_trajectories required (goal_images for ImageNav) |
+| Storage format | Parquet v1.0.0 | Same as training, Parquet |
+| Directory structure | `datasets/{name}/{scene_path}/{task_type}/` | Same as above |
+| Metadata | meta/info.json, dataset_meta.json, scene_meta.json | Same as above |
+| Episode fields | See [nav-data-format](nav-data-format.md) | Same as training |
+| Additional files | goal_images, rendered_videos (optional) | goal_images required for ImageNav |
 
-## 2. Top-Level Dataset Format
+## 2. Data Loading
 
-The top-level Episodes file structure supported by the evaluation framework:
+The evaluation framework loads data via `ParquetDatasetReader`:
 
-```json
-{
-  "version": "1.0.0",
-  "dataset_name": "navarena_bench",
-  "metadata": {
-    "task_types": ["pointnav", "imagenav", "objectnav", "vln"],
-    "splits": ["train", "val_seen", "val_unseen", "test"]
-  },
-  "episodes": []
-}
+```python
+from navarena_core.data.parquet_io import ParquetDatasetReader
+
+task_dir = "$NAVARENA_DATA_DIR/datasets/{dataset_name}/{scene_path}/{task_type}"
+reader = ParquetDatasetReader(task_dir)
+episodes = reader.read_episodes()
+# Trajectories read from data/chunk-NNN/trajectories.parquet by episode_id
+trajectory = reader.read_trajectory("train_000001")
 ```
 
 ## 3. Episode Fields
@@ -42,7 +41,7 @@ The top-level Episodes file structure supported by the evaluation framework:
 | `start_state` | object | Yes | `{position: [x,y,z], rotation: [qx,qy,qz,qw]}` |
 | `goals` | array | Yes | At least one goal; see goal_type table below |
 | `instructions` | array | VLN only | `[{instruction_text, language}]` |
-| `gt_path.trajectory_file` | string | Optional | Relative path to GT trajectory file |
+| `gt_path` / `chunk_index` | object / int32 | Optional | Trajectory linked via chunk_index in Parquet format |
 
 ### 3.2 Goals Required Fields by Task Type
 
@@ -90,25 +89,28 @@ E.g. `scene_path: "x2robot/17dc3367"` maps to `$NAVARENA_DATA_DIR/assets/x2robot
 
 ## 6. Evaluation Data File Organization
 
-Evaluation data is organized by scene and task type; `scene_path` is relative to `$NAVARENA_DATA_DIR/assets/`:
+Evaluation data shares the same directory structure as training data, using Parquet format:
 
 ```text
 $NAVARENA_DATA_DIR/
-├── datasets/                        # Or custom data root
+├── datasets/
 │   └── {dataset_name}/
-│       └── {dataset}/{scene_id}/    # e.g. x2robot/17dc3367
+│       └── {scene_path}/             # e.g. x2robot/17dc3367
 │           └── {task_type}/
-│               ├── train.json
-│               ├── val.json
-│               ├── gt_trajectories/
-│               │   └── {split}_{idx}_gt.json
-│               └── goal_images/    # Required for ImageNav
-└── assets/                          # V1 scene assets
+│               ├── meta/
+│               │   ├── info.json
+│               │   └── episodes.parquet
+│               ├── data/
+│               │   └── chunk-NNN/
+│               │       ├── trajectories.parquet
+│               │       └── episodes.parquet
+│               └── goal_images/      # Required for ImageNav (optional dir)
+└── assets/                           # V1 scene assets
 ```
 
 ## 7. Complete Examples
 
-PointNav, ImageNav, ObjectNav, and VLN Episode examples are in [Training Data Format - Complete Examples](nav-data-format.md) Section 9.
+PointNav, ImageNav, ObjectNav, and VLN Episode logical structure is in [Training Data Format](nav-data-format.md) Section 4.
 
 ## 8. Notes
 

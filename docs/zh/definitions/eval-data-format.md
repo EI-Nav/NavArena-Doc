@@ -3,31 +3,30 @@
 本文档定义评测框架（navarena-bench）所需的 Episode 与轨迹格式。**Episode 核心字段、Goals、Instructions、GT Path、GT 轨迹文件格式**与 [导航训练数据格式](nav-data-format.md) 完全一致，本文档仅说明评测数据的差异与组织方式。
 
 !!! info "与训练数据的关系"
-    评测数据格式是 [训练数据格式](nav-data-format.md) 中 Episode 部分的**子集**。训练数据由 navarena-gen 生成，含 goal_images、rendered_videos 等附加文件；评测框架仅需 Episodes JSON 与 gt_trajectories。
+    评测数据格式与 [训练数据格式](nav-data-format.md) 使用**同一套 Parquet 格式**。训练数据由 navarena-gen 生成，含 goal_images、rendered_videos 等附加文件；评测框架从 `meta/episodes.parquet` 和 `data/chunk-NNN/trajectories.parquet` 加载 Episode 与 GT 轨迹。
 
 ## 1. 与训练格式的主要区别
 
 | 维度 | 训练数据（navarena-gen 输出） | 评测数据（navarena-bench 输入） |
 |------|------------------------------|----------------------------------|
-| 目录结构 | `scenes/{scene_id}/{task_type}/` | 可为 `datasets/{name}/{dataset}/{scene_id}/{task_type}/` 或扁平结构 |
-| 元数据 | dataset_meta.json、scene_meta.json | 可选；Episodes 文件内 metadata 即可 |
-| Episode 字段 | 与评测一致 | 与训练一致，参见 [nav-data-format](nav-data-format.md#4-episode) |
-| 附加文件 | goal_images、rendered_videos | 仅需 gt_trajectories（ImageNav 需 goal_images） |
+| 存储格式 | Parquet v1.0.0 | 与训练相同，Parquet |
+| 目录结构 | `datasets/{name}/{scene_path}/{task_type}/` | 同上 |
+| 元数据 | meta/info.json、dataset_meta.json、scene_meta.json | 同上 |
+| Episode 字段 | 参见 [nav-data-format](nav-data-format.md) | 与训练一致 |
+| 附加文件 | goal_images、rendered_videos（可选） | ImageNav 需 goal_images |
 
-## 2. 顶层数据集格式
+## 2. 数据加载方式
 
-评测框架支持的 Episodes 文件顶层结构：
+评测框架通过 `ParquetDatasetReader` 从任务目录加载数据：
 
-```json
-{
-  "version": "1.0.0",
-  "dataset_name": "navarena_bench",
-  "metadata": {
-    "task_types": ["pointnav", "imagenav", "objectnav", "vln"],
-    "splits": ["train", "val_seen", "val_unseen", "test"]
-  },
-  "episodes": []
-}
+```python
+from navarena_core.data.parquet_io import ParquetDatasetReader
+
+task_dir = "$NAVARENA_DATA_DIR/datasets/{dataset_name}/{scene_path}/{task_type}"
+reader = ParquetDatasetReader(task_dir)
+episodes = reader.read_episodes()
+# 轨迹按 episode_id 从 data/chunk-NNN/trajectories.parquet 读取
+trajectory = reader.read_trajectory("train_000001")
 ```
 
 ## 3. Episode 字段
@@ -42,7 +41,7 @@
 | `start_state` | object | 是 | `{position: [x,y,z], rotation: [qx,qy,qz,qw]}` |
 | `goals` | array | 是 | 至少一个目标，见下表 goal_type |
 | `instructions` | array | VLN 必需 | `[{instruction_text, language}]` |
-| `gt_path.trajectory_file` | string | 可选 | GT 轨迹文件相对路径 |
+| `gt_path` / `chunk_index` | object / int32 | 可选 | Parquet 格式中通过 chunk_index 关联轨迹 |
 
 ### 3.2 各任务类型的 Goals 必需字段
 
@@ -90,25 +89,28 @@
 
 ## 6. 评测数据文件组织结构
 
-评测数据按场景和任务类型组织，`scene_path` 为相对 `$NAVARENA_DATA_DIR/assets/` 的路径：
+评测数据与训练数据共享目录结构，使用 Parquet 格式：
 
 ```text
 $NAVARENA_DATA_DIR/
-├── datasets/                        # 或自定义数据根
+├── datasets/
 │   └── {dataset_name}/
-│       └── {dataset}/{scene_id}/    # 如 x2robot/17dc3367
+│       └── {scene_path}/            # 如 x2robot/17dc3367
 │           └── {task_type}/
-│               ├── train.json
-│               ├── val.json
-│               ├── gt_trajectories/
-│               │   └── {split}_{idx}_gt.json
-│               └── goal_images/    # ImageNav 必需
+│               ├── meta/
+│               │   ├── info.json
+│               │   └── episodes.parquet
+│               ├── data/
+│               │   └── chunk-NNN/
+│               │       ├── trajectories.parquet
+│               │       └── episodes.parquet
+│               └── goal_images/     # ImageNav 必需（可选目录）
 └── assets/                          # V1 场景资产
 ```
 
 ## 7. 完整示例
 
-PointNav、ImageNav、ObjectNav、VLN 的 Episode 示例见 [训练数据格式 - 完整示例](nav-data-format.md) 第 9 章。
+PointNav、ImageNav、ObjectNav、VLN 的 Episode 逻辑结构见 [训练数据格式](nav-data-format.md) 第 4 章。
 
 ## 8. 注意事项
 

@@ -34,16 +34,20 @@
 
 ```python
 from navarena_gen.generators.base import BaseGenerator
+from navarena_gen.envs.base import BaseSimEnv
 from navarena_gen.config.base_config import GeneratorConfig
 
 # 加载配置
 config = GeneratorConfig.from_yaml("configs/examples/pointnav_example.yaml")
 
-# 创建生成器
-generator = BaseGenerator.init(config.task_type, config)
+# 创建环境和生成器
+env = BaseSimEnv.init(config.env_type, config.env_config)
+env.load_scene(config.get_resolved_scene_path())
+generator = BaseGenerator.init(config.task_type, config.task_config)
 
-# 生成 episodes
-episodes = generator.generate()
+# 流式生成 episodes
+for episode in generator.generate(env, config.num_episodes):
+    ...
 ```
 
 ### 评测框架

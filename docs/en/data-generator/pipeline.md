@@ -36,12 +36,12 @@ Generate Episodes by task type (PointNav, ImageNav, ObjectNav, VLN), including s
 ### Input
 
 - **env**: Initialized simulation environment
-- **task_config**: min_distance, max_distance, grid_spacing, instruction_type, etc.
+- **task_config**: start_constraints, goal_constraints, trajectory_constraints (min_geodesic_distance, max_geodesic_distance, etc.), instruction_type
 
 ### Flow
 
-1. **Start sampling**: Grid sampling in navigable area by grid_spacing
-2. **Goal sampling**: Sample goals with min/max distance constraints
+1. **Start sampling**: Grid sampling in navigable area by start_constraints.grid_spacing
+2. **Goal sampling**: Sample goals with trajectory_constraints.min_geodesic_distance, max_geodesic_distance
 3. **GT trajectory**: Two-stage planning (global A* + local smoothing)
 4. **Task-specific logic**:
    - PointNav: Goal is 3D position
@@ -84,13 +84,21 @@ Generate natural language navigation instructions for VLN Episodes using a Strat
 
 ### Description
 
-Write Episodes to disk: Episodes JSON and GT trajectory files.
+Stream Episodes to Parquet chunks with crash recovery. Uses `DatasetWriter` and `TrajectoryWriter`; GT trajectories are buffered and written per chunk (default 1000 episodes per chunk).
 
 ### Output Files
 
-- `{split}.json`: Episode list
-- `gt_trajectories/{split}_{idx}_gt.json`: GT trajectories
+- `meta/episodes.parquet`: Consolidated episode index
+- `meta/info.json`: Task-level metadata
+- `data/chunk-NNN/trajectories.parquet`: GT trajectories (chunked)
+- `data/chunk-NNN/episodes.parquet`: Per-chunk episode metadata (incremental)
 - `scene_meta.json`, `dataset_meta.json`
+
+### Crash Recovery
+
+- Lightweight `.{split}_checkpoint.json` (< 1 KB) records progress
+- Use `--resume` to recover from checkpoint
+- Use `--append` to add episodes to existing dataset
 
 ---
 

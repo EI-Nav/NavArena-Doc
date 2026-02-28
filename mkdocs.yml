@@ -52,7 +52,7 @@ theme:
     - navigation.tracking
     - navigation.tabs
     - navigation.sections
-    - navigation.expand
+    - navigation.path
     - navigation.top
     - navigation.indexes
     - content.tabs.link
@@ -85,11 +85,7 @@ plugins:
             快速开始: Getting Started
             安装指南: Installation
             快速入门: Quickstart
-            规范定义: Specifications
-            核心概念: Core Concepts
-            3D GS 资产规范: 3D GS Asset Specification
-            导航训练数据格式: Navigation Training Data Format
-            导航评测数据格式: Navigation Evaluation Data Format
+            用户指南: User Guide
             资产预处理: Asset Preprocessing
             Pipeline 步骤: Pipeline Steps
             CLI 命令: CLI Commands
@@ -104,7 +100,17 @@ plugins:
             智能体模块: Agents
             评测器模块: Evaluators
             回放模块: Replay
+            参考手册: Reference
+            3D GS 资产规范: 3D GS Asset Specification
+            导航训练数据格式: Navigation Training Data Format
+            导航评测数据格式: Navigation Evaluation Data Format
+            概念与架构: Concepts & Architecture
+            核心概念: Core Concepts
+            架构设计: Architecture
+            开发者指南: Developer Guide
+            贡献指南: Contributing
             扩展指南: Extending
+            更新日志: Changelog
             API 参考: API Reference
             API 文档: API Documentation
             数据生成器 API: Data Generator API
@@ -185,32 +191,41 @@ extra:
 nav:
   - 首页: index.md
   - 快速开始:
+    - getting-started/index.md
     - 安装指南: getting-started/installation.md
     - 快速入门: getting-started/quickstart.md
-  - 规范定义:
+  - 用户指南:
+    - guide/index.md
+    - 资产预处理:
+      - asset-preprocessing/index.md
+      - Pipeline 步骤: asset-preprocessing/pipeline-steps.md
+      - 配置说明: asset-preprocessing/configuration.md
+      - CLI 命令: asset-preprocessing/cli.md
+      - Web 查看器: asset-preprocessing/web-viewer.md
+    - 数据生成器:
+      - data-generator/index.md
+      - Pipeline 阶段详解: data-generator/pipeline.md
+      - 配置说明: data-generator/configuration.md
+      - 批量处理: data-generator/batch-processing.md
+    - 评测框架:
+      - navarena-bench/index.md
+      - 环境模块: navarena-bench/environment.md
+      - 智能体模块: navarena-bench/agents.md
+      - 评测器模块: navarena-bench/evaluators.md
+      - 回放模块: navarena-bench/replay.md
+  - 参考手册:
+    - reference/index.md
+    - API:
+      - 数据生成器 API: api/data-generator-api.md
+      - 评测框架 API: api/navarena-bench-api.md
+    - 数据格式:
+      - 3D GS 资产规范: definitions/gs-assets.md
+      - 导航训练数据格式: definitions/nav-data-format.md
+      - 导航评测数据格式: definitions/eval-data-format.md
+  - 概念与架构:
     - 核心概念: definitions/concepts.md
-    - 3D GS 资产规范: definitions/gs-assets.md
-    - 导航训练数据格式: definitions/nav-data-format.md
-    - 导航评测数据格式: definitions/eval-data-format.md
-  - 资产预处理:
-    - 概述: asset-preprocessing/overview.md
-    - Pipeline 步骤: asset-preprocessing/pipeline-steps.md
-    - 配置说明: asset-preprocessing/configuration.md
-    - CLI 命令: asset-preprocessing/cli.md
-    - Web 查看器: asset-preprocessing/web-viewer.md
-  - 数据生成器:
-    - 概述: data-generator/overview.md
-    - Pipeline 阶段详解: data-generator/pipeline.md
-    - 配置说明: data-generator/configuration.md
-    - 批量处理: data-generator/batch-processing.md
-  - 评测框架:
-    - 概述: navarena-bench/overview.md
-    - 环境模块: navarena-bench/environment.md
-    - 智能体模块: navarena-bench/agents.md
-    - 评测器模块: navarena-bench/evaluators.md
-    - 回放模块: navarena-bench/replay.md
+    - 架构设计: concepts/architecture.md
+  - 开发者指南:
+    - 贡献指南: dev/contributing.md
     - 扩展指南: navarena-bench/extending.md
-  - API 参考:
-    - API 文档: api/reference.md
-    - 数据生成器 API: api/data-generator-api.md
-    - 评测框架 API: api/navarena-bench-api.md
+    - 更新日志: dev/changelog.md

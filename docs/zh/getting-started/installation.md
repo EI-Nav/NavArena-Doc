@@ -72,7 +72,7 @@ cd ..
 cd navarena-gen && python scripts/generate_data.py --help
 
 # 评测框架
-cd navarena-bench && python scripts/eval.py --help
+cd navarena-bench && python -m navarena_bench.scripts.eval --help
 # 或使用 CLI 入口
 navarena-bench-eval --help
 
@@ -184,5 +184,5 @@ pip install -e ".[web]"
 !!! tip "下一步"
     安装完成后，继续阅读：
     - **[快速入门](quickstart.md)** - 了解如何使用各模块
-    - **[数据生成器概述](../data-generator/overview.md)** - 深入了解数据生成流程
-    - **[评测框架概述](../navarena-bench/overview.md)** - 了解评测框架架构
+    - **[数据生成器概述](../data-generator/)** - 深入了解数据生成流程
+    - **[评测框架概述](../navarena-bench/)** - 了解评测框架架构

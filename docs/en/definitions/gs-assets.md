@@ -120,6 +120,8 @@ def generate_scene_id(original_name: str, dataset: str) -> str:
 
 #### source (Provenance, Required)
 
+The `source` field in manifest.json records scene provenance; navarena-forge generates it automatically. Components such as navarena-core use this field to resolve the source dataset.
+
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `dataset` | string | Yes | Source dataset enumeration value |

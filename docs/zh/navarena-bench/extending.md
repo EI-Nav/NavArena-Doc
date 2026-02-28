@@ -1,8 +1,40 @@
 # 扩展指南
 
-本文档介绍如何扩展评测框架，包括添加新的环境、智能体、评测器和指标。
+本文档介绍如何扩展 NavArena 各模块，包括资产预处理、数据生成器和评测框架的扩展方式。
 
-## 扩展概述
+## 各模块扩展概览
+
+| 模块 | 扩展点 | 注册机制 |
+|------|--------|----------|
+| **navarena-forge** | 新 Pipeline 步骤 | `@StepRegistry.register("name")` |
+| **navarena-gen** | 新任务、环境、指令生成器 | `BaseGenerator` / `BaseSimEnv` / `BaseInstructionGenerator` |
+| **navarena-bench** | 环境、智能体、评测器、指标、回放器 | `@Env.register` / `@Agent.register` 等 |
+
+---
+
+## 资产预处理扩展（navarena-forge）
+
+新增 Pipeline 步骤只需三步：
+
+1. 在 `steps/` 下创建继承 `ProcessingStep` 的类
+2. 使用 `@StepRegistry.register("my_step")` 注册
+3. 在 `steps/__init__.py` 中导入，并在 `pipeline.yaml` 中加入该步骤
+
+详见 [Pipeline 步骤](../asset-preprocessing/pipeline-steps.md)。
+
+---
+
+## 数据生成器扩展（navarena-gen）
+
+- **新任务**：继承 `BaseGenerator`，使用 `@BaseGenerator.register("task_type")` 注册
+- **新环境**：继承 `BaseSimEnv`，使用 `@BaseSimEnv.register("env_type")` 注册
+- **新指令生成器**（VLN）：继承 `BaseInstructionGenerator`，使用 `@BaseInstructionGenerator.register("strategy")` 注册
+
+配置中通过 `task_type`、`env_type`、`instruction_strategy` 指定。详见 [数据生成器 API](../api/data-generator-api.md)。
+
+---
+
+## 评测框架扩展（navarena-bench）
 
 评测框架采用注册机制，可以轻松添加新组件：
 

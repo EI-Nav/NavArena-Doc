@@ -120,6 +120,8 @@ def generate_scene_id(original_name: str, dataset: str) -> str:
 
 #### source（溯源，必填）
 
+manifest.json 的 `source` 字段记录场景溯源信息，navarena-forge 自动生成。navarena-core 等组件通过此字段解析来源数据集。
+
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | `dataset` | string | 是 | 来源数据集枚举值 |

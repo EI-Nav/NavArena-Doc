@@ -277,7 +277,7 @@ Edit the evaluation configuration file.
 ### 3. Run Evaluation
 
 ```bash
-python scripts/eval.py --config configs/eval/default_eval.yaml
+python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
 ```
 
 ### 4. View Results
@@ -309,4 +309,3 @@ The framework is designed for high extensibility:
     - View **[Evaluator Module](evaluators.md)** usage
     - Learn about the **[Replay Module](replay.md)**
     - Learn how to **[Extend the Framework](extending.md)**
-- Learn how to **[Extend the Framework](extending.md)**

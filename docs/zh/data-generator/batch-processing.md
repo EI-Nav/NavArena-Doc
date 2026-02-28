@@ -44,22 +44,38 @@ for scene_id in scenes:
 ```bash
 python scripts/generate_data.py \
     --config configs/examples/vln_zh_example.yaml \
-    --parallel --num-workers 4 --io-workers 8
+    --parallel --num-workers 4 --batch-size 20
 ```
 
-### 参数
+### 并行与分块参数
 
 | 参数 | 说明 | 默认 |
 |------|------|------|
 | `--parallel` | 启用并行 Episode 生成 | `false` |
 | `--num-workers` | 工作进程数 | `4` |
-| `--io-workers` | 并行 I/O 写入线程数 | `8` |
+| `--batch-size` | 每进程每批 episode 数量 | `20` |
+| `--chunk-size` | Parquet 每块 episode 数量 | `1000` |
+
+## 断点续传与追加模式
+
+- **`--resume`**：从 checkpoint 恢复。若存在 `.{split}_checkpoint.json`，则从上次进度继续，跳过已完成的 episodes。
+- **`--append`**：向已有数据集追加。读取现有 `meta/episodes.parquet`，新 episode ID 从最大序号 +1 开始。
+- **`--checkpoint-interval`**：每 N 个 episode 保存一次 checkpoint（默认 50）。
+
+```bash
+# 崩溃后恢复
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --resume
+
+# 向已有数据集追加 500 个 episode
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml \
+    --num-episodes 500 --append
+```
 
 ## 可恢复处理
 
-- 输出目录按 scene_id 和 task_type 组织
-- 同一 scene + task 重复运行会追加或覆盖 episodes
-- 建议通过 `split` 或输出目录区分不同批次
+- 输出目录按 scene_path 和 task_type 组织
+- 使用 `--resume` 可从 checkpoint 恢复
+- 使用 `--append` 可向已有数据集追加
 
 ## 轨迹渲染
 
@@ -72,9 +88,9 @@ python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
 # 渲染其他任务类型的轨迹
 python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
 
-# 显式指定数据路径（相对于 $NAVARENA_DATA_DIR/datasets/）
+# 显式指定任务目录（相对于 $NAVARENA_DATA_DIR/datasets/，含 meta/ 与 data/）
 python scripts/render_episodes.py --scene x2robot/17dc3367 \
-    --trajectories-dir navarena_vln/x2robot/17dc3367/imagenav/gt_trajectories
+    --dataset-name navarena_dataset_v1 --task pointnav
 ```
 
 ## 数据验证
@@ -85,11 +101,11 @@ python scripts/render_episodes.py --scene x2robot/17dc3367 \
 # 使用 --scene + --task 快捷方式
 python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav
 
-# 相对路径
-python scripts/validate_data.py navarena_vln/x2robot/17dc3367/pointnav/train.json
+# 使用 --scene + --task + --dataset-name 指定任务
+python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --dataset-name navarena_dataset_v1
 
-# 验证目录下所有 JSON 文件
-python scripts/validate_data.py navarena_vln/ --all
+# 验证目录下所有数据集
+python scripts/validate_data.py navarena_dataset_v1/ --all
 
 # 检查引用的文件是否存在
 python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --check-files
@@ -113,23 +129,29 @@ python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
 
 ## 输出目录结构
 
+所有路径相对于 `$NAVARENA_DATA_DIR/datasets/`：
+
 ```
-navarena_data/
+{dataset_name}/
 ├── dataset_meta.json
-└── scenes/
-    └── {scene_id}/
-        ├── scene_meta.json
-        └── {task_type}/
-            ├── train.json
-            ├── gt_trajectories/
-            ├── goal_images/        # ImageNav
-            └── rendered_videos/
+└── {scene_path}/
+    ├── scene_meta.json
+    └── {task_type}/
+        ├── meta/
+        │   ├── info.json
+        │   └── episodes.parquet
+        ├── data/
+        │   └── chunk-NNN/
+        │       ├── trajectories.parquet
+        │       └── episodes.parquet
+        ├── goal_images/        # ImageNav（可选）
+        └── rendered_videos/    # 可选
 ```
 
 ## 常见问题
 
 !!! question "场景未预处理"
-    确保场景已通过 [资产预处理](../asset-preprocessing/overview.md) 生成 V1 格式（manifest.json、nav_map.pgm 等）。
+    确保场景已通过 [资产预处理](../asset-preprocessing/) 生成 V1 格式（manifest.json、nav_map.pgm 等）。
 
 !!! question "ObjectNav 无物体"
     场景需包含 `labels.json`，可由资产预处理或语义检测生成。
@@ -139,4 +161,4 @@ navarena_data/
 
 !!! tip "下一步"
     - 学习 **[配置说明](configuration.md)**
-    - 了解 **[资产预处理](../asset-preprocessing/overview.md)** 流程
+    - 了解 **[资产预处理](../asset-preprocessing/)** 流程

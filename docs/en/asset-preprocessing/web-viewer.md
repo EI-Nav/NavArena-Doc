@@ -106,5 +106,5 @@ Visit `http://localhost:41005/` for:
 - Orbit / pan / zoom controls
 
 !!! tip "Next Steps"
-    - Return to **[Overview](overview.md)** for architecture
+    - Return to **[Overview](index.md)** for architecture
     - Use **[CLI Commands](cli.md)** to process scenes

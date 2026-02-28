@@ -1,486 +1,317 @@
 # Navigation Training Data Format
 
-This document defines the directory structure, metadata file format, and Episode data format for embodied navigation training data.
+This document defines the directory structure, metadata file format, and Parquet data format (v1.0.0) for embodied navigation training data.
 
 !!! tip "Evaluation Data Format"
     For the Episode and trajectory format required by the evaluation framework (navarena-bench), see the [evaluation data format](eval-data-format.md), which defines a concise evaluation-specific specification.
 
 ## 1. Data Directory Structure
 
+All paths are relative to the `$NAVARENA_DATA_DIR` environment variable (must be set).
+
 ```
-navarena_data/
-├── dataset_meta.json                      # Dataset-level metadata
-└── scenes/
-    └── {scene_id}/                        # Organized by scene ID
-        ├── scene_meta.json                # Scene metadata
-        └── {task_type}/                   # pointnav/imagenav/objectnav/vln
-            ├── {split}.json               # Episodes file (train.json/val.json)
-            ├── gt_trajectories/           # GT trajectory files
-            │   └── {split}_{idx}_gt.json
-            ├── goal_images/               # Goal images (imagenav only, single camera)
-            │   └── {split}_{idx}_goal.jpg
-            └── rendered_videos/           # Rendered videos (multi-camera support)
-                └── {split}_{idx}/
-                    ├── rgb/                          # Single camera mode (backward compatible)
-                    │   └── frame_*.png
-                    ├── {camera_name_1}/              # Multi-camera mode
-                    │   ├── rgb/
-                    │   │   └── frame_*.png
-                    │   └── depth/ (optional)
-                    ├── {camera_name_2}/
-                    │   ├── rgb/
-                    │   └── depth/ (optional)
-                    └── ...
+$NAVARENA_DATA_DIR/
+├── assets/                              # Scene assets (navarena-forge preprocessing output)
+│   └── {group}/{scene_id}/
+├── datasets/                            # Generated datasets (navarena-gen output)
+│   └── {dataset_name}/
+│       ├── dataset_meta.json           # Dataset-level metadata
+│       └── {scene_path}/                # e.g. x2robot/17dc3367 or sage-3d/00666b7a
+│           ├── scene_meta.json         # Scene metadata
+│           └── {task_type}/             # pointnav/imagenav/objectnav/vln
+│               ├── meta/
+│               │   ├── info.json       # Task-level metadata
+│               │   └── episodes.parquet # Consolidated episode index (all chunks)
+│               ├── data/
+│               │   └── chunk-NNN/      # Chunked storage (default 1000 episodes per chunk)
+│               │       ├── trajectories.parquet  # GT trajectories
+│               │       └── episodes.parquet      # Per-chunk episode metadata (incremental)
+│               ├── goal_images/        # Goal images (imagenav only, optional)
+│               │   └── {episode_id}_goal.jpg
+│               └── rendered_videos/    # Rendered videos (optional, multi-camera support)
+│                   └── {episode_id}/
+│                       ├── rgb/                     # Single camera mode
+│                       └── {camera_name}/           # Multi-camera mode
+│                           ├── rgb/
+│                           └── depth/ (optional)
+└── shared/                             # Shared configs (camera, etc.)
 ```
 
-**Directory Structure Notes**:
-- **Single camera mode** (backward compatible): When using only one camera for rendering, frames are saved directly in the `rgb/` directory
-- **Multi-camera mode** (≥2 cameras): Each camera's rendered output is saved in a subdirectory named after the camera
+**Directory structure notes**:
+- **Parquet format**: Episode metadata and GT trajectories are stored in Parquet format, version 1.0.0
+- **Chunked storage**: Trajectories are written in chunks (default 1000 episodes per chunk), supporting streaming generation and crash recovery
+- **scene_path**: Typically `{group}/{scene_id}`, e.g. `x2robot/17dc3367`
 
 ## 2. Metadata File Formats
 
 ### 2.1 Dataset Metadata (dataset_meta.json)
 
-Located at `navarena_data/dataset_meta.json`:
+Located at `$NAVARENA_DATA_DIR/datasets/{dataset_name}/dataset_meta.json`:
 
 ```json
 {
-  "dataset_name": "navarena_bench",
-  "version": "2.0.0",
+  "dataset_name": "navarena_dataset_v1",
+  "format_version": "1.0.0",
   "created_date": "2026-01-26 10:30:00",
   "updated_date": "2026-01-26 15:00:00",
-  "scene_ids": ["17dc3367", "b7c4d92e"],
-  "task_types": ["pointnav", "imagenav", "objectnav"]
+  "scene_ids": ["17dc3367", "00666b7a"],
+  "scene_paths": ["x2robot/17dc3367", "sage-3d/00666b7a"],
+  "task_types": ["pointnav", "imagenav", "objectnav", "vln"]
 }
 ```
 
 ### 2.2 Scene Metadata (scene_meta.json)
 
-Located at `navarena_data/scenes/{scene_id}/scene_meta.json`:
+Located at `$NAVARENA_DATA_DIR/datasets/{dataset_name}/{scene_path}/scene_meta.json`:
 
 ```json
 {
   "scene_id": "17dc3367",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
+  "scene_path": "x2robot/17dc3367",
   "navigable_area": 45.6,
   "num_objects": 25,
   "task_types": ["pointnav", "imagenav"],
   "created_date": "2026-01-26 10:30:00",
-  "updated_date": "2026-01-26 15:00:00"
+  "updated_date": "2026-01-26 15:00:00",
+  "source": {
+    "dataset": "InteriorGS",
+    "original_id": "17dc3367",
+    "original_name": "room_01"
+  }
 }
 ```
 
-## 3. Episodes File Format
+### 2.3 Task-Level Metadata (meta/info.json)
 
-Located at `navarena_data/scenes/{scene_id}/{task_type}/{split}.json`:
+Located at `{task_dir}/meta/info.json`:
 
 ```json
 {
-  "version": "2.0.0",
-  "dataset_name": "navarena_bench",
-  "metadata": {
-    "created_date": "2026-01-26 10:30:00",
-    "description": "NavArena IMAGENAV dataset",
-    "task_type": "imagenav",
-    "split": "train",
-    "scene_id": "17dc3367",
-    "scene_path": "navarena_assets/x2robot/17dc3367",
-    "num_episodes": 50
-  },
-  "episodes": [...]
+  "dataset_name": "navarena_dataset_v1",
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "pointnav",
+  "split": "train",
+  "num_episodes": 5000,
+  "num_chunks": 5,
+  "chunk_size": 1000,
+  "format_version": "1.0.0",
+  "created_date": "2026-01-26 10:30:00",
+  "generation_runs": [...]
 }
 ```
 
-## 4. Episode Core Field Definitions
+## 3. Parquet Format Specification
+
+### 3.1 Episode Metadata Schema (episodes.parquet)
+
+Both `meta/episodes.parquet` and `data/chunk-NNN/episodes.parquet` use the same schema:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| episode_id | string | Unique identifier, format `{split}_{index}` e.g. `train_000001` |
+| chunk_index | int32 | Chunk index containing the trajectory |
+| scene_path | string | Scene path, e.g. `x2robot/17dc3367` |
+| task_type | string | Task type: pointnav / imagenav / objectnav / vln |
+| split | string | Data split: train / val_seen / val_unseen / test |
+| start_position_x, start_position_y, start_position_z | float64 | Start position [x, y, z] |
+| start_rotation_qx, qy, qz, qw | float64 | Start orientation quaternion [qx, qy, qz, qw] |
+| goal_type | string | Goal type: position / image / object |
+| goal_position_x, goal_position_y, goal_position_z | float64 | Goal position [x, y, z] |
+| goal_rotation_qx, qy, qz, qw | float64 | Goal orientation quaternion |
+| geodesic_distance | float32 | Geodesic distance (meters) |
+| euclidean_distance | float32 | Euclidean distance (meters) |
+| num_steps | int32 | GT trajectory step count |
+| total_time | float32 | Total time (seconds) |
+| avg_speed | float32 | Average speed (m/s) |
+| max_speed | float32 | Maximum speed (m/s) |
+| goal_image_path | string | Goal image path (imagenav) |
+| instruction_text | string | Natural language instruction (VLN) |
+
+### 3.2 Trajectory Schema (trajectories.parquet)
+
+`data/chunk-NNN/trajectories.parquet` stores GT trajectory steps:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| episode_id | string | Parent episode ID |
+| step | int32 | Step index, starting from 0 |
+| timestamp | float64 | Timestamp (seconds) |
+| position_x, position_y, position_z | float64 | Position [x, y, z] |
+| rotation_qx, qy, qz, qw | float64 | Orientation quaternion [qx, qy, qz, qw] |
+| action | string | Action name, e.g. start / forward / turn / stop |
+| action_id | int8 | Action ID |
+| linear_velocity | float32 | Linear velocity (m/s) |
+| angular_velocity | float32 | Angular velocity (rad/s) |
+| linear_velocity_x, linear_velocity_y | float32 | Linear velocity components |
+| angular_acceleration | float32 | Angular acceleration (rad/s²) |
+| curvature | float32 | Curvature (1/m) |
+
+### 3.3 Trajectory–Episode Association
+
+- Each episode's `chunk_index` indicates which chunk contains its GT trajectory
+- Filter `data/chunk-{N}/trajectories.parquet` by `episode_id` to retrieve the full trajectory
+
+## 4. Episode Logical Structure (Conceptual Layer)
+
+At the application layer, an Episode can be understood as the following structure (restored from Parquet as an `Episode` object):
 
 ### 4.1 Required Fields
 
-```json
+```python
 {
-  "episode_id": "string",           // Unique identifier, format: {split}_{index}, e.g. "train_000001"
-  "scene_path": "string",           // Scene folder path, e.g. "navarena_assets/x2robot/17dc3367"
-  "task_type": "string",            // Task type: "pointnav" | "imagenav" | "objectnav" | "vln"
+  "episode_id": "train_000001",
+  "scene_path": "x2robot/17dc3367",
+  "task_type": "pointnav",
   "start_state": {
-    "position": [float, float, float],      // Start position [x, y, z]
-    "rotation": [float, float, float, float] // Start rotation quaternion [qx, qy, qz, qw]
+    "position": [x, y, z],
+    "rotation": [qx, qy, qz, qw]  # quaternion
   },
-  "goals": [...]                    // Goal list, at least one goal required
+  "goals": [...]  # at least one goal
 }
 ```
 
-### 4.2 Optional Fields
+### 4.2 Goals Format (by goal_type)
 
-```json
-{
-  "split": "string",                // Dataset split: "train" | "val_seen" | "val_unseen" | "test"
-  "instructions": [...],            // Instruction list (required for VLN tasks)
-  "gt_path": {...}                  // Ground Truth trajectory info
-}
-```
-
-## 5. Goals Field Format (by goal_type)
-
-### 5.1 Position Type (Point Navigation)
-
+**Position (Point Navigation)**:
 ```json
 {
   "goal_type": "position",
-  "position": [float, float, float],        // Goal position [x, y, z]
-  "rotation": [float, float, float, float]  // Optional: goal orientation [qx, qy, qz, qw]
+  "position": [x, y, z],
+  "rotation": [qx, qy, qz, qw]
 }
 ```
 
-### 5.2 Image Type (Image Navigation)
-
+**Image (Image Navigation)**:
 ```json
 {
   "goal_type": "image",
-  "image_goal": {
-    "image_path": "string"                  // Goal image path (relative to episodes file)
-  },
-  "position": [float, float, float],        // Optional: ground truth position for evaluation
-  "rotation": [float, float, float, float] // Optional: ground truth orientation for evaluation
+  "image_goal": { "image_path": "goal_images/train_000001_goal.jpg" },
+  "position": [x, y, z],
+  "rotation": [qx, qy, qz, qw]
 }
 ```
 
-**Note**: `image_path` is relative to the episodes JSON file, e.g. `goal_images/train_000001_goal.jpg`
-
-### 5.3 Object Type (Object Navigation)
-
+**Object (Object Navigation)**:
 ```json
 {
   "goal_type": "object",
-  "object_category": "string",              // Target object category, e.g. "table", "chair"
-  "object_id": "string",                    // Optional: specific object instance ID, e.g. "table_0"
-  "position": [float, float, float]         // Optional: object position for evaluation
+  "object_category": "table",
+  "object_id": "table_0",
+  "position": [x, y, z]
 }
 ```
 
-## 6. Instructions Field Format (VLN Tasks)
+### 4.3 Instructions (VLN)
 
 ```json
 {
-  "instruction_text": "string",    // Natural language instruction
-  "language": "string"             // Language code, e.g. "zh-CN", "en-US"
+  "instruction_text": "Go to the end of the hallway, turn left and find the table",
+  "language": "en-US"
 }
 ```
 
-## 7. GT Path Field Format
+### 4.4 GT Path Statistics
 
 ```json
 {
-  "gt_path": {
-    "trajectory_file": "string",   // GT trajectory file path (relative to episodes file), e.g. "gt_trajectories/train_000001_gt.json"
-    "stats": {
-      // Required statistics
-      "geodesic_distance": float,  // GT path total length / geodesic distance (meters)
-      "num_steps": int,            // GT trajectory step count
-      
-      // Recommended statistics
-      "euclidean_distance": float, // Euclidean distance (meters)
-      "total_time": float,         // Total time (seconds)
-      
-      // Optional statistics
-      "num_waypoints": int,        // GT trajectory waypoint count
-      "avg_speed": float,           // Average speed (m/s)
-      "max_speed": float           // Maximum speed (m/s)
-    }
+  "stats": {
+    "geodesic_distance": 5.83,
+    "num_steps": 12,
+    "euclidean_distance": 5.2,
+    "total_time": 11.66,
+    "avg_speed": 0.5,
+    "max_speed": 0.6
   }
 }
 ```
 
-**Note**: `trajectory_file` is relative to the episodes JSON file
+## 5. Reading Data
 
-## 8. GT Trajectory File Format
+Use `navarena_core.data.parquet_io.ParquetDatasetReader`:
 
-Located at `navarena_data/scenes/{scene_id}/{task_type}/gt_trajectories/{episode_id}_gt.json`:
+```python
+from navarena_core.data.parquet_io import ParquetDatasetReader
 
-```json
-{
-  "episode_id": "string",
-  "trajectory": [
-    {
-      // Required fields
-      "step": int,                                // Step index, starting from 0
-      "position": [float, float, float],          // Current position [x, y, z]
-      "rotation": [float, float, float, float],   // Current orientation [qx, qy, qz, qw]
-      "timestamp": float,                         // Timestamp (seconds)
-      "action": "string",                         // Action name, e.g. "start", "forward", "stop", "turn"
-      "action_id": int,                           // Action ID
-      
-      // Optional dynamic info fields (backward compatible)
-      "linear_velocity": float,                   // Linear velocity (m/s)
-      "angular_velocity": float,                  // Angular velocity (rad/s)
-      "linear_velocity_x": float,                 // X-direction linear velocity component (m/s)
-      "linear_velocity_y": float,                 // Y-direction linear velocity component (m/s)
-      "angular_acceleration": float,              // Angular acceleration (rad/s²)
-      "curvature": float                          // Curvature (1/m)
-    }
-  ],
-  "actions": [int],                               // Optional: action ID sequence
-  "action_names": ["string"]                      // Optional: action name sequence
-}
+task_dir = "$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav"
+reader = ParquetDatasetReader(task_dir)
+
+# Read all episodes
+episodes = reader.read_episodes()
+
+# Read GT trajectory for a specific episode
+trajectory = reader.read_trajectory("train_000001")
 ```
 
-**Dynamic Info Fields**:
-- These dynamic info fields are optional, providing detailed kinematics information for robot motion
-- Only included when dynamic info was computed during trajectory generation
-- Older trajectory data may not include these fields; backward compatibility is maintained
-
-## 9. Complete Examples
-
-### 9.1 PointNav Example
-
-File location: `navarena_data/scenes/17dc3367/pointnav/train.json`
-
-```json
-{
-  "episode_id": "train_000001",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
-  "split": "train",
-  "task_type": "pointnav",
-  "start_state": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0, 1.0]
-  },
-  "goals": [
-    {
-      "goal_type": "position",
-      "position": [5.0, 3.0, 0.0],
-      "rotation": [0.0, 0.0, 0.383, 0.924]
-    }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 5.83,
-      "num_steps": 12,
-      "euclidean_distance": 5.2,
-      "total_time": 11.66
-    }
-  }
-}
-```
-
-### 9.2 ImageNav Example
-
-File location: `navarena_data/scenes/17dc3367/imagenav/train.json`
-
-```json
-{
-  "episode_id": "train_000001",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
-  "split": "train",
-  "task_type": "imagenav",
-  "start_state": {
-    "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.0, 0.0, 0.383, 0.924]
-  },
-  "goals": [
-    {
-      "goal_type": "image",
-      "image_goal": {
-        "image_path": "goal_images/train_000001_goal.jpg"
-      },
-      "position": [-0.9, -0.5, 0.0],
-      "rotation": [0.0, 0.0, -0.383, 0.924]
-    }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 6.2,
-      "num_steps": 15,
-      "euclidean_distance": 5.5,
-      "total_time": 12.4
-    }
-  }
-}
-```
-
-### 9.3 ObjectNav Example
-
-File location: `navarena_data/scenes/17dc3367/objectnav/train.json`
-
-```json
-{
-  "episode_id": "train_000001",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
-  "split": "train",
-  "task_type": "objectnav",
-  "start_state": {
-    "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.0, 0.0, 0.383, 0.924]
-  },
-  "goals": [
-    {
-      "goal_type": "object",
-      "object_category": "table",
-      "object_id": "table_0",
-      "position": [-2.78, -1.57, -0.50]
-    }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 4.5,
-      "num_steps": 10,
-      "euclidean_distance": 3.8,
-      "total_time": 9.0
-    }
-  }
-}
-```
-
-### 9.4 VLN Example
-
-File location: `navarena_data/scenes/17dc3367/vln/train.json`
-
-```json
-{
-  "episode_id": "train_000001",
-  "scene_path": "navarena_assets/x2robot/17dc3367",
-  "split": "train",
-  "task_type": "vln",
-  "start_state": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0, 1.0]
-  },
-  "instructions": [
-    {
-      "instruction_text": "Go to the end of the hallway, turn left and find the table",
-      "language": "en-US"
-    },
-    {
-      "instruction_text": "走到走廊尽头，左转找到桌子",
-      "language": "zh-CN"
-    }
-  ],
-  "goals": [
-    {
-      "goal_type": "position",
-      "position": [5.0, 3.0, 0.0]
-    }
-  ],
-  "gt_path": {
-    "trajectory_file": "gt_trajectories/train_000001_gt.json",
-    "stats": {
-      "geodesic_distance": 7.8,
-      "num_steps": 30,
-      "euclidean_distance": 6.5,
-      "total_time": 15.6
-    }
-  }
-}
-```
-
-## 10. Complete File Organization
+## 6. Complete Directory Example
 
 ```
-navarena-bench/
-├── navarena_data/
-│   ├── dataset_meta.json                    # Dataset-level metadata
-│   └── scenes/
-│       ├── 17dc3367/                        # Scene 1 (8-char hex scene_id)
-│       │   ├── scene_meta.json              # Scene metadata
-│       │   ├── pointnav/                    # PointNav task
-│       │   │   ├── train.json               # Train set episodes
-│       │   │   ├── val.json                 # Validation set episodes
-│       │   │   ├── gt_trajectories/         # GT trajectories
-│       │   │   │   ├── train_000000_gt.json
-│       │   │   │   ├── train_000001_gt.json
-│       │   │   │   └── ...
-│       │   │   └── rendered_videos/        # Rendered videos (multi-camera support)
-│       │   │       └── train_000000/
-│       │   │           ├── rgb/                           # Single camera
-│       │   │           └── {camera_name}/rgb/             # Multi-camera
-│       │   ├── imagenav/                    # ImageNav task
-│       │   │   ├── train.json
-│       │   │   ├── gt_trajectories/
-│       │   │   │   └── ...
-│       │   │   ├── goal_images/             # Goal images
-│       │   │   │   ├── train_000000_goal.jpg
-│       │   │   │   ├── train_000001_goal.jpg
-│       │   │   │   └── ...
-│       │   │   └── rendered_videos/
-│       │   │       └── ...
-│       │   ├── objectnav/                   # ObjectNav task
-│       │   │   └── ...
-│       │   └── vln/                         # VLN task
-│       │       └── ...
-│       └── b7c4d92e/                        # Scene 2
-│           └── ...
-└── navarena_assets/                           # V1 unified asset format
-    ├── x2robot/
-    │   └── 17dc3367/                        # 8-char hex scene_id
-    │       ├── manifest.json                # Scene metadata and provenance
-    │       ├── aligned.ply                  # Coordinate-normalized 3DGS point cloud
-    │       ├── nav_map.pgm                   # 2D occupancy grid map
-    │       ├── nav_map.yaml                  # ROS-compatible map config
-    │       ├── nav_mask.png                  # Navigable region mask
-    │       └── labels.json                   # Semantic object annotations (optional)
-    └── scannetpp/
-        └── e1f0a3b5/
-            └── ...
+$NAVARENA_DATA_DIR/
+├── assets/
+│   └── x2robot/
+│       └── 17dc3367/
+│           ├── manifest.json
+│           ├── aligned.ply
+│           ├── nav_map.pgm
+│           ├── nav_map.yaml
+│           ├── nav_mask.png
+│           └── labels.json
+└── datasets/
+    └── navarena_dataset_v1/
+        ├── dataset_meta.json
+        └── x2robot/
+            └── 17dc3367/
+                ├── scene_meta.json
+                ├── pointnav/
+                │   ├── meta/
+                │   │   ├── info.json
+                │   │   └── episodes.parquet
+                │   └── data/
+                │       ├── chunk-000/
+                │       │   ├── trajectories.parquet
+                │       │   └── episodes.parquet
+                │       └── chunk-001/
+                │           ├── trajectories.parquet
+                │           └── episodes.parquet
+                ├── imagenav/
+                │   ├── meta/
+                │   ├── data/
+                │   └── goal_images/
+                │       ├── train_000000_goal.jpg
+                │       └── ...
+                └── vln/
+                    ├── meta/
+                    └── data/
 ```
 
-## 11. Notes
+## 7. Notes
 
-1. **Relative paths**: All file references (`trajectory_file`, `image_path`) use paths relative to the episodes JSON file
-2. **Scene isolation**: Each scene's data is in its own directory without interference
-3. **Task isolation**: Different task types for the same scene are in separate directories
-4. **Episode ID format**: Format `{split}_{index}` (e.g. `train_000001`), unique within scene and task type directory
-5. **Metadata auto-maintenance**: `dataset_meta.json` and `scene_meta.json` are auto-created and updated during data generation
-6. **Multi-camera rendering**:
-   - Trajectory video rendering supports multi-camera rendering
-   - Goal images (ImageNav) still use single camera
-   - Camera config managed uniformly via YAML files
+1. **Environment variable**: `NAVARENA_DATA_DIR` must be set as the data root
+2. **Quaternion order**: Use `[qx, qy, qz, qw]` consistently (ROS/SciPy compatible)
+3. **Episode ID**: Format `{split}_{index}`, unique within task directory
+4. **Metadata auto-maintenance**: `dataset_meta.json`, `scene_meta.json`, and `meta/info.json` are auto-created and updated during data generation
+5. **Crash recovery**: Generator uses a lightweight checkpoint (`.{split}_checkpoint.json`) for crash recovery
+6. **goal_images and rendered_videos**: Optional directories, paths associated with episode_id
 
-## 12. Usage Examples
+## 8. Usage Examples
 
-### 12.1 Data Generation
+### 8.1 Data Generation
 
 ```bash
-# Generate VLN data
-python scripts/generate_data.py --config configs/examples/imagenav_example.yaml
+cd navarena-gen
+export NAVARENA_DATA_DIR=/path/to/data
+
+# Using config file
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
+
+# Command-line arguments
+python scripts/generate_data.py --env gs --task pointnav \
+    --scene x2robot/17dc3367 --num-episodes 1000
 ```
 
-### 12.2 Render Goal Images (Single Camera)
-
-All paths resolve under `$NAVARENA_DATA_DIR`. `--camera-config` defaults to `shared/camera.yaml`.
+### 8.2 Launch Web Viewer
 
 ```bash
-# Shorthand via --task (auto-derives episodes path and camera config)
-python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
-
-# Explicit episodes file (relative to $NAVARENA_DATA_DIR/datasets/)
-python scripts/render_episodes.py --scene x2robot/17dc3367 \
-    --episodes navarena_vln/x2robot/17dc3367/imagenav/train.json
+cd navarena-gen
+python scripts/run_viewer.py
+# Data directory resolved via $NAVARENA_DATA_DIR
 ```
-
-### 12.3 Render Trajectory Videos (Multi-Camera Support)
-
-```bash
-# Shorthand via --task to batch render trajectories (all cameras)
-python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
-
-# Render single trajectory
-python scripts/render_episodes.py --scene x2robot/17dc3367 \
-    --trajectory navarena_vln/x2robot/17dc3367/imagenav/gt_trajectories/train_000001_gt.json
-
-# Render only specified cameras
-python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav \
-    --camera-names left_gripper_camera_link camera_head_front_color_optical_frame
-
-# Custom camera config (relative to $NAVARENA_DATA_DIR/shared/)
-python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav \
-    --camera-config camera_v2.yaml
-
-# Render with depth maps
-python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav --rgbd
-```
-
-**Multi-camera rendering notes**:
-- Default: renders all cameras in config
-- Use `--camera-names` to render only specified cameras
-- In multi-camera mode, each camera's output is saved in a separate subdirectory

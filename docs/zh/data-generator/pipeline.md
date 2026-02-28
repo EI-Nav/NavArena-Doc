@@ -41,12 +41,12 @@
 ### 输入
 
 - **env**：已初始化的仿真环境
-- **task_config**：min_distance、max_distance、grid_spacing、instruction_type 等
+- **task_config**：start_constraints、goal_constraints、trajectory_constraints（min_geodesic_distance、max_geodesic_distance 等）、instruction_type
 
 ### 处理流程
 
-1. **起点采样**：在可导航区域内按 grid_spacing 网格采样
-2. **目标采样**：按 min_distance、max_distance 等约束采样目标
+1. **起点采样**：在可导航区域内按 start_constraints.grid_spacing 网格采样
+2. **目标采样**：按 trajectory_constraints.min_geodesic_distance、max_geodesic_distance 等约束采样目标
 3. **GT 轨迹规划**：两阶段（全局 A* + 局部平滑）
 4. **任务特定逻辑**：
    - PointNav：目标为 3D 位置
@@ -89,14 +89,22 @@
 
 ### 描述
 
-将 Episode 写入磁盘，包括 Episodes JSON 和 GT 轨迹文件。
+将 Episode 流式写入 Parquet 分块，支持断点续传。使用 `DatasetWriter` 和 `TrajectoryWriter`，GT 轨迹按 chunk 缓冲后写入，每块默认 1000 个 episode。
 
 ### 输出文件
 
-- `{split}.json`：Episodes 列表
-- `gt_trajectories/{split}_{idx}_gt.json`：GT 轨迹
+- `meta/episodes.parquet`：合并后的 Episode 索引
+- `meta/info.json`：任务级元信息
+- `data/chunk-NNN/trajectories.parquet`：GT 轨迹（分块）
+- `data/chunk-NNN/episodes.parquet`：每块 Episode 元数据（增量持久化）
 - `scene_meta.json`：场景元数据
 - `dataset_meta.json`：数据集级元数据
+
+### 断点续传
+
+- 轻量级 checkpoint 文件 `.{split}_checkpoint.json`（< 1 KB）记录进度
+- 使用 `--resume` 从 checkpoint 恢复
+- 使用 `--append` 向已有数据集追加 episode
 
 ---
 

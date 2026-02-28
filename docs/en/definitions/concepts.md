@@ -69,17 +69,22 @@ $NAVARENA_DATA_DIR/
 │   │       └── nav_mask.png
 │   └── scannetpp/
 │       └── ...
-└── datasets/                  # Generated datasets (navarena-gen output or custom)
+└── datasets/                  # Generated datasets (navarena-gen output, Parquet v1.0.0)
     └── {dataset_name}/
-        └── {dataset}/{scene_id}/
+        └── {scene_path}/     # e.g. x2robot/17dc3367
             └── {task_type}/
-                ├── train.json
-                ├── gt_trajectories/
-                └── goal_images/   # ImageNav only
+                ├── meta/
+                │   ├── info.json
+                │   └── episodes.parquet
+                ├── data/
+                │   └── chunk-NNN/
+                │       ├── trajectories.parquet
+                │       └── episodes.parquet
+                └── goal_images/   # ImageNav only (optional)
 ```
 
 - **assets/**: Preprocessed scenes from navarena-forge; used by navarena-gen and navarena-bench
-- **datasets/**: Output from navarena-gen; navarena-bench loads Episodes from here
+- **datasets/**: Output from navarena-gen (chunked Parquet storage); navarena-bench loads Episodes from here
 
 ## 5. Data Flow
 
@@ -112,8 +117,8 @@ flowchart TB
     end
     
     subgraph Output [Output]
-        EP[train.json]
-        GT[gt_trajectories/]
+        EP[meta/episodes.parquet]
+        GT[data/chunk-NNN/trajectories.parquet]
         GW --> EP
         GW --> GT
     end

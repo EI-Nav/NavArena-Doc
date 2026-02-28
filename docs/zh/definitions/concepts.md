@@ -69,17 +69,22 @@ $NAVARENA_DATA_DIR/
 │   │       └── nav_mask.png
 │   └── scannetpp/
 │       └── ...
-└── datasets/                  # 生成的数据集（由 navarena-gen 输出，或自定义）
+└── datasets/                  # 生成的数据集（由 navarena-gen 输出，Parquet 格式 v1.0.0）
     └── {dataset_name}/
-        └── {dataset}/{scene_id}/
+        └── {scene_path}/      # 如 x2robot/17dc3367
             └── {task_type}/
-                ├── train.json
-                ├── gt_trajectories/
-                └── goal_images/   # ImageNav 专用
+                ├── meta/
+                │   ├── info.json
+                │   └── episodes.parquet
+                ├── data/
+                │   └── chunk-NNN/
+                │       ├── trajectories.parquet
+                │       └── episodes.parquet
+                └── goal_images/   # ImageNav 专用（可选）
 ```
 
 - **assets/**：navarena-forge 预处理后的场景，navarena-gen 和 navarena-bench 都依赖此目录
-- **datasets/**：navarena-gen 的输出目录，navarena-bench 从此加载 Episode
+- **datasets/**：navarena-gen 的输出目录（Parquet 分块存储），navarena-bench 从此加载 Episode
 
 ## 5. 数据流示意
 
@@ -112,8 +117,8 @@ flowchart TB
     end
     
     subgraph Output [输出]
-        EP[train.json]
-        GT[gt_trajectories/]
+        EP[meta/episodes.parquet]
+        GT[data/chunk-NNN/trajectories.parquet]
         GW --> EP
         GW --> GT
     end

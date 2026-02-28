@@ -1,10 +1,42 @@
 # Extending Guide
 
-This document explains how to extend the evaluation framework with new environments, agents, evaluators, and metrics.
+This document explains how to extend NavArena modules: asset preprocessing, data generator, and evaluation framework.
 
-## Extension Overview
+## Module Extension Overview
 
-The framework uses a registration mechanism to add new components:
+| Module | Extension Point | Registry |
+|--------|-----------------|----------|
+| **navarena-forge** | New Pipeline steps | `@StepRegistry.register("name")` |
+| **navarena-gen** | New tasks, envs, instruction generators | `BaseGenerator` / `BaseSimEnv` / `BaseInstructionGenerator` |
+| **navarena-bench** | Env, Agent, Evaluator, Metric, Replayer | `@Env.register` / `@Agent.register` etc. |
+
+---
+
+## Asset Preprocessing (navarena-forge)
+
+To add a Pipeline step:
+
+1. Create a class inheriting `ProcessingStep` under `steps/`
+2. Register with `@StepRegistry.register("my_step")`
+3. Import in `steps/__init__.py` and add to `pipeline.yaml`
+
+See [Pipeline Steps](../asset-preprocessing/pipeline-steps.md).
+
+---
+
+## Data Generator (navarena-gen)
+
+- **New task**: Subclass `BaseGenerator`, register with `@BaseGenerator.register("task_type")`
+- **New environment**: Subclass `BaseSimEnv`, register with `@BaseSimEnv.register("env_type")`
+- **New instruction generator** (VLN): Subclass `BaseInstructionGenerator`, register with `@BaseInstructionGenerator.register("strategy")`
+
+Specify in config via `task_type`, `env_type`, `instruction_strategy`. See [Data Generator API](../api/data-generator-api.md).
+
+---
+
+## Evaluation Framework (navarena-bench)
+
+The framework uses a registration mechanism:
 
 - **New Environment** - Subclass `Env` and register
 - **New Agent** - Subclass `Agent` and register

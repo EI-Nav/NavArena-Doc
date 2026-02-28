@@ -277,7 +277,7 @@ eval_settings:
 ### 3. 运行评测
 
 ```bash
-python scripts/eval.py --config configs/eval/default_eval.yaml
+python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
 ```
 
 ### 4. 查看结果
