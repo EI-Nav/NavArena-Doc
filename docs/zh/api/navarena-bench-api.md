@@ -61,17 +61,16 @@ def init(cls, config: EvalCfg) -> 'Evaluator':
 
 ### 方法
 
-#### evaluate()
+#### eval()
 
-运行评测。
+运行评测。结果保存到 `output_path` 目录下的 `episode_results.json` 与 `summary.json`，不返回值。
 
 ```python
-def evaluate(self) -> Dict[str, Any]:
+def eval(self) -> None:
     """
     运行评测。
     
-    Returns:
-        评测结果字典
+    结果保存至 output_path 目录。
     """
 ```
 
@@ -172,15 +171,15 @@ def reset(self, episode: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
 执行一步。
 
 ```python
-def step(self, action: Dict[str, Any]) -> Tuple[Dict, float, bool, Dict]:
+def step(self, action: Dict[str, Any]) -> Dict[str, Any]:
     """
     执行一步动作。
     
     Args:
-        action: 动作字典
+        action: 动作字典 {"x": float, "y": float, "yaw": float}
     
     Returns:
-        (observation, reward, done, info)
+        字典，含 observation、reward、done、info
     """
 ```
 
@@ -315,22 +314,38 @@ class Dataset(ABC):
 
 ### 方法
 
-#### __iter__()
+#### get_episodes()
 
-迭代数据集。
+获取 episode 列表。
 
 ```python
-def __iter__(self) -> Iterator[Dict[str, Any]]:
-    """迭代数据集"""
+def get_episodes(self, num_episodes: Optional[int] = None) -> List[Dict[str, Any]]:
+    """
+    获取 episode 列表。
+    
+    Args:
+        num_episodes: 数量限制，None 表示全部
+    
+    Returns:
+        Episode 字典列表
+    """
 ```
 
-#### __len__()
+#### get_episode()
 
-获取数据集大小。
+根据 ID 获取单个 episode。
 
 ```python
-def __len__(self) -> int:
-    """获取数据集大小"""
+def get_episode(self, episode_id: str) -> Optional[Dict[str, Any]]:
+    """
+    获取单个 episode。
+    
+    Args:
+        episode_id: Episode 标识
+    
+    Returns:
+        Episode 字典或 None
+    """
 ```
 
 ## Metric
@@ -442,7 +457,7 @@ class EvalCfg(BaseConfig):
     eval_settings: Dict[str, Any] = field(default_factory=dict)
 ```
 
-`eval_settings` 默认包含：`num_episodes`、`max_steps_per_episode`、`save_trajectories`、`output_path`。
+`eval_settings` 默认包含：`num_episodes`、`max_steps_per_episode`、`save_trajectories`、`output_path`。`eval_type` 可选：`"pointnav"`、`"objectnav"`、`"imagenav"`、`"vln"`。
 
 ### EnvCfg
 
@@ -493,7 +508,7 @@ class AgentCfg(BaseConfig):
 ```python
 @dataclass
 class TaskCfg(BaseConfig):
-    task_type: str = ""  # "pointnav", "objectnav", "imagenav"
+    task_type: str = ""  # "pointnav", "objectnav", "imagenav", "vln"
 ```
 
 ## 工具函数
@@ -515,31 +530,3 @@ def get_logger(name: str) -> logging.Logger:
     """
 ```
 
-## 异常类
-
-### EvaluationError
-
-评测异常。
-
-```python
-class EvaluationError(Exception):
-    pass
-```
-
-### EnvironmentError
-
-环境异常。
-
-```python
-class EnvironmentError(EvaluationError):
-    pass
-```
-
-### AgentError
-
-智能体异常。
-
-```python
-class AgentError(EvaluationError):
-    pass
-```

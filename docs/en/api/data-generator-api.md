@@ -483,7 +483,7 @@ def get_resolved_scene_path(self) -> str:
     """Return absolute path to scene assets"""
 
 def get_scene_relative_path(self) -> str:
-    """Return scene_path (relative path)"""
+    """Return path relative to $NAVARENA_DATA_DIR: assets/{scene_path}"""
 
 def get_scene_id(self) -> str:
     """Get scene_id from manifest.json"""

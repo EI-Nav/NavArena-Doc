@@ -110,10 +110,10 @@ ViNT (Visual Navigation Transformer) 模型智能体。
 ```yaml
 agent:
   agent_type: "vint"
-  model_path: "/path/to/vint_model.pth"
   model_settings:
     checkpoint_path: "/path/to/checkpoint.pth"
-    device: "cuda:0"
+    config_path: "/path/to/config.yaml"  # 可选
+    device: "cuda:0"  # 可选
 ```
 
 #### 使用示例
@@ -121,7 +121,6 @@ agent:
 ```python
 config = AgentCfg(
     agent_type="vint",
-    model_path="/path/to/vint_model.pth",
     model_settings={
         "checkpoint_path": "/path/to/checkpoint.pth"
     }
@@ -142,7 +141,6 @@ GNM (General Navigation Model) 模型智能体。
 ```yaml
 agent:
   agent_type: "gnm"
-  model_path: "/path/to/gnm_model.pth"
   model_settings:
     checkpoint_path: "/path/to/checkpoint.pth"
 ```
@@ -156,7 +154,6 @@ NoMaD (Normalizing Flow Models for Robotic Navigation) 模型智能体。
 ```yaml
 agent:
   agent_type: "nomad"
-  model_path: "/path/to/nomad_model.pth"
   model_settings:
     checkpoint_path: "/path/to/checkpoint.pth"
 ```
@@ -170,10 +167,10 @@ agent:
 ```yaml
 agent:
   agent_type: "multimodal_nav"
-  model_path: "/path/to/model.pth"
   model_settings:
-    input_modalities: ["rgb", "depth"]
-    fusion_method: "concat"
+    checkpoint_path: "/path/to/model.pth"
+    input_modalities: ["rgb", "depth"]  # 可选
+    fusion_method: "concat"  # 可选
 ```
 
 ### LanguageNavAgent
@@ -321,8 +318,8 @@ class MyAgent(Agent):
 ```yaml
 agent:
   agent_type: "my_agent"
-  model_path: "/path/to/model.pth"
-  model_settings: {}
+  model_settings:
+    checkpoint_path: "/path/to/model.pth"
 ```
 
 ```python

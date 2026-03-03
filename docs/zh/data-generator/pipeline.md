@@ -6,11 +6,11 @@
 
 ### 描述
 
-加载 V1 统一资产格式（navarena_assets）下的场景，初始化路径规划器（A*）。
+加载 V1 统一资产格式（`$NAVARENA_DATA_DIR/assets/`）下的场景，初始化路径规划器（A*）。
 
 ### 输入
 
-- **scene_path**：场景目录路径（如 `navarena_assets/x2robot/17dc3367`）
+- **scene_path**：场景相对路径（如 `x2robot/17dc3367`），解析为 `$NAVARENA_DATA_DIR/assets/{scene_path}` 下的目录
 - **V1 资产文件**：
   - `manifest.json`（必需）
   - `nav_map.pgm`（必需）

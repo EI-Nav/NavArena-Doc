@@ -14,7 +14,7 @@ python -m navarena_forge run-pipeline \
     --source-dataset x2robot
 ```
 
-Output goes to `$NAVARENA_DATA_DIR/assets/`. For batch processing, see [Asset Preprocessing CLI](../asset-preprocessing/cli.md).
+Output is **written in-place** to the directory specified by `--scene-dir` (aligned.ply, nav_map.pgm, manifest.json, etc.). It does not automatically go to `$NAVARENA_DATA_DIR/assets/`. To centralize assets, place scene directories under `$NAVARENA_DATA_DIR/assets/` and pass the corresponding paths. For batch processing, see [Asset Preprocessing CLI](../asset-preprocessing/cli.md).
 
 ## Data Generation
 

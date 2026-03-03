@@ -43,6 +43,9 @@ NavArena 提供三层安装方式，适用于不同场景：
 
     # 以 editable 模式安装核心库
     pip install -e "navarena-core[rendering,export]"
+
+    # 可选：安装 CLIP（语义检测功能需要，需访问 GitHub）
+    pip install git+https://github.com/ultralytics/CLIP.git
     ```
 
 === "方式 B：手动创建 + lock 文件"
@@ -54,10 +57,13 @@ NavArena 提供三层安装方式，适用于不同场景：
 
     # 以 editable 模式安装核心库
     pip install -e "navarena-core[rendering,export]"
+
+    # 可选：安装 CLIP（语义检测功能需要，需访问 GitHub）
+    pip install git+https://github.com/ultralytics/CLIP.git
     ```
 
 !!! tip "lock 文件说明"
-    `requirements-lock.txt` 是从已验证的 `vln_data` 环境导出的精确版本快照（2026-03-03），包含 PyTorch 2.8.0 + CUDA 12.8。文件头部注明了生成日期和环境信息。
+    `requirements-lock.txt` 是从已验证的环境导出的精确版本快照（2026-03-03），包含 PyTorch 2.8.0 + CUDA 12.8。文件头部注明了生成日期和环境信息。CLIP 因需要从 GitHub 克隆（国内网络可能不稳定），已从 lock 文件中分离为单独安装步骤。
 
 ## 2. 使用 uv 工作空间安装
 
@@ -353,15 +359,27 @@ python scripts/run_viewer.py --data-dir vln_data
     npm install
     ```
 
-!!! question "网络问题"
-    若遇到下载缓慢，可使用国内镜像：
+!!! question "网络问题导致 `conda env create` 失败"
+    常见原因是 CLIP 等 GitHub 依赖在国内网络下载失败。`requirements-lock.txt` 已将 CLIP 分离为可选步骤，不会阻塞主安装流程。
+
+    `requirements-lock.txt` 已内置阿里云 pip 镜像（`--index-url https://mirrors.aliyun.com/pypi/simple/`），国内用户无需额外配置即可快速下载。若仍遇到问题，可尝试其他镜像：
     ```bash
-    # pip 镜像
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple <package>
+    # 临时使用清华镜像
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements-lock.txt
 
     # conda 镜像
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
     ```
+
+    若 CLIP 安装失败（`ConnectionResetError`），可稍后重试或使用代理：
+    ```bash
+    # 重试
+    pip install git+https://github.com/ultralytics/CLIP.git
+
+    # 通过代理
+    pip install --proxy http://your-proxy:port git+https://github.com/ultralytics/CLIP.git
+    ```
+    CLIP 仅用于语义检测（ObjectNav），不影响 PointNav/ImageNav/VLN 等核心功能。
 
 !!! question "权限错误"
     若遇到权限相关错误：

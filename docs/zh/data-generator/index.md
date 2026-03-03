@@ -9,7 +9,7 @@
 
 - **多任务支持** - PointNav、ImageNav、ObjectNav、VLN
 - **多环境支持** - 3D Gaussian Splatting（已实现）、Habitat / Isaac（占位）
-- **V1 资产格式** - 读取 `navarena_assets` 统一格式（manifest.json、nav_map.pgm 等）
+- **V1 资产格式** - 读取 `$NAVARENA_DATA_DIR/assets/` 下统一格式（manifest.json、nav_map.pgm 等）
 - **灵活指令生成** - Strategy 模式，支持 simple_direction、path_based、object_goal，中英文
 - **并行处理** - 多 Worker Episode 生成
 - **断点续传** - 轻量级 checkpoint，崩溃后可从上次进度恢复

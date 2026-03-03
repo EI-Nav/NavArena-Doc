@@ -9,7 +9,7 @@ The Data Generator (navarena-gen) is a multi-task Vision-Language Navigation (VL
 
 - **Multi-Task Support** - PointNav, ImageNav, ObjectNav, VLN
 - **Multi-Environment Support** - 3D Gaussian Splatting (implemented), Habitat / Isaac (placeholder)
-- **V1 Asset Format** - Reads unified `navarena_assets` (manifest.json, nav_map.pgm, etc.)
+- **V1 Asset Format** - Reads unified format under `$NAVARENA_DATA_DIR/assets/` (manifest.json, nav_map.pgm, etc.)
 - **Flexible Instruction Generation** - Strategy pattern: simple_direction, path_based, object_goal; Chinese and English
 - **Parallel Processing** - Multi-worker episode generation
 - **Crash Recovery** - Lightweight checkpoint, resume from last progress after crash

@@ -143,7 +143,7 @@ Vision-Language Navigation evaluator for instruction-following navigation.
 eval_type: "vln"
 
 task:
-  task_type: "languagenav"
+  task_type: "vln"
 
 agent:
   agent_type: "language_nav"
@@ -236,8 +236,8 @@ env:
 # Agent config
 agent:
   agent_type: "local"
-  model_path: "/path/to/model.pth"
-  model_settings: {}
+  model_settings:
+    checkpoint_path: "/path/to/model.pth"  # Model path via model_settings
   device: null
 
 # Task config
@@ -258,7 +258,6 @@ eval_settings:
   output_path: "./eval_results"
   max_steps_per_episode: 500
   save_trajectories: false
-  save_video: false
 ```
 
 ## Running Evaluation
@@ -272,7 +271,7 @@ python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
 ### Override Config
 
 ```bash
-python scripts/eval.py \
+python -m navarena_bench.scripts.eval \
     --config configs/eval/default_eval.yaml \
     --num-episodes 50 \
     --output-dir ./my_results
@@ -282,24 +281,18 @@ python scripts/eval.py \
 
 ```python
 from navarena_bench.evaluator import Evaluator
-from navarena_bench.configs.eval_config import EvalCfg
-import yaml
+from navarena_bench.scripts.eval import load_config_from_yaml
 
 # Load config
-with open("configs/eval/default_eval.yaml", "r") as f:
-    config_dict = yaml.safe_load(f)
-
-config = EvalCfg(**config_dict)
+config = load_config_from_yaml("configs/eval/default_eval.yaml")
 
 # Create evaluator
 evaluator = Evaluator.init(config)
 
-# Run evaluation
-results = evaluator.evaluate()
+# Run evaluation (results saved to output_path)
+evaluator.eval()
 
-# View results
-print(f"Success Rate: {results['success_rate']:.2%}")
-print(f"SPL: {results['spl']:.2%}")
+# Results in episode_results.json and summary.json
 ```
 
 ## Evaluation Results
@@ -310,9 +303,9 @@ After evaluation, results are saved in the output directory:
 
 ```
 eval_results/
-├── results.json           # Overall results
 ├── episode_results.json   # Per-episode results
-└── trajectories/          # Trajectories (if saved)
+├── summary.json           # Summary metrics and config
+└── trajectories/          # Trajectories (if save_trajectories: true)
     ├── episode_001.json
     └── ...
 ```

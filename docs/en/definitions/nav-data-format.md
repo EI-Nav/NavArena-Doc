@@ -294,24 +294,26 @@ $NAVARENA_DATA_DIR/
 
 ## 8. Usage Examples
 
+Examples assume running from **NavArena project root** or **navarena-gen**; config paths (e.g. `configs/examples/...`) are relative to the current working directory.
+
 ### 8.1 Data Generation
 
 ```bash
-cd navarena-gen
+cd NavArena  # or cd navarena-gen
 export NAVARENA_DATA_DIR=/path/to/data
 
 # Using config file
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
+python navarena-gen/scripts/generate_data.py --config navarena-gen/configs/examples/pointnav_example.yaml
 
 # Command-line arguments
-python scripts/generate_data.py --env gs --task pointnav \
+python navarena-gen/scripts/generate_data.py --env gs --task pointnav \
     --scene x2robot/17dc3367 --num-episodes 1000
 ```
 
 ### 8.2 Launch Web Viewer
 
 ```bash
-cd navarena-gen
-python scripts/run_viewer.py
+cd NavArena
+python navarena-gen/scripts/run_viewer.py
 # Data directory resolved via $NAVARENA_DATA_DIR
 ```

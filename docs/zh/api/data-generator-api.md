@@ -483,7 +483,7 @@ def get_resolved_scene_path(self) -> str:
     """返回场景资产的绝对路径"""
 
 def get_scene_relative_path(self) -> str:
-    """返回 scene_path（相对路径）"""
+    """返回相对于 $NAVARENA_DATA_DIR 的路径：assets/{scene_path}"""
 
 def get_scene_id(self) -> str:
     """从 manifest.json 获取 scene_id"""

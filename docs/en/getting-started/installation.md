@@ -43,6 +43,9 @@ Install from lock files to guarantee exact match with the verified environment:
 
     # Install core library in editable mode
     pip install -e "navarena-core[rendering,export]"
+
+    # Optional: install CLIP (for semantic detection, requires GitHub access)
+    pip install git+https://github.com/ultralytics/CLIP.git
     ```
 
 === "Option B: Manual create + lock file"
@@ -54,10 +57,13 @@ Install from lock files to guarantee exact match with the verified environment:
 
     # Install core library in editable mode
     pip install -e "navarena-core[rendering,export]"
+
+    # Optional: install CLIP (for semantic detection, requires GitHub access)
+    pip install git+https://github.com/ultralytics/CLIP.git
     ```
 
 !!! tip "About the lock file"
-    `requirements-lock.txt` is an exact version snapshot exported from the verified `vln_data` environment (2026-03-03), containing PyTorch 2.8.0 + CUDA 12.8. The file header documents the generation date and environment info.
+    `requirements-lock.txt` is an exact version snapshot exported from the verified environment (2026-03-03), containing PyTorch 2.8.0 + CUDA 12.8. The file header documents the generation date and environment info. CLIP has been separated into its own install step (requires cloning from GitHub, which can be unreliable in some network environments).
 
 ## 2. Install via uv Workspace
 
@@ -353,15 +359,27 @@ python scripts/run_viewer.py --data-dir vln_data
     npm install
     ```
 
-!!! question "Network Issues"
-    For slow downloads, use a mirror:
+!!! question "`conda env create` fails due to network issues"
+    A common cause is GitHub-based dependencies (like CLIP) failing to download. `requirements-lock.txt` has separated CLIP into an optional post-install step, so it will not block the main installation.
+
+    `requirements-lock.txt` has a built-in Alibaba Cloud pip mirror (`--index-url https://mirrors.aliyun.com/pypi/simple/`) for fast downloads in China. If you still encounter issues, try an alternative mirror:
     ```bash
-    # pip mirror
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple <package>
+    # Temporary mirror override
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements-lock.txt
 
     # conda mirror
     conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
     ```
+
+    If CLIP installation fails (`ConnectionResetError`), retry later or use a proxy:
+    ```bash
+    # Retry
+    pip install git+https://github.com/ultralytics/CLIP.git
+
+    # Via proxy
+    pip install --proxy http://your-proxy:port git+https://github.com/ultralytics/CLIP.git
+    ```
+    CLIP is only needed for semantic detection (ObjectNav). Core features like PointNav/ImageNav/VLN work without it.
 
 !!! question "Permission Errors"
     If you encounter permission-related errors:

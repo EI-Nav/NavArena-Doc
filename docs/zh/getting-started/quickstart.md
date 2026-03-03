@@ -14,7 +14,7 @@ python -m navarena_forge run-pipeline \
     --source-dataset x2robot
 ```
 
-输出位于 `$NAVARENA_DATA_DIR/assets/`。批量处理见 [资产预处理 CLI](../asset-preprocessing/cli.md)。
+输出**就地写入** `--scene-dir` 指向的目录（aligned.ply、nav_map.pgm、manifest.json 等），不会自动输出到 `$NAVARENA_DATA_DIR/assets/`。若需统一管理，请将场景目录放在 `$NAVARENA_DATA_DIR/assets/` 下并传入对应路径。批量处理见 [资产预处理 CLI](../asset-preprocessing/cli.md)。
 
 ## 数据生成
 

@@ -61,17 +61,16 @@ def init(cls, config: EvalCfg) -> 'Evaluator':
 
 ### Methods
 
-#### evaluate()
+#### eval()
 
-Run evaluation.
+Run evaluation. Results are saved to `episode_results.json` and `summary.json` under `output_path`; returns nothing.
 
 ```python
-def evaluate(self) -> Dict[str, Any]:
+def eval(self) -> None:
     """
     Run evaluation.
     
-    Returns:
-        Evaluation result dictionary
+    Results saved to output_path directory.
     """
 ```
 
@@ -172,15 +171,15 @@ def reset(self, episode: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
 Execute one step.
 
 ```python
-def step(self, action: Dict[str, Any]) -> Tuple[Dict, float, bool, Dict]:
+def step(self, action: Dict[str, Any]) -> Dict[str, Any]:
     """
     Execute one action step.
     
     Args:
-        action: Action dictionary
+        action: Action dictionary {"x": float, "y": float, "yaw": float}
     
     Returns:
-        (observation, reward, done, info)
+        Dict with observation, reward, done, info
     """
 ```
 
@@ -315,22 +314,38 @@ class Dataset(ABC):
 
 ### Methods
 
-#### __iter__()
+#### get_episodes()
 
-Iterate over dataset.
+Get list of episodes.
 
 ```python
-def __iter__(self) -> Iterator[Dict[str, Any]]:
-    """Iterate over dataset"""
+def get_episodes(self, num_episodes: Optional[int] = None) -> List[Dict[str, Any]]:
+    """
+    Get list of episodes.
+    
+    Args:
+        num_episodes: Limit count; None for all
+    
+    Returns:
+        List of episode dicts
+    """
 ```
 
-#### __len__()
+#### get_episode()
 
-Get dataset size.
+Get single episode by ID.
 
 ```python
-def __len__(self) -> int:
-    """Get dataset size"""
+def get_episode(self, episode_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Get single episode.
+    
+    Args:
+        episode_id: Episode identifier
+    
+    Returns:
+        Episode dict or None
+    """
 ```
 
 ## Metric
@@ -442,7 +457,7 @@ class EvalCfg(BaseConfig):
     eval_settings: Dict[str, Any] = field(default_factory=dict)
 ```
 
-`eval_settings` defaults include: `num_episodes`, `max_steps_per_episode`, `save_trajectories`, `output_path`.
+`eval_settings` defaults include: `num_episodes`, `max_steps_per_episode`, `save_trajectories`, `output_path`. `eval_type` options: `"pointnav"`, `"objectnav"`, `"imagenav"`, `"vln"`.
 
 ### EnvCfg
 
@@ -493,7 +508,7 @@ Task configuration.
 ```python
 @dataclass
 class TaskCfg(BaseConfig):
-    task_type: str = ""  # "pointnav", "objectnav", "imagenav"
+    task_type: str = ""  # "pointnav", "objectnav", "imagenav", "vln"
 ```
 
 ## Utility Functions
@@ -515,31 +530,3 @@ def get_logger(name: str) -> logging.Logger:
     """
 ```
 
-## Exception Classes
-
-### EvaluationError
-
-Evaluation exception.
-
-```python
-class EvaluationError(Exception):
-    pass
-```
-
-### EnvironmentError
-
-Environment exception.
-
-```python
-class EnvironmentError(EvaluationError):
-    pass
-```
-
-### AgentError
-
-Agent exception.
-
-```python
-class AgentError(EvaluationError):
-    pass
-```

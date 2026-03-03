@@ -294,24 +294,26 @@ $NAVARENA_DATA_DIR/
 
 ## 8. 使用示例
 
+以下示例均在 **NavArena 项目根目录** 或 **navarena-gen 目录** 下运行；配置文件路径（如 `configs/examples/...`）相对于当前工作目录。
+
 ### 8.1 数据生成
 
 ```bash
-cd navarena-gen
+cd NavArena  # 或 cd navarena-gen
 export NAVARENA_DATA_DIR=/path/to/data
 
 # 使用配置文件
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
+python navarena-gen/scripts/generate_data.py --config navarena-gen/configs/examples/pointnav_example.yaml
 
 # 命令行参数
-python scripts/generate_data.py --env gs --task pointnav \
+python navarena-gen/scripts/generate_data.py --env gs --task pointnav \
     --scene x2robot/17dc3367 --num-episodes 1000
 ```
 
 ### 8.2 启动 Web 查看器
 
 ```bash
-cd navarena-gen
-python scripts/run_viewer.py
+cd NavArena
+python navarena-gen/scripts/run_viewer.py
 # 数据目录通过 $NAVARENA_DATA_DIR 自动解析
 ```

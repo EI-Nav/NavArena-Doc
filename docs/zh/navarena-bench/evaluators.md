@@ -143,7 +143,7 @@ task:
 eval_type: "vln"
 
 task:
-  task_type: "languagenav"
+  task_type: "vln"
 
 agent:
   agent_type: "language_nav"
@@ -236,8 +236,8 @@ env:
 # 智能体配置
 agent:
   agent_type: "local"
-  model_path: "/path/to/model.pth"
-  model_settings: {}
+  model_settings:
+    checkpoint_path: "/path/to/model.pth"  # 模型路径通过 model_settings 传入
   device: null
 
 # 任务配置
@@ -258,7 +258,6 @@ eval_settings:
   output_path: "./eval_results"
   max_steps_per_episode: 500
   save_trajectories: false
-  save_video: false
 ```
 
 ## 运行评测
@@ -272,7 +271,7 @@ python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
 ### 覆盖配置参数
 
 ```bash
-python scripts/eval.py \
+python -m navarena_bench.scripts.eval \
     --config configs/eval/default_eval.yaml \
     --num-episodes 50 \
     --output-dir ./my_results
@@ -282,24 +281,18 @@ python scripts/eval.py \
 
 ```python
 from navarena_bench.evaluator import Evaluator
-from navarena_bench.configs.eval_config import EvalCfg
-import yaml
+from navarena_bench.scripts.eval import load_config_from_yaml
 
 # 加载配置
-with open("configs/eval/default_eval.yaml", "r") as f:
-    config_dict = yaml.safe_load(f)
-
-config = EvalCfg(**config_dict)
+config = load_config_from_yaml("configs/eval/default_eval.yaml")
 
 # 创建评测器
 evaluator = Evaluator.init(config)
 
-# 运行评测
-results = evaluator.evaluate()
+# 运行评测（结果保存至 output_path 目录）
+evaluator.eval()
 
-# 查看结果
-print(f"Success Rate: {results['success_rate']:.2%}")
-print(f"SPL: {results['spl']:.2%}")
+# 结果在 episode_results.json 与 summary.json 中
 ```
 
 ## 评测结果
@@ -310,9 +303,9 @@ print(f"SPL: {results['spl']:.2%}")
 
 ```
 eval_results/
-├── results.json           # 总体结果
 ├── episode_results.json   # 每个 episode 的详细结果
-└── trajectories/          # 轨迹数据（如果保存）
+├── summary.json           # 汇总指标与配置
+└── trajectories/          # 轨迹数据（若 save_trajectories: true）
     ├── episode_001.json
     └── ...
 ```
