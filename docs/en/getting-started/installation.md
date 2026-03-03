@@ -4,104 +4,258 @@ This page guides you through the installation and configuration of the NavArena 
 
 ## System Requirements
 
-Before starting installation, ensure your system meets the following requirements:
+Before starting, ensure your system meets the following requirements:
 
-| Requirement | Minimum Version | Recommended |
-|-------------|------------------|-------------|
-| Python | 3.9+ | 3.10+ |
-| uv | 0.4+ | Latest |
-| CUDA | 11.0+ | 12.1+ |
-| GPU | CUDA-capable NVIDIA GPU | - |
-| OS | Linux | Ubuntu 20.04+ |
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| Python | 3.9 | Pinned — numba/gsplat are Python-version sensitive |
+| CUDA | ≥ 12.1 | 12.8 recommended (matches PyTorch 2.8) |
+| GPU | NVIDIA (CUDA-capable) | Required for data generation and evaluation |
+| OS | Linux | Ubuntu 20.04+ recommended |
+| Conda | Miniforge recommended | Environment management |
+| Node.js | ≥ 18 | Required for Web Viewer frontend (tested v25.2.1) |
+| GCC/G++ | ≥ 7 | gsplat requires a C++ compiler |
+| Git | Latest | For cloning repos and installing CLIP |
 
 !!! warning "GPU Required"
-    The Data Generator and Evaluation Framework require a CUDA-capable GPU to run properly. Ensure your system has the correct CUDA drivers installed.
+    The Data Generator and Evaluation Framework require a CUDA-capable GPU. Ensure your system has the correct CUDA drivers installed.
 
-!!! info "Installing uv"
-    If uv is not installed:
+## Version Strategy
+
+NavArena provides three installation tiers for different needs:
+
+| Tier | File | Use Case |
+|------|------|----------|
+| **Exact reproduction** | `requirements-lock.txt` | 100% reproduce the verified environment |
+| **One-click setup** | `environment.yml` | Quick setup with conda + pip |
+| **Manual install** | Section 3 below | Flexible version control (e.g., different CUDA) |
+
+## 1. Quick Install (Exact Reproduction)
+
+Install from lock files to guarantee exact match with the verified environment:
+
+=== "Option A: environment.yml (Recommended)"
+
     ```bash
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Create environment with Python 3.9 + Node.js + all pip packages
+    conda env create -f environment.yml
+    conda activate navarena
+
+    # Install core library in editable mode
+    pip install -e "navarena-core[rendering,export]"
     ```
-    Or via pip: `pip install uv`
 
-## Quick Install (Recommended)
+=== "Option B: Manual create + lock file"
 
-Install all sub-projects at once using the uv workspace:
+    ```bash
+    conda create -n navarena python=3.9 nodejs -c conda-forge -y
+    conda activate navarena
+    pip install -r requirements-lock.txt
+
+    # Install core library in editable mode
+    pip install -e "navarena-core[rendering,export]"
+    ```
+
+!!! tip "About the lock file"
+    `requirements-lock.txt` is an exact version snapshot exported from the verified `vln_data` environment (2026-03-03), containing PyTorch 2.8.0 + CUDA 12.8. The file header documents the generation date and environment info.
+
+## 2. Install via uv Workspace
+
+If you have [uv](https://github.com/astral-sh/uv) installed, use workspace mode to install all sub-projects at once:
 
 ```bash
-# After cloning the repo, enter the project root
 cd NavArena
 
-# Install workspace with uv (installs navarena-core, navarena-forge, navarena-gen, navarena-bench)
+# Install uv (if not installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install all sub-projects
 uv sync --all-packages
 
 # Or use Makefile
 make install
 ```
 
-## Per-Module Installation
+!!! info "uv vs pip"
+    uv workspace mode automatically resolves inter-project dependencies, but requires PyTorch to be pre-installed (uv does not handle CUDA index URLs). Install PyTorch per Section 3.2 first, then use `uv sync`.
 
-To install only specific modules, enter each sub-directory and install:
+## 3. Manual Installation (Step by Step)
 
-```bash
-# 1. Core library (dependency for other sub-projects)
-cd navarena-core
-pip install -e .
-cd ..
+Manual installation gives you full control over each dependency version. Verified versions are annotated alongside each package for reference.
 
-# 2. Asset preprocessing (optional, required before data generation)
-cd navarena-forge
-pip install -e .
-cd ..
-
-# 3. Data generator (depends on navarena-core[rendering])
-cd navarena-gen
-pip install -e .
-cd ..
-
-# 4. Evaluation framework (depends on navarena-core[rendering])
-cd navarena-bench
-pip install -e .
-cd ..
-```
-
-## Verify Installation
+### 3.1 Create Conda Environment
 
 ```bash
-# Data generator
-cd navarena-gen && python scripts/generate_data.py --help
-
-# Evaluation framework
-cd navarena-bench && python -m navarena_bench.scripts.eval --help
-# Or use CLI entry point
-navarena-bench-eval --help
-
-# Asset preprocessing
-cd navarena-forge && python -m navarena_forge list-steps
+conda create -n navarena python=3.9 -y
+conda activate navarena
 ```
 
-If you see the help output, installation was successful.
-
-## Environment Variable Configuration
-
-### NAVARENA_DATA_DIR
-
-NavArena uses `NAVARENA_DATA_DIR` as the data root directory. Shared resources (e.g., camera config, assets) should reside under the `shared/` subdirectory:
+### 3.2 Install PyTorch
 
 ```bash
-export NAVARENA_DATA_DIR=/path/to/your/navarena_data
-# Suggested directory structure:
-# $NAVARENA_DATA_DIR/
-# ├── shared/           # Shared resources
-# │   ├── camera.yaml   # Camera config
-# │   └── ...
-# └── assets/           # V1 format scene assets
-#     ├── x2robot/
-#     │   └── 17dc3367/
-#     └── ...
+# Tested: torch==2.8.0+cu128, torchvision==0.23.0
+pip install "torch>=2.8.0,<3.0" "torchvision>=0.23.0,<1.0" \
+    --index-url https://download.pytorch.org/whl/cu128
 ```
 
-### CUDA Setup
+!!! note "CUDA Versions"
+    The command above installs PyTorch for CUDA 12.8. For other CUDA versions, replace `cu128` with the corresponding version (e.g., `cu121`, `cu124`) and ensure your system CUDA driver is compatible.
+
+### 3.3 Install navarena-core
+
+```bash
+cd NavArena
+pip install -e "navarena-core[rendering,export]"
+```
+
+navarena-core will automatically install these dependencies (torch must be installed first per Section 3.2):
+
+| Package | Version Range | Tested Version | Purpose |
+|---------|--------------|----------------|---------|
+| numpy | ≥1.22.0 | 1.26.4 | Numerical computing |
+| scipy | ≥1.9.1 | 1.13.1 | Scientific computing |
+| Pillow | ≥8.0.0 | 11.3.0 | Image processing |
+| PyYAML | ≥5.4.0 | 6.0.3 | YAML config parsing |
+| pyarrow | ≥14.0.0 | 21.0.0 | Parquet data I/O |
+| duckdb | ≥0.9.0 | 1.4.4 | Query engine |
+| gsplat | ≥1.0.0 | 1.5.3 | 3DGS rendering (rendering extra) |
+| plyfile | ≥1.0.0 | 1.1.3 | PLY file I/O (rendering extra) |
+| imageio | ≥2.20.0 | 2.37.0 | Image/video I/O (rendering extra) |
+| huggingface_hub | ≥0.20.0 | 1.2.3 | Model/dataset upload (export extra) |
+
+### 3.4 Sub-project Dependencies
+
+#### navarena-gen (Data Generation)
+
+```bash
+pip install "open3d>=0.17.0" "shapely>=2.0.0" "matplotlib>=3.3.0" \
+    "imageio[ffmpeg]>=2.31.0" "imageio-ffmpeg>=0.5.0" "opencv-python>=4.5.0"
+```
+
+??? note "Tested versions"
+    open3d==0.19.0, shapely==2.0.7, matplotlib==3.9.4, imageio==2.37.0, imageio-ffmpeg==0.6.0, opencv-python==4.11.0.86
+
+#### navarena-bench (Evaluation Framework)
+
+```bash
+pip install "requests>=2.25.0" "scikit-image>=0.20.0" "skan>=0.9" \
+    "networkx>=3.1" "imageio[ffmpeg]>=2.31.0" "decord>=0.6.0"
+```
+
+!!! warning "decord note"
+    `decord` is not included in `requirements-lock.txt`. If using the quick install method, install it separately: `pip install decord`
+
+??? note "Tested versions"
+    requests==2.32.5, scikit-image==0.24.0, skan==0.13.0, networkx==3.2.1, imageio==2.37.0, imageio-ffmpeg==0.6.0
+
+#### navarena-forge (Asset Preprocessing)
+
+```bash
+pip install "open3d>=0.17.0" "plyfile>=1.0.0" "scikit-learn>=1.0.0" "shapely>=2.0.0"
+```
+
+??? note "Tested versions"
+    open3d==0.19.0, plyfile==1.1.3, scikit-learn==1.6.1, shapely==2.0.7
+
+#### Web Viewer (Frontend + Backend)
+
+```bash
+# Backend dependencies
+pip install "fastapi>=0.100.0" "uvicorn>=0.23.0" "python-multipart>=0.0.5" \
+    "Flask>=3.0.0" "flask-cors>=4.0.0" "Flask-SocketIO>=5.0.0"
+
+# Frontend dependencies (requires Node.js)
+conda install -c conda-forge nodejs -y
+cd navarena-gen/web/frontend && npm install && cd -
+```
+
+??? note "Tested versions"
+    fastapi==0.115.0, uvicorn==0.30.0, python-multipart==0.0.9, Flask==3.1.2, flask-cors==6.0.1, Flask-SocketIO==5.5.1, Node.js v25.2.1
+
+### 3.5 Optional Dependencies
+
+#### Object Detection (ObjectNav Data Generation)
+
+```bash
+pip install "ultralytics>=8.0.0" "supervision>=0.20.0"
+# Tested: ultralytics==8.3.228, supervision==0.27.0
+```
+
+#### CLIP (Semantic Detection)
+
+```bash
+pip install git+https://github.com/ultralytics/CLIP.git
+```
+
+#### Data Analysis Tools
+
+```bash
+pip install polars pandas plotly dash openpyxl numba
+```
+
+#### ViNT/GNM/NoMaD Agents (Evaluation Framework)
+
+To use ViNT, GNM, or NoMaD pre-trained navigation agents:
+
+```bash
+# 1. Clone visualnav-transformer (alongside NavArena project)
+git clone <visualnav-transformer-repo-url>
+
+# 2. Install extra dependencies
+pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
+    einops vit_pytorch lmdb prettytable
+
+# 3. Install diffusion_policy
+pip install -e navarena-bench/src/diffusion_policy/
+```
+
+!!! tip "Skippable"
+    If not using ViNT-style agents, skip the above. LocalAgent, RemoteAgent, etc. require no extra dependencies.
+
+#### MkDocs Documentation
+
+```bash
+pip install -r navarena-doc/requirements.txt
+```
+
+## 4. Data and Environment Variables
+
+### 4.1 Set NAVARENA_DATA_DIR
+
+NavArena uses `NAVARENA_DATA_DIR` as the unified data root directory:
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env to set data directory
+# NAVARENA_DATA_DIR=/path/to/your/navarena-data-root
+```
+
+Or set the environment variable directly:
+
+```bash
+export NAVARENA_DATA_DIR=/path/to/your/navarena-data-root
+```
+
+### 4.2 Data Directory Structure
+
+`NAVARENA_DATA_DIR` should contain the following subdirectories (symlinks are fine):
+
+```
+$NAVARENA_DATA_DIR/
+├── assets/       # 3DGS scene assets (PLY files, occupancy grids, etc.)
+│   ├── x2robot/
+│   │   └── 17dc3367/
+│   └── sage-3d/
+│       └── 00666b7a/
+├── datasets/     # Generated datasets (Parquet format)
+└── shared/       # Shared resources
+    ├── camera.yaml                    # Camera configuration
+    └── visualnav-transformer/         # ViNT model weights (optional)
+```
+
+### 4.3 CUDA Setup
 
 Ensure CUDA environment variables are correctly set:
 
@@ -111,78 +265,113 @@ export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 ```
 
-## Optional Dependencies
+## 5. Verify Installation
 
-### ViNT/GNM/NoMaD Agents (Evaluation Framework)
-
-To use ViNT, GNM, or NoMaD pre-trained navigation agents, install the visualnav-transformer project and its dependencies:
+### 5.1 Python Package Import Test
 
 ```bash
-# Clone visualnav-transformer (alongside navarena-bench)
-git clone <visualnav-transformer-repo-url>
+python -c "
+import torch
+print(f'PyTorch: {torch.__version__}')
+print(f'CUDA available: {torch.cuda.is_available()}')
+print(f'CUDA version: {torch.version.cuda}')
 
-# Install extra dependencies
-pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
-    einops vit_pytorch lmdb prettytable matplotlib opencv-python \
-    fastapi uvicorn imageio "imageio[ffmpeg]"
+import navarena_core
+print(f'navarena-core: OK')
 
-# Install diffusion_policy
-pip install -e visualnav-transformer/src/diffusion_policy/
+import gsplat
+print(f'gsplat: OK')
+
+import open3d
+print(f'open3d: {open3d.__version__}')
+
+import duckdb
+print(f'duckdb: {duckdb.__version__}')
+"
 ```
 
-!!! tip "Optional Dependencies"
-    If not using ViNT-style agents, skip the above. LocalAgent, RemoteAgent, and LanguageNavAgent require no extra dependencies.
+Expected output (versions may vary slightly depending on installation method):
 
-### Data Generator Optional Features
+```
+PyTorch: 2.8.0+cu128
+CUDA available: True
+CUDA version: 12.8
+navarena-core: OK
+gsplat: OK
+open3d: 0.19.0
+duckdb: 1.4.4
+```
+
+### 5.2 Run Examples
 
 ```bash
-cd navarena-gen
+# Data generator help
+cd navarena-gen && python scripts/generate_data.py --help
 
-# Semantic detection (optional when using labels.json for ObjectNav)
-pip install -e ".[detection]"
+# Generate PointNav data (example)
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
-# Web viewer
-pip install -e ".[web]"
+# Launch Web Viewer
+python scripts/run_viewer.py --data-dir vln_data
+# Open http://localhost:5173 in your browser
 ```
 
-### Asset Preprocessing Web Viewer
+## 6. FAQ
 
-```bash
-cd navarena-forge
-pip install -e ".[web]"
-```
+!!! question "gsplat Compilation Failed"
+    If gsplat fails to compile, check:
 
-## FAQ
+    1. CUDA version matches PyTorch: `python -c "import torch; print(torch.version.cuda)"`
+    2. C++ compiler is installed: `gcc --version`
+    3. Sufficient disk space (compilation requires temporary space)
+    4. First `import gsplat` triggers JIT compilation which may take several minutes
+
+!!! question "CUDA Version Mismatch"
+    Ensure the installed PyTorch version is compatible with your system CUDA driver:
+    ```bash
+    nvidia-smi              # Check max CUDA version supported by driver
+    python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
+    ```
+    The driver's CUDA version must be ≥ the CUDA version PyTorch was compiled with.
+
+!!! question "open3d Installation Failed"
+    open3d only supports Python 3.8-3.11, and some systems may lack dependencies:
+    ```bash
+    # Ubuntu/Debian
+    sudo apt-get install libgl1-mesa-glx libglib2.0-0
+    ```
+
+!!! question "Node.js / npm install Failed"
+    The Web Viewer frontend requires Node.js. Install via conda:
+    ```bash
+    conda install -c conda-forge nodejs -y
+    ```
+    If `npm install` fails, try clearing the cache:
+    ```bash
+    cd navarena-gen/web/frontend
+    rm -rf node_modules package-lock.json
+    npm install
+    ```
+
+!!! question "Network Issues"
+    For slow downloads, use a mirror:
+    ```bash
+    # pip mirror
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple <package>
+
+    # conda mirror
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+    ```
 
 !!! question "Permission Errors"
-    If you encounter permission-related errors, try:
+    If you encounter permission-related errors:
     ```bash
     pip install --user -e .
     ```
 
-!!! question "CUDA Version Mismatch"
-    Ensure the installed PyTorch version matches your CUDA version:
-    ```bash
-    python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
-    ```
-
-!!! question "gsplat Compilation Failed"
-    If gsplat fails to compile, ensure:
-    1. Correct CUDA version is installed
-    2. C++ compiler (gcc/g++) is installed
-    3. Sufficient disk space (compilation requires temporary space)
-
-!!! question "Network Issues"
-    If you encounter network issues, use a mirror:
-    ```bash
-    uv pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e .
-    ```
-
-!!! note "First Run"
-    On first run of data generation or evaluation, gsplat may need to compile; this can take several minutes.
-
 !!! tip "Next Steps"
     After installation, continue reading:
+
     - **[Quickstart](quickstart.md)** - Learn how to use all modules
     - **[Data Generator Overview](../data-generator/)** - Deep dive into the data generation workflow
     - **[Evaluation Framework Overview](../navarena-bench/)** - Learn about the evaluation framework architecture

@@ -6,102 +6,256 @@
 
 在开始安装之前，请确保您的系统满足以下要求：
 
-| 要求 | 最低版本 | 推荐版本 |
-|------|---------|---------|
-| Python | 3.9+ | 3.10+ |
-| uv | 0.4+ | 最新版 |
-| CUDA | 11.0+ | 12.1+ |
-| GPU | 支持 CUDA 的 NVIDIA GPU | - |
-| 操作系统 | Linux | Ubuntu 20.04+ |
+| 要求 | 版本 | 说明 |
+|------|------|------|
+| Python | 3.9 | 锁定版本，numba/gsplat 对 Python 版本敏感 |
+| CUDA | ≥ 12.1 | 推荐 12.8，与 PyTorch 2.8 对应 |
+| GPU | NVIDIA（支持 CUDA） | 数据生成和评测必需 |
+| 操作系统 | Linux | 推荐 Ubuntu 20.04+ |
+| Conda | Miniforge 推荐 | 用于环境管理 |
+| Node.js | ≥ 18 | Web Viewer 前端需要（已验证 v25.2.1） |
+| GCC/G++ | ≥ 7 | gsplat 编译需要 C++ 编译器 |
+| Git | 最新版 | 克隆仓库和安装 CLIP |
 
 !!! warning "GPU 要求"
     数据生成器和评测框架需要 CUDA 支持的 GPU 才能正常运行。请确保您的系统已正确安装 CUDA 驱动。
 
-!!! info "uv 安装"
-    如未安装 uv，可通过以下方式安装：
+## 版本策略
+
+NavArena 提供三层安装方式，适用于不同场景：
+
+| 方式 | 文件 | 适用场景 |
+|------|------|---------|
+| **精确复现** | `requirements-lock.txt` | 需要 100% 复现已验证环境 |
+| **一键创建** | `environment.yml` | 快速搭建，自动处理 conda + pip |
+| **手动安装** | 本文档第 3 节 | 需要灵活控制版本（如适配新 CUDA） |
+
+## 1. 快速安装（精确复现）
+
+从锁定文件安装，保证与已验证环境完全一致：
+
+=== "方式 A：environment.yml（推荐）"
+
     ```bash
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # 一键创建环境（包含 Python 3.9 + Node.js + 全部 pip 包）
+    conda env create -f environment.yml
+    conda activate navarena
+
+    # 以 editable 模式安装核心库
+    pip install -e "navarena-core[rendering,export]"
     ```
-    或使用 pip：`pip install uv`
 
-## 快速安装（推荐）
+=== "方式 B：手动创建 + lock 文件"
 
-使用 uv 工作空间一次性安装所有子项目：
+    ```bash
+    conda create -n navarena python=3.9 nodejs -c conda-forge -y
+    conda activate navarena
+    pip install -r requirements-lock.txt
+
+    # 以 editable 模式安装核心库
+    pip install -e "navarena-core[rendering,export]"
+    ```
+
+!!! tip "lock 文件说明"
+    `requirements-lock.txt` 是从已验证的 `vln_data` 环境导出的精确版本快照（2026-03-03），包含 PyTorch 2.8.0 + CUDA 12.8。文件头部注明了生成日期和环境信息。
+
+## 2. 使用 uv 工作空间安装
+
+如果您已安装 [uv](https://github.com/astral-sh/uv)，可以使用工作空间模式一次性安装所有子项目：
 
 ```bash
-# 克隆仓库后进入项目根目录
 cd NavArena
 
-# 使用 uv 安装工作空间（会安装 navarena-core、navarena-forge、navarena-gen、navarena-bench）
+# 安装 uv（如未安装）
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 安装全部子项目
 uv sync --all-packages
 
 # 或使用 Makefile
 make install
 ```
 
-## 分模块安装
+!!! info "uv vs pip"
+    uv 工作空间模式会自动解析子项目间的依赖关系，但需要预先安装好 PyTorch（uv 不处理 CUDA 相关索引）。建议先按第 3.2 节安装 PyTorch，再使用 `uv sync`。
 
-若仅需安装部分模块，可进入对应子目录安装：
+## 3. 手动安装（分步说明）
 
-```bash
-# 1. 核心库（其他子项目依赖）
-cd navarena-core
-pip install -e .
-cd ..
+手动安装允许您灵活控制每个依赖的版本。每个关键包旁标注了已验证版本供参考。
 
-# 2. 资产预处理（可选，数据生成前需对场景进行预处理）
-cd navarena-forge
-pip install -e .
-cd ..
-
-# 3. 数据生成器（依赖 navarena-core[rendering]）
-cd navarena-gen
-pip install -e .
-cd ..
-
-# 4. 评测框架（依赖 navarena-core[rendering]）
-cd navarena-bench
-pip install -e .
-cd ..
-```
-
-## 验证安装
+### 3.1 创建 Conda 环境
 
 ```bash
-# 数据生成器
-cd navarena-gen && python scripts/generate_data.py --help
-
-# 评测框架
-cd navarena-bench && python -m navarena_bench.scripts.eval --help
-# 或使用 CLI 入口
-navarena-bench-eval --help
-
-# 资产预处理
-cd navarena-forge && python -m navarena_forge list-steps
+conda create -n navarena python=3.9 -y
+conda activate navarena
 ```
 
-若看到帮助信息，说明安装成功。
-
-## 配置环境变量
-
-### NAVARENA_DATA_DIR
-
-NavArena 使用 `NAVARENA_DATA_DIR` 作为数据根目录。共享资源（如相机配置、资产）应放在 `shared/` 子目录下：
+### 3.2 安装 PyTorch
 
 ```bash
-export NAVARENA_DATA_DIR=/path/to/your/navarena_data
-# 目录结构建议：
-# $NAVARENA_DATA_DIR/
-# ├── shared/           # 共享资源
-# │   ├── camera.yaml   # 相机配置
-# │   └── ...
-# └── assets/           # V1 格式场景资产
-#     ├── x2robot/
-#     │   └── 17dc3367/
-#     └── ...
+# 已验证：torch==2.8.0+cu128, torchvision==0.23.0
+pip install "torch>=2.8.0,<3.0" "torchvision>=0.23.0,<1.0" \
+    --index-url https://download.pytorch.org/whl/cu128
 ```
 
-### CUDA 设置
+!!! note "CUDA 版本"
+    上述命令安装 CUDA 12.8 版本的 PyTorch。如需其他 CUDA 版本，请将 `cu128` 替换为对应版本（如 `cu121`、`cu124`），并确保系统 CUDA 驱动兼容。
+
+### 3.3 安装 navarena-core
+
+```bash
+cd NavArena
+pip install -e "navarena-core[rendering,export]"
+```
+
+navarena-core 将自动安装以下依赖（torch 需先按 3.2 节单独安装）：
+
+| 包 | 版本范围 | 已验证版本 | 用途 |
+|----|---------|-----------|------|
+| numpy | ≥1.22.0 | 1.26.4 | 数值计算 |
+| scipy | ≥1.9.1 | 1.13.1 | 科学计算 |
+| Pillow | ≥8.0.0 | 11.3.0 | 图像处理 |
+| PyYAML | ≥5.4.0 | 6.0.3 | 配置文件解析 |
+| pyarrow | ≥14.0.0 | 21.0.0 | Parquet 数据读写 |
+| duckdb | ≥0.9.0 | 1.4.4 | 数据查询引擎 |
+| gsplat | ≥1.0.0 | 1.5.3 | 3DGS 渲染（rendering extra） |
+| plyfile | ≥1.0.0 | 1.1.3 | PLY 文件读写（rendering extra） |
+| imageio | ≥2.20.0 | 2.37.0 | 图像/视频 I/O（rendering extra） |
+| huggingface_hub | ≥0.20.0 | 1.2.3 | 模型/数据集上传（export extra） |
+
+### 3.4 各子项目依赖
+
+#### navarena-gen（数据生成）
+
+```bash
+pip install "open3d>=0.17.0" "shapely>=2.0.0" "matplotlib>=3.3.0" \
+    "imageio[ffmpeg]>=2.31.0" "imageio-ffmpeg>=0.5.0" "opencv-python>=4.5.0"
+```
+
+??? note "已验证版本"
+    open3d==0.19.0, shapely==2.0.7, matplotlib==3.9.4, imageio==2.37.0, imageio-ffmpeg==0.6.0, opencv-python==4.11.0.86
+
+#### navarena-bench（评估框架）
+
+```bash
+pip install "requests>=2.25.0" "scikit-image>=0.20.0" "skan>=0.9" \
+    "networkx>=3.1" "imageio[ffmpeg]>=2.31.0" "decord>=0.6.0"
+```
+
+!!! warning "decord 注意"
+    `decord` 未包含在 `requirements-lock.txt` 中。若使用快速安装方式，需额外安装：`pip install decord`
+
+??? note "已验证版本"
+    requests==2.32.5, scikit-image==0.24.0, skan==0.13.0, networkx==3.2.1, imageio==2.37.0, imageio-ffmpeg==0.6.0
+
+#### navarena-forge（场景预处理）
+
+```bash
+pip install "open3d>=0.17.0" "plyfile>=1.0.0" "scikit-learn>=1.0.0" "shapely>=2.0.0"
+```
+
+??? note "已验证版本"
+    open3d==0.19.0, plyfile==1.1.3, scikit-learn==1.6.1, shapely==2.0.7
+
+#### Web Viewer（前端 + 后端）
+
+```bash
+# 后端依赖
+pip install "fastapi>=0.100.0" "uvicorn>=0.23.0" "python-multipart>=0.0.5" \
+    "Flask>=3.0.0" "flask-cors>=4.0.0" "Flask-SocketIO>=5.0.0"
+
+# 前端依赖（需要 Node.js）
+conda install -c conda-forge nodejs -y
+cd navarena-gen/web/frontend && npm install && cd -
+```
+
+??? note "已验证版本"
+    fastapi==0.115.0, uvicorn==0.30.0, python-multipart==0.0.9, Flask==3.1.2, flask-cors==6.0.1, Flask-SocketIO==5.5.1, Node.js v25.2.1
+
+### 3.5 可选依赖
+
+#### 目标检测（ObjectNav 数据生成）
+
+```bash
+pip install "ultralytics>=8.0.0" "supervision>=0.20.0"
+# 已验证：ultralytics==8.3.228, supervision==0.27.0
+```
+
+#### CLIP（语义检测）
+
+```bash
+pip install git+https://github.com/ultralytics/CLIP.git
+```
+
+#### 数据分析工具
+
+```bash
+pip install polars pandas plotly dash openpyxl numba
+```
+
+#### ViNT/GNM/NoMaD 智能体（评测框架）
+
+如需使用 ViNT、GNM 或 NoMaD 等预训练导航智能体：
+
+```bash
+# 1. 克隆 visualnav-transformer（与 NavArena 项目并列）
+git clone <visualnav-transformer-repo-url>
+
+# 2. 安装额外依赖
+pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
+    einops vit_pytorch lmdb prettytable
+
+# 3. 安装 diffusion_policy
+pip install -e navarena-bench/src/diffusion_policy/
+```
+
+!!! tip "可跳过"
+    若不使用 ViNT 系列智能体，可跳过上述步骤。LocalAgent、RemoteAgent 等无需额外依赖。
+
+#### MkDocs 文档构建
+
+```bash
+pip install -r navarena-doc/requirements.txt
+```
+
+## 4. 数据与环境变量配置
+
+### 4.1 设置 NAVARENA_DATA_DIR
+
+NavArena 使用 `NAVARENA_DATA_DIR` 作为统一数据根目录：
+
+```bash
+# 复制环境变量模板
+cp .env.example .env
+
+# 编辑 .env，设置数据目录
+# NAVARENA_DATA_DIR=/path/to/your/navarena-data-root
+```
+
+或直接设置环境变量：
+
+```bash
+export NAVARENA_DATA_DIR=/path/to/your/navarena-data-root
+```
+
+### 4.2 数据目录结构
+
+`NAVARENA_DATA_DIR` 下应包含以下子目录（可使用符号链接）：
+
+```
+$NAVARENA_DATA_DIR/
+├── assets/       # 3DGS 场景资源（PLY 文件、占据栅格等）
+│   ├── x2robot/
+│   │   └── 17dc3367/
+│   └── sage-3d/
+│       └── 00666b7a/
+├── datasets/     # 生成的数据集（Parquet 格式）
+└── shared/       # 共享资源
+    ├── camera.yaml                    # 相机配置
+    └── visualnav-transformer/         # ViNT 模型权重（可选）
+```
+
+### 4.3 CUDA 设置
 
 确保 CUDA 环境变量正确设置：
 
@@ -111,78 +265,113 @@ export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 ```
 
-## 可选依赖
+## 5. 验证安装
 
-### ViNT/GNM/NoMaD 智能体（评测框架）
-
-如需使用 ViNT、GNM 或 NoMaD 等预训练导航智能体，需单独安装 visualnav-transformer 项目及其依赖：
+### 5.1 Python 包导入测试
 
 ```bash
-# 克隆 visualnav-transformer 仓库（与 navarena-bench 并列）
-git clone <visualnav-transformer-repo-url>
+python -c "
+import torch
+print(f'PyTorch: {torch.__version__}')
+print(f'CUDA available: {torch.cuda.is_available()}')
+print(f'CUDA version: {torch.version.cuda}')
 
-# 安装额外依赖
-pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
-    einops vit_pytorch lmdb prettytable matplotlib opencv-python \
-    fastapi uvicorn imageio "imageio[ffmpeg]"
+import navarena_core
+print(f'navarena-core: OK')
 
-# 安装 diffusion_policy
-pip install -e visualnav-transformer/src/diffusion_policy/
+import gsplat
+print(f'gsplat: OK')
+
+import open3d
+print(f'open3d: {open3d.__version__}')
+
+import duckdb
+print(f'duckdb: {duckdb.__version__}')
+"
 ```
 
-!!! tip "可选依赖"
-    若不使用 ViNT 系列智能体，可跳过上述步骤。LocalAgent、RemoteAgent、LanguageNavAgent 等无需额外依赖。
+预期输出（各版本号可能因安装方式略有不同）：
 
-### 数据生成器可选功能
+```
+PyTorch: 2.8.0+cu128
+CUDA available: True
+CUDA version: 12.8
+navarena-core: OK
+gsplat: OK
+open3d: 0.19.0
+duckdb: 1.4.4
+```
+
+### 5.2 运行示例
 
 ```bash
-cd navarena-gen
+# 数据生成器帮助信息
+cd navarena-gen && python scripts/generate_data.py --help
 
-# 语义检测（ObjectNav 使用 labels.json 时可选）
-pip install -e ".[detection]"
+# 生成 PointNav 数据（示例）
+python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
 
-# Web 查看器
-pip install -e ".[web]"
+# 启动 Web Viewer
+python scripts/run_viewer.py --data-dir vln_data
+# 浏览器访问 http://localhost:5173
 ```
 
-### 资产预处理 Web 查看器
+## 6. 常见问题
 
-```bash
-cd navarena-forge
-pip install -e ".[web]"
-```
+!!! question "gsplat 编译失败"
+    若 gsplat 编译失败，请检查：
 
-## 常见问题
+    1. CUDA 版本是否与 PyTorch 匹配：`python -c "import torch; print(torch.version.cuda)"`
+    2. 是否安装了 C++ 编译器：`gcc --version`
+    3. 磁盘空间是否充足（编译需要临时空间）
+    4. 首次 import gsplat 时会触发 JIT 编译，可能需要数分钟
+
+!!! question "CUDA 版本不匹配"
+    确保安装的 PyTorch 版本与系统 CUDA 驱动兼容：
+    ```bash
+    nvidia-smi              # 查看驱动支持的最高 CUDA 版本
+    python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
+    ```
+    驱动支持的 CUDA 版本需 ≥ PyTorch 编译所用的 CUDA 版本。
+
+!!! question "open3d 安装失败"
+    open3d 仅支持 Python 3.8-3.11，且部分系统可能缺少依赖：
+    ```bash
+    # Ubuntu/Debian
+    sudo apt-get install libgl1-mesa-glx libglib2.0-0
+    ```
+
+!!! question "Node.js / npm install 失败"
+    Web Viewer 前端需要 Node.js。推荐通过 conda 安装：
+    ```bash
+    conda install -c conda-forge nodejs -y
+    ```
+    若 `npm install` 失败，尝试清除缓存后重试：
+    ```bash
+    cd navarena-gen/web/frontend
+    rm -rf node_modules package-lock.json
+    npm install
+    ```
+
+!!! question "网络问题"
+    若遇到下载缓慢，可使用国内镜像：
+    ```bash
+    # pip 镜像
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple <package>
+
+    # conda 镜像
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+    ```
 
 !!! question "权限错误"
-    若遇到权限相关错误，可尝试使用 `--user` 标志：
+    若遇到权限相关错误：
     ```bash
     pip install --user -e .
     ```
 
-!!! question "CUDA 版本不匹配"
-    确保安装的 PyTorch 版本与 CUDA 版本匹配：
-    ```bash
-    python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
-    ```
-
-!!! question "gsplat 编译失败"
-    若 gsplat 编译失败，请确保：
-    1. 已安装正确版本的 CUDA
-    2. 已安装 C++ 编译器（gcc/g++）
-    3. 有足够的磁盘空间（编译需要临时空间）
-
-!!! question "网络问题"
-    若遇到网络问题，可使用国内镜像：
-    ```bash
-    uv pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e .
-    ```
-
-!!! note "首次运行"
-    首次运行数据生成或评测时，gsplat 可能需进行编译，可能需要数分钟。
-
 !!! tip "下一步"
     安装完成后，继续阅读：
+
     - **[快速入门](quickstart.md)** - 了解如何使用各模块
     - **[数据生成器概述](../data-generator/)** - 深入了解数据生成流程
     - **[评测框架概述](../navarena-bench/)** - 了解评测框架架构
