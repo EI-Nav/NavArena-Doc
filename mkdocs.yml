@@ -40,8 +40,7 @@ theme:
     text: Inter
     code: JetBrains Mono
   
-  # Logo 与 Favicon
-  logo: assets/images/logo.svg
+  # Favicon（header logo 通过 overrides/partials/logo.html 内联 SVG 实现）
   favicon: assets/images/favicon.svg
   
   # 图标

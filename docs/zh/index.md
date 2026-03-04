@@ -17,7 +17,13 @@
   </svg>
   <!-- 内容层 -->
   <div class="hero-content">
-    <img src="../assets/images/logo.svg" alt="NavArena" class="hero-logo">
+    <svg class="hero-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="64" height="64" fill="none">
+      <defs><linearGradient id="hl-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#b2ebf2"/></linearGradient></defs>
+      <polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" stroke="url(#hl-grad)" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+      <circle cx="13" cy="35" r="2.5" fill="url(#hl-grad)"/>
+      <polyline points="13,35 18,26 26,30 35,13" stroke="url(#hl-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <polyline points="29.5,15 35,13 37,19" stroke="url(#hl-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
     <h1>NavArena</h1>
     <p>具身导航基础设施</p>
     <p class="hero-subtitle">资产自动化处理 · 数据生成 · 导航评测</p>
@@ -54,7 +60,15 @@ flowchart LR
 <div class="feature-grid">
   <div class="feature-card reveal">
     <div class="feature-card-icon">
-      <img src="../assets/images/icon-forge.svg" alt="资产预处理">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+        <defs><linearGradient id="if-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0d47a1"/><stop offset="100%" stop-color="#00bcd4"/></linearGradient></defs>
+        <polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" stroke="url(#if-grad)" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <circle cx="24" cy="24" r="6" stroke="url(#if-grad)" stroke-width="2" fill="none"/><circle cx="24" cy="24" r="2" stroke="url(#if-grad)" stroke-width="1.5" fill="none"/>
+        <line x1="24" y1="13" x2="24" y2="16" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/><line x1="24" y1="32" x2="24" y2="35" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="13" y1="24" x2="16" y2="24" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/><line x1="32" y1="24" x2="35" y2="24" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="15.8" y1="15.8" x2="17.9" y2="17.9" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/><line x1="30.1" y1="30.1" x2="32.2" y2="32.2" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="32.2" y1="15.8" x2="30.1" y2="17.9" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/><line x1="17.9" y1="30.1" x2="15.8" y2="32.2" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
     </div>
     <h3>资产预处理</h3>
     <p>将原始 3DGS 场景转换为标准化资产，支持坐标归一化、PGM 地图生成、可导航区域估计，提供 V1 统一资产格式与 Web 查看器。</p>
@@ -62,7 +76,14 @@ flowchart LR
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">
-      <img src="../assets/images/icon-gen.svg" alt="数据生成器">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+        <defs><linearGradient id="ig-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0d47a1"/><stop offset="100%" stop-color="#00bcd4"/></linearGradient></defs>
+        <polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" stroke="url(#ig-grad)" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <line x1="16" y1="32" x2="24" y2="20" stroke="url(#ig-grad)" stroke-width="1.5" stroke-linecap="round"/><line x1="24" y1="20" x2="32" y2="26" stroke="url(#ig-grad)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="32" y1="26" x2="24" y2="32" stroke="url(#ig-grad)" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="32" x2="24" y2="32" stroke="url(#ig-grad)" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="16" cy="32" r="2.5" fill="url(#ig-grad)"/><circle cx="24" cy="20" r="2.5" fill="url(#ig-grad)"/><circle cx="32" cy="26" r="2.5" fill="url(#ig-grad)"/><circle cx="24" cy="32" r="2.5" fill="url(#ig-grad)"/>
+        <rect x="20" y="12" width="3" height="5" rx="1" fill="url(#ig-grad)" opacity="0.6"/><rect x="25" y="10" width="3" height="7" rx="1" fill="url(#ig-grad)"/>
+      </svg>
     </div>
     <h3>数据生成器</h3>
     <p>支持 PointNav、ImageNav、ObjectNav、VLN 等任务的数据生成，多任务 Pipeline、3D GS 场景渲染与并行 Episode 生成。</p>
@@ -70,7 +91,14 @@ flowchart LR
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">
-      <img src="../assets/images/icon-bench.svg" alt="评测框架">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+        <defs><linearGradient id="ib-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#0d47a1"/><stop offset="100%" stop-color="#00bcd4"/></linearGradient></defs>
+        <polygon points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5" stroke="url(#ib-grad)" stroke-width="2" stroke-linejoin="round" fill="none"/>
+        <circle cx="24" cy="25" r="11" stroke="url(#ib-grad)" stroke-width="1.5" fill="none" opacity="0.5"/><circle cx="24" cy="25" r="7" stroke="url(#ib-grad)" stroke-width="1.5" fill="none" opacity="0.75"/>
+        <circle cx="24" cy="25" r="2.5" fill="url(#ib-grad)"/>
+        <line x1="24" y1="9" x2="24" y2="18" stroke="url(#ib-grad)" stroke-width="2" stroke-linecap="round"/>
+        <polyline points="21,12 24,9 27,12" stroke="url(#ib-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
     </div>
     <h3>评测框架</h3>
     <p>基于 3D Gaussian Splatting 和占据栅格的评测框架，支持多种导航任务与智能体（ViNT、GNM、NoMaD），含回放与可视化。</p>
