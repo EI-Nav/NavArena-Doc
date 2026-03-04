@@ -1,0 +1,26 @@
+<!-- icon-bench.svg: Evaluation Framework  m¹b + vÃ/ÄK° -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="icon-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0d47a1"/>
+      <stop offset="100%" stop-color="#00bcd4"/>
+    </linearGradient>
+  </defs>
+  <!-- m¹bF -->
+  <polygon
+    points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5"
+    stroke="url(#icon-grad)"
+    stroke-width="2"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <!-- vÃ -->
+  <circle cx="24" cy="25" r="11" stroke="url(#icon-grad)" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <!-- vÃ- -->
+  <circle cx="24" cy="25" r="7" stroke="url(#icon-grad)" stroke-width="1.5" fill="none" opacity="0.75"/>
+  <!-- vÃ-Ã¹ -->
+  <circle cx="24" cy="25" r="2.5" fill="url(#icon-grad)"/>
+  <!-- vè­4vÃ	 -->
+  <line x1="24" y1="9" x2="24" y2="18" stroke="url(#icon-grad)" stroke-width="2" stroke-linecap="round"/>
+  <polyline points="21,12 24,9 27,12" stroke="url(#icon-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
