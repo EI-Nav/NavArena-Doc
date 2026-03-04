@@ -5,13 +5,11 @@
       <stop offset="100%" stop-color="#00bcd4"/>
     </linearGradient>
   </defs>
-  <!-- m¹bFkEñr• favicon (ûUÌoýp	 -->
   <polygon
     points="16,2 28,9 28,23 16,30 4,23 4,9"
     fill="url(#fav-grad)"
     stroke="none"
   />
-  <!-- ü*ï„}rùÔœ	 -->
   <circle cx="9" cy="23" r="1.8" fill="#ffffff"/>
   <polyline
     points="9,23 12.5,17 18,20 23,9"
@@ -21,9 +19,8 @@
     stroke-linejoin="round"
     fill="none"
   />
-  <!-- È¹­4 -->
   <polyline
-    points="19.5,8.5 23,9 22.5,12.5"
+    points="19.5,10.5 23,9 24.5,12.5"
     stroke="#ffffff"
     stroke-width="2"
     stroke-linecap="round"

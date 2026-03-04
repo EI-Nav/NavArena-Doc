@@ -426,24 +426,23 @@ table tbody tr:hover {
 }
 
 /* ---------- 功能卡片 SVG 图标 ---------- */
-.feature-card-icon img {
+.feature-card-icon svg {
   width: 48px;
   height: 48px;
   display: block;
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-.feature-card:hover .feature-card-icon img {
+.feature-card:hover .feature-card-icon svg {
   transform: scale(1.12);
   filter: drop-shadow(0 4px 8px rgba(13, 71, 161, 0.25));
 }
 
-[data-md-color-scheme="slate"] .feature-card:hover .feature-card-icon img {
+[data-md-color-scheme="slate"] .feature-card:hover .feature-card-icon svg {
   filter: drop-shadow(0 4px 8px rgba(66, 165, 245, 0.3));
 }
 
-/* 暗色模式下 SVG 图标颜色适配（渐变使用 CSS currentColor 则不需要，保留备用） */
-[data-md-color-scheme="slate"] .feature-card-icon img {
+[data-md-color-scheme="slate"] .feature-card-icon svg {
   filter: brightness(1.1);
 }
 
