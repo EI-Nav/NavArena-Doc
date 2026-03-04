@@ -20,6 +20,19 @@ Before starting, ensure your system meets the following requirements:
 !!! warning "GPU Required"
     The Data Generator and Evaluation Framework require a CUDA-capable GPU. Ensure your system has the correct CUDA drivers installed.
 
+## Choosing an Installation Method
+
+```mermaid
+flowchart TD
+    Start[Choose installation method] --> Q1{Need exact reproduction?}
+    Q1 -->|Yes| Lock[Section 1: Quick Install\nUse environment.yml or requirements-lock.txt]
+    Q1 -->|No| Q2{Have uv installed?}
+    Q2 -->|Yes| UV[Section 2: uv workspace\nNote: Install PyTorch first]
+    Q2 -->|No| Q3{Need custom versions?}
+    Q3 -->|Yes| Manual[Section 3: Manual installation]
+    Q3 -->|No| Lock
+```
+
 ## Version Strategy
 
 NavArena provides three installation tiers for different needs:
@@ -65,9 +78,15 @@ Install from lock files to guarantee exact match with the verified environment:
 !!! tip "About the lock file"
     `requirements-lock.txt` is an exact version snapshot exported from the verified environment (2026-03-03), containing PyTorch 2.8.0 + CUDA 12.8. The file header documents the generation date and environment info. CLIP has been separated into its own install step (requires cloning from GitHub, which can be unreliable in some network environments).
 
+!!! note "environment.yml and navarena-core"
+    Both Option A and Option B install pip packages from a lock file, but **navarena-core must be installed in editable mode separately** because it is a local workspace package. The `pip install -e "navarena-core[rendering,export]"` step is required for all Quick Install methods.
+
 ## 2. Install via uv Workspace
 
 If you have [uv](https://github.com/astral-sh/uv) installed, use workspace mode to install all sub-projects at once:
+
+!!! warning "Prerequisite: Install PyTorch First"
+    uv workspace mode does not handle CUDA-specific index URLs. You **must install PyTorch manually** (Section 3.2) before running `uv sync`. Otherwise, uv will install CPU-only PyTorch.
 
 ```bash
 cd NavArena
@@ -75,7 +94,7 @@ cd NavArena
 # Install uv (if not installed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install all sub-projects
+# Install PyTorch first (Section 3.2), then:
 uv sync --all-packages
 
 # Or use Makefile
@@ -83,7 +102,7 @@ make install
 ```
 
 !!! info "uv vs pip"
-    uv workspace mode automatically resolves inter-project dependencies, but requires PyTorch to be pre-installed (uv does not handle CUDA index URLs). Install PyTorch per Section 3.2 first, then use `uv sync`.
+    uv workspace mode automatically resolves inter-project dependencies. After PyTorch is installed, `uv sync` will install the remaining packages.
 
 ## 3. Manual Installation (Step by Step)
 
@@ -205,7 +224,7 @@ To use ViNT, GNM, or NoMaD pre-trained navigation agents:
 
 ```bash
 # 1. Clone visualnav-transformer (alongside NavArena project)
-git clone <visualnav-transformer-repo-url>
+git clone https://github.com/robodhruv/visualnav-transformer
 
 # 2. Install extra dependencies
 pip install wandb warmup_scheduler diffusers efficientnet_pytorch \

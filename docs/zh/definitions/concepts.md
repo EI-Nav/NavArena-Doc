@@ -86,7 +86,41 @@ $NAVARENA_DATA_DIR/
 - **assets/**：navarena-forge 预处理后的场景，navarena-gen 和 navarena-bench 都依赖此目录
 - **datasets/**：navarena-gen 的输出目录（Parquet 分块存储），navarena-bench 从此加载 Episode
 
-## 5. 数据流示意
+## 5. 子包依赖与数据流
+
+```mermaid
+flowchart TB
+    subgraph Core [navarena-core]
+        C[config, data, rendering, utils]
+    end
+    
+    subgraph Forge [navarena-forge]
+        F[资产预处理]
+    end
+    
+    subgraph Gen [navarena-gen]
+        G[数据生成]
+    end
+    
+    subgraph Bench [navarena-bench]
+        B[评测]
+    end
+    
+    Core --> Forge
+    Core --> Gen
+    Core --> Bench
+    
+    PLY[原始 PLY] --> Forge
+    Forge --> V1[V1 资产]
+    V1 --> Gen
+    Gen --> EP[Episode 数据]
+    EP --> Bench
+    Bench --> Results[评测结果]
+```
+
+navarena-core 为共享基础库；forge、gen、bench 均依赖它。数据流：PLY → V1 资产（forge）→ Episodes（gen）→ 评测结果（bench）。
+
+## 6. 数据流详图
 
 ```mermaid
 flowchart TB
@@ -132,7 +166,7 @@ flowchart TB
     end
 ```
 
-## 6. 相关文档
+## 7. 相关文档
 
 - [3D GS 资产规范](gs-assets.md) - V1 资产格式详细定义
 - [导航训练数据格式](nav-data-format.md) - 训练数据完整规范

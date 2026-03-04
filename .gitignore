@@ -2,8 +2,18 @@ site/
 __pycache__/
 *.pyc
 .DS_Store
+Thumbs.db
 *.swp
 *.swo
 .env
 venv/
 .venv/
+
+# IDE
+.cursor/
+.idea/
+
+# Logs & Testing
+*.log
+.pytest_cache/
+build/

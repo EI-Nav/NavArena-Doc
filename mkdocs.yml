@@ -86,6 +86,7 @@ plugins:
             安装指南: Installation
             快速入门: Quickstart
             用户指南: User Guide
+            核心库: Core Library
             资产预处理: Asset Preprocessing
             Pipeline 步骤: Pipeline Steps
             CLI 命令: CLI Commands
@@ -105,6 +106,7 @@ plugins:
             导航训练数据格式: Navigation Training Data Format
             导航评测数据格式: Navigation Evaluation Data Format
             概念与架构: Concepts & Architecture
+            常见问题: Troubleshooting
             核心概念: Core Concepts
             架构设计: Architecture
             开发者指南: Developer Guide
@@ -196,6 +198,8 @@ nav:
     - 快速入门: getting-started/quickstart.md
   - 用户指南:
     - guide/index.md
+    - 核心库:
+      - core/index.md
     - 资产预处理:
       - asset-preprocessing/index.md
       - Pipeline 步骤: asset-preprocessing/pipeline-steps.md
@@ -225,6 +229,7 @@ nav:
   - 概念与架构:
     - 核心概念: definitions/concepts.md
     - 架构设计: concepts/architecture.md
+  - 常见问题: troubleshooting.md
   - 开发者指南:
     - 贡献指南: dev/contributing.md
     - 扩展指南: navarena-bench/extending.md

@@ -8,6 +8,24 @@
 
 ### 新增
 
+- 常见问题页面：汇总安装、数据生成、评测相关 FAQ
+
+### 变更
+
+- 贡献指南扩展：补充代码贡献流程及仓库区分说明
+
+### 修复
+
+- API 参考：`evaluator.evaluate()` 更正为 `evaluator.eval()`
+- 安装指南：ViNT 占位符替换为真实仓库地址
+- 安装指南：新增 uv 前置条件说明及 environment.yml 与 navarena-core 澄清
+
+---
+
+## [0.1.0] - 2026-03-04
+
+### 新增
+
 - 文档结构优化：按 Diataxis 框架重组导航
 - 新增快速开始、用户指南、参考手册、概念与架构、开发者指南等 Section 导引页
 - 新增全局架构设计文档 `concepts/architecture.md`

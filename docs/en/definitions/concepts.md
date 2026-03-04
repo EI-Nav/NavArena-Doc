@@ -86,7 +86,41 @@ $NAVARENA_DATA_DIR/
 - **assets/**: Preprocessed scenes from navarena-forge; used by navarena-gen and navarena-bench
 - **datasets/**: Output from navarena-gen (chunked Parquet storage); navarena-bench loads Episodes from here
 
-## 5. Data Flow
+## 5. Package and Data Flow
+
+```mermaid
+flowchart TB
+    subgraph Core [navarena-core]
+        C[config, data, rendering, utils]
+    end
+    
+    subgraph Forge [navarena-forge]
+        F[Asset Preprocessing]
+    end
+    
+    subgraph Gen [navarena-gen]
+        G[Data Generation]
+    end
+    
+    subgraph Bench [navarena-bench]
+        B[Evaluation]
+    end
+    
+    Core --> Forge
+    Core --> Gen
+    Core --> Bench
+    
+    PLY[Raw PLY] --> Forge
+    Forge --> V1[V1 Assets]
+    V1 --> Gen
+    Gen --> EP[Episode Data]
+    EP --> Bench
+    Bench --> Results[Eval Results]
+```
+
+navarena-core is the shared foundation; forge, gen, and bench each depend on it. Data flows: PLY → V1 assets (forge) → Episodes (gen) → evaluation results (bench).
+
+## 6. Data Flow Detail
 
 ```mermaid
 flowchart TB
@@ -132,7 +166,7 @@ flowchart TB
     end
 ```
 
-## 6. Related Documentation
+## 7. Related Documentation
 
 - [3D GS Asset Specification](gs-assets.md) - V1 asset format details
 - [Navigation Training Data Format](nav-data-format.md) - Training data specification

@@ -2,6 +2,16 @@
 
 本文档提供 NavArena 具身导航基础设施的 API 参考。NavArena 包含四个子项目：**核心库** (navarena-core)、**资产预处理** (navarena-forge)、**数据生成器** (navarena-gen) 和 **评测框架** (navarena-bench)。
 
+## 核心库 API (navarena-core)
+
+navarena-core 提供共享的配置、数据模型、渲染和工具。完整说明见 [核心库](../core/)。
+
+### 主要导出
+
+- `BaseConfig`、`load_config`、`resolve_path`、`resolve_scene_dir`、`get_assets_dir`、`get_datasets_dir`、`get_shared_dir` — 配置与路径解析
+- `Episode`、`TrajectoryStep`、`SceneAsset`、`ParquetDatasetReader`、`ParquetEpisodeWriter`、`ParquetTrajectoryWriter`、`validate_episode`、`validate_dataset` — 数据模型与 I/O
+- `get_logger`、`setup_logging` — 日志
+
 ## 数据生成器 API
 
 数据生成器的详细 API 文档请参考 [数据生成器 API](data-generator-api.md)。
@@ -63,10 +73,11 @@ config = EvalCfg.from_yaml("configs/eval/default_eval.yaml")
 evaluator = Evaluator.init(config)
 
 # 运行评测
-results = evaluator.evaluate()
+results = evaluator.eval()
 ```
 
 ## 详细文档
 
+- [核心库](../core/) - navarena-core 模块概览与 API
 - [数据生成器 API](data-generator-api.md) - 数据生成器的完整 API 文档
 - [评测框架 API](navarena-bench-api.md) - 评测框架的完整 API 文档

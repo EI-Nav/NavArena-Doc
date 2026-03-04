@@ -2,6 +2,16 @@
 
 This document provides API reference for the NavArena embodied navigation infrastructure. NavArena consists of four sub-projects: **Core Library** (navarena-core), **Asset Preprocessing** (navarena-forge), **Data Generator** (navarena-gen), and **Evaluation Framework** (navarena-bench).
 
+## Core Library API (navarena-core)
+
+navarena-core provides shared configuration, data models, rendering, and utilities. For full details, see [Core Library](../core/).
+
+### Main Exports
+
+- `BaseConfig`, `load_config`, `resolve_path`, `resolve_scene_dir`, `get_assets_dir`, `get_datasets_dir`, `get_shared_dir` — config and path resolution
+- `Episode`, `TrajectoryStep`, `SceneAsset`, `ParquetDatasetReader`, `ParquetEpisodeWriter`, `ParquetTrajectoryWriter`, `validate_episode`, `validate_dataset` — data models and I/O
+- `get_logger`, `setup_logging` — logging
+
 ## Data Generator API
 
 For the complete Data Generator API, see [Data Generator API](data-generator-api.md).
@@ -63,10 +73,11 @@ config = EvalCfg.from_yaml("configs/eval/default_eval.yaml")
 evaluator = Evaluator.init(config)
 
 # Run evaluation
-results = evaluator.evaluate()
+results = evaluator.eval()
 ```
 
 ## Full Documentation
 
+- [Core Library](../core/) - navarena-core module overview and API
 - [Data Generator API](data-generator-api.md) - Complete Data Generator API
 - [Evaluation Framework API](navarena-bench-api.md) - Complete Evaluation Framework API

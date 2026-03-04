@@ -8,6 +8,24 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versio
 
 ### Added
 
+- Troubleshooting page consolidating installation, data generation, and evaluation FAQs
+
+### Changed
+
+- Contributing guide extended with code contribution workflow and repository distinction
+
+### Fixed
+
+- API reference: `evaluator.evaluate()` corrected to `evaluator.eval()`
+- Installation: ViNT placeholder URL replaced with actual repository
+- Installation: Added uv prerequisite warning and environment.yml + navarena-core clarification
+
+---
+
+## [0.1.0] - 2026-03-04
+
+### Added
+
 - Documentation structure optimization: restructured nav per Diataxis framework
 - New section landing pages: Getting Started, User Guide, Reference, Concepts & Architecture, Developer Guide
 - New architecture design document `concepts/architecture.md`

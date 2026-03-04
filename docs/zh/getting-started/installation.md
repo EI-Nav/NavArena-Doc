@@ -20,6 +20,19 @@
 !!! warning "GPU 要求"
     数据生成器和评测框架需要 CUDA 支持的 GPU 才能正常运行。请确保您的系统已正确安装 CUDA 驱动。
 
+## 选择安装方式
+
+```mermaid
+flowchart TD
+    Start[选择安装方式] --> Q1{需要精确复现？}
+    Q1 -->|是| Lock[第一节：快速安装\n使用 environment.yml 或 requirements-lock.txt]
+    Q1 -->|否| Q2{已安装 uv？}
+    Q2 -->|是| UV[第二节：uv workspace\n注意：需先安装 PyTorch]
+    Q2 -->|否| Q3{需要自定义版本？}
+    Q3 -->|是| Manual[第三节：手动安装]
+    Q3 -->|否| Lock
+```
+
 ## 版本策略
 
 NavArena 提供三层安装方式，适用于不同场景：
@@ -65,9 +78,15 @@ NavArena 提供三层安装方式，适用于不同场景：
 !!! tip "lock 文件说明"
     `requirements-lock.txt` 是从已验证的环境导出的精确版本快照（2026-03-03），包含 PyTorch 2.8.0 + CUDA 12.8。文件头部注明了生成日期和环境信息。CLIP 因需要从 GitHub 克隆（国内网络可能不稳定），已从 lock 文件中分离为单独安装步骤。
 
+!!! note "environment.yml 与 navarena-core"
+    方式 A 和方式 B 均从 lock 文件安装 pip 包，但 **navarena-core 需单独以可编辑模式安装**，因为它是本地工作空间包。所有快速安装方式都需执行 `pip install -e "navarena-core[rendering,export]"` 这一步。
+
 ## 2. 使用 uv 工作空间安装
 
 如果您已安装 [uv](https://github.com/astral-sh/uv)，可以使用工作空间模式一次性安装所有子项目：
+
+!!! warning "前置条件：先安装 PyTorch"
+    uv 工作空间模式无法处理 CUDA 专用索引 URL。执行 `uv sync` 前**必须先手动安装 PyTorch**（第 3.2 节），否则 uv 会安装仅 CPU 版本。
 
 ```bash
 cd NavArena
@@ -75,7 +94,7 @@ cd NavArena
 # 安装 uv（如未安装）
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 安装全部子项目
+# 先按 3.2 节安装 PyTorch，再执行：
 uv sync --all-packages
 
 # 或使用 Makefile
@@ -83,7 +102,7 @@ make install
 ```
 
 !!! info "uv vs pip"
-    uv 工作空间模式会自动解析子项目间的依赖关系，但需要预先安装好 PyTorch（uv 不处理 CUDA 相关索引）。建议先按第 3.2 节安装 PyTorch，再使用 `uv sync`。
+    uv 工作空间模式可自动解析子项目依赖。安装 PyTorch 后，`uv sync` 会安装其余依赖。
 
 ## 3. 手动安装（分步说明）
 
@@ -205,7 +224,7 @@ pip install polars pandas plotly dash openpyxl numba
 
 ```bash
 # 1. 克隆 visualnav-transformer（与 NavArena 项目并列）
-git clone <visualnav-transformer-repo-url>
+git clone https://github.com/robodhruv/visualnav-transformer
 
 # 2. 安装额外依赖
 pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
