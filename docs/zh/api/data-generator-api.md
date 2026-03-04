@@ -331,7 +331,7 @@ class TwoStageTrajectoryPlanner:
             free_thresh: 自由空间阈值
             occupied_thresh: 占据空间阈值
             z_coordinate: Z 坐标
-            planner_config: 规划器配置（local_planner、astar、mpc/dwa/teb 等）
+            planner_config: 规划器配置（astar、path_smoothing）
         """
 ```
 

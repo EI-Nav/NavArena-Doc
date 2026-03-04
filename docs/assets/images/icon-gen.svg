@@ -1,0 +1,30 @@
+<!-- icon-gen.svg: Data Generator  m¹b + pn‚¹ï„ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="icon-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0d47a1"/>
+      <stop offset="100%" stop-color="#00bcd4"/>
+    </linearGradient>
+  </defs>
+  <!-- m¹bF -->
+  <polygon
+    points="24,3 42,13.5 42,34.5 24,45 6,34.5 6,13.5"
+    stroke="url(#icon-grad)"
+    stroke-width="2"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <!-- Þ¥¿ -->
+  <line x1="16" y1="32" x2="24" y2="20" stroke="url(#icon-grad)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="24" y1="20" x2="32" y2="26" stroke="url(#icon-grad)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="32" y1="26" x2="24" y2="32" stroke="url(#icon-grad)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="16" y1="32" x2="24" y2="32" stroke="url(#icon-grad)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- pn‚¹¹ -->
+  <circle cx="16" cy="32" r="2.5" fill="url(#icon-grad)"/>
+  <circle cx="24" cy="20" r="2.5" fill="url(#icon-grad)"/>
+  <circle cx="32" cy="26" r="2.5" fill="url(#icon-grad)"/>
+  <circle cx="24" cy="32" r="2.5" fill="url(#icon-grad)"/>
+  <!-- vèpnañ¶þ—:	 -->
+  <rect x="20" y="12" width="3" height="5" rx="1" fill="url(#icon-grad)" opacity="0.6"/>
+  <rect x="25" y="10" width="3" height="7" rx="1" fill="url(#icon-grad)"/>
+</svg>

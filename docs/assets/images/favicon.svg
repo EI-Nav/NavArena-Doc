@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
+  <defs>
+    <linearGradient id="fav-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0d47a1"/>
+      <stop offset="100%" stop-color="#00bcd4"/>
+    </linearGradient>
+  </defs>
+  <!-- m¹bFkEñr• favicon (ûUÌoýp	 -->
+  <polygon
+    points="16,2 28,9 28,23 16,30 4,23 4,9"
+    fill="url(#fav-grad)"
+    stroke="none"
+  />
+  <!-- ü*ï„}rùÔœ	 -->
+  <circle cx="9" cy="23" r="1.8" fill="#ffffff"/>
+  <polyline
+    points="9,23 12.5,17 18,20 23,9"
+    stroke="#ffffff"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <!-- È¹­4 -->
+  <polyline
+    points="19.5,8.5 23,9 22.5,12.5"
+    stroke="#ffffff"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+</svg>

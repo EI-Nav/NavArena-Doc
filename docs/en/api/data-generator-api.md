@@ -331,7 +331,7 @@ class TwoStageTrajectoryPlanner:
             free_thresh: Free space threshold
             occupied_thresh: Occupied space threshold
             z_coordinate: Z coordinate
-            planner_config: Planner config (local_planner, astar, mpc/dwa/teb)
+            planner_config: Planner config (astar, path_smoothing)
         """
 ```
 

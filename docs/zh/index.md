@@ -1,5 +1,23 @@
 <div class="hero reveal">
+  <!-- 底层：网格点阵纹理 -->
+  <div class="hero-bg-pattern"></div>
+  <!-- 中层：浮动几何体 -->
+  <svg class="hero-floating-shapes" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+    <polygon class="float-shape shape-1" points="120,40 150,22 180,40 180,76 150,94 120,76" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+    <polygon class="float-shape shape-2" points="620,60 658,38 696,60 696,104 658,126 620,104" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" fill="none"/>
+    <polygon class="float-shape shape-3" points="680,180 730,151 780,180 780,238 730,267 680,238" stroke="rgba(255,255,255,0.08)" stroke-width="2" fill="none"/>
+    <circle class="float-shape shape-4" cx="80" cy="220" r="35" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" fill="none"/>
+    <circle class="float-shape shape-5" cx="400" cy="30" r="20" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" fill="none"/>
+  </svg>
+  <!-- 上层：导航路径描绘动画 -->
+  <svg class="hero-nav-path" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+    <circle cx="100" cy="260" r="4" fill="rgba(255,255,255,0.4)"/>
+    <polyline class="draw-path" points="100,260 200,180 320,210 440,140 560,170 680,90" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <circle cx="680" cy="90" r="4" fill="rgba(255,255,255,0.6)"/>
+  </svg>
+  <!-- 内容层 -->
   <div class="hero-content">
+    <img src="../assets/images/logo.svg" alt="NavArena" class="hero-logo">
     <h1>NavArena</h1>
     <p>具身导航基础设施</p>
     <p class="hero-subtitle">资产自动化处理 · 数据生成 · 导航评测</p>
@@ -35,19 +53,25 @@ flowchart LR
 
 <div class="feature-grid">
   <div class="feature-card reveal">
-    <div class="feature-card-icon">🔧</div>
+    <div class="feature-card-icon">
+      <img src="../assets/images/icon-forge.svg" alt="资产预处理">
+    </div>
     <h3>资产预处理</h3>
     <p>将原始 3DGS 场景转换为标准化资产，支持坐标归一化、PGM 地图生成、可导航区域估计，提供 V1 统一资产格式与 Web 查看器。</p>
     <a href="asset-preprocessing/">查看文档 →</a>
   </div>
   <div class="feature-card reveal">
-    <div class="feature-card-icon">📊</div>
+    <div class="feature-card-icon">
+      <img src="../assets/images/icon-gen.svg" alt="数据生成器">
+    </div>
     <h3>数据生成器</h3>
     <p>支持 PointNav、ImageNav、ObjectNav、VLN 等任务的数据生成，多任务 Pipeline、3D GS 场景渲染与并行 Episode 生成。</p>
     <a href="data-generator/">查看文档 →</a>
   </div>
   <div class="feature-card reveal">
-    <div class="feature-card-icon">🎯</div>
+    <div class="feature-card-icon">
+      <img src="../assets/images/icon-bench.svg" alt="评测框架">
+    </div>
     <h3>评测框架</h3>
     <p>基于 3D Gaussian Splatting 和占据栅格的评测框架，支持多种导航任务与智能体（ViNT、GNM、NoMaD），含回放与可视化。</p>
     <a href="navarena-bench/">查看文档 →</a>
