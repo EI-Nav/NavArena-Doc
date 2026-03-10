@@ -329,15 +329,17 @@ duckdb: 1.4.4
 
 ### 5.2 Run Examples
 
+Run the following from the **NavArena repository root** with `NAVARENA_DATA_DIR` set:
+
 ```bash
 # Data generator help
-cd navarena-gen && python scripts/generate_data.py --help
+python navarena-gen/scripts/generate_data.py --help
 
 # Generate PointNav data (example)
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
+python navarena-gen/scripts/generate_data.py --config navarena-gen/configs/examples/pointnav_example.yaml
 
-# Launch Web Viewer
-python scripts/run_viewer.py --data-dir vln_data
+# Launch Web Viewer (data dir from env or via --data-dir)
+python navarena-gen/scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR
 # Open http://localhost:5173 in your browser
 ```
 

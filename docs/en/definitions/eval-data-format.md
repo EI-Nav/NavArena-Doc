@@ -3,7 +3,7 @@
 This document defines the Episode and trajectory format required by the evaluation framework (navarena-bench). **Episode core fields, Goals, Instructions, GT Path, and GT trajectory file format** are identical to the [Navigation Training Data Format](nav-data-format.md). This page only describes evaluation-specific differences and organization.
 
 !!! info "Relationship to Training Data"
-    The evaluation data format uses the **same Parquet format** as the [training data format](nav-data-format.md). Training data from navarena-gen includes goal_images, rendered_videos, etc.; the evaluation framework loads Episodes and GT trajectories from `meta/episodes.parquet` and `data/chunk-NNN/trajectories.parquet`.
+    The evaluation data format uses the **same Parquet format** as the [training data format](nav-data-format.md). Training data from navarena-gen includes goal_images, videos, etc.; the evaluation framework loads Episodes and GT trajectories from `meta/episodes.parquet` and `data/chunk-XXXXXX/trajectories.parquet`.
 
 ## 1. Differences from Training Format
 
@@ -13,11 +13,15 @@ This document defines the Episode and trajectory format required by the evaluati
 | Directory structure | `datasets/{name}/{scene_path}/{task_type}/` | Same as above |
 | Metadata | meta/info.json, dataset_meta.json, scene_meta.json | Same as above |
 | Episode fields | See [nav-data-format](nav-data-format.md) | Same as training |
-| Additional files | goal_images, rendered_videos (optional) | goal_images required for ImageNav |
+| Additional files | goal_images, videos (optional) | goal_images required for ImageNav |
 
 ## 2. Data Loading
 
-The evaluation framework loads data via `ParquetDatasetReader`:
+In evaluation config, `dataset_path` must point to the **task directory** (the one containing `meta/` and `data/`), e.g.:
+
+`$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav`
+
+The evaluation framework loads data via `ParquetDatasetReader` from that task directory:
 
 ```python
 from navarena_core.data.parquet_io import ParquetDatasetReader
@@ -36,7 +40,7 @@ trajectory = reader.read_trajectory("train_000001")
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `episode_id` | string | Yes | Unique identifier, format `{split}_{index}` |
-| `scene_path` | string | Yes | Scene path, format `{dataset}/{scene_id}` |
+| `scene_path` | string | Yes | Scene path, format `{group}/{scene_id}` (e.g. x2robot/17dc3367) |
 | `task_type` | string | Yes | `pointnav` \| `imagenav` \| `objectnav` \| `vln` |
 | `start_state` | object | Yes | `{position: [x,y,z], rotation: [qx,qy,qz,qw]}` |
 | `goals` | array | Yes | At least one goal; see goal_type table below |

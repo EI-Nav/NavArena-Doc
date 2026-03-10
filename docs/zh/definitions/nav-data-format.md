@@ -23,12 +23,12 @@ $NAVARENA_DATA_DIR/
 │               │   ├── info.json        # 任务级元信息
 │               │   └── episodes.parquet # 合并后的 Episode 索引（所有 chunk）
 │               ├── data/
-│               │   └── chunk-NNN/       # 分块存储（默认每块 1000 episodes）
+│               │   └── chunk-XXXXXX/    # 分块存储（如 chunk-000000，默认每块 1000 episodes）
 │               │       ├── trajectories.parquet  # GT 轨迹
 │               │       └── episodes.parquet       # 每块 Episode 元数据（增量写入）
 │               ├── goal_images/         # 目标图像（仅 imagenav，可选）
 │               │   └── {episode_id}_goal.jpg
-│               └── rendered_videos/     # 渲染视频（可选，支持多相机）
+│               └── videos/              # 渲染视频（可选，支持多相机）
 │                   └── {episode_id}/
 │                       ├── rgb/                      # 单相机模式
 │                       └── {camera_name}/           # 多相机模式
@@ -39,8 +39,8 @@ $NAVARENA_DATA_DIR/
 
 **目录结构说明**：
 - **Parquet 格式**：Episode 元数据和 GT 轨迹均以 Parquet 格式存储，格式版本 1.0.0
-- **分块存储**：轨迹按 chunk 分块写入，默认每块 1000 个 episode，支持流式生成和断点续传
-- **scene_path**：通常为 `{group}/{scene_id}`，如 `x2robot/17dc3367`
+- **分块存储**：轨迹按 chunk 分块写入（目录名为 `chunk-000000`、`chunk-000001` 等零填充编号），默认每块 1000 个 episode，支持流式生成和断点续传
+- **scene_path**：配置与路径中通常为 `{group}/{scene_id}`，如 `x2robot/17dc3367`、`sage-3d/00666b7a`、`scenesplat/{scene_id}`；元数据中可能写作 `assets/{group}/{scene_id}`（与 Explorer 一致）。Episode 的稳定唯一身份为 `scene_path + task_type + split + episode_id`
 
 ## 2. 元数据文件格式
 
@@ -289,8 +289,8 @@ $NAVARENA_DATA_DIR/
 2. **四元数顺序**：统一使用 `[qx, qy, qz, qw]`（ROS/SciPy 兼容）
 3. **Episode ID**：格式 `{split}_{序号}`，在任务目录内唯一
 4. **元数据自动维护**：`dataset_meta.json`、`scene_meta.json`、`meta/info.json` 在数据生成时自动创建和更新
-5. **断点续传**：生成器使用轻量级 checkpoint（`.{split}_checkpoint.json`）支持崩溃恢复
-6. **goal_images 与 rendered_videos**：为可选目录，路径与 episode_id 关联
+5. **断点续传**：生成器使用轻量级 checkpoint（如 `.train_checkpoint.json`）支持崩溃恢复
+6. **goal_images 与 videos**：为可选目录，路径与 episode_id 关联
 
 ## 8. 使用示例
 

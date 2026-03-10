@@ -36,7 +36,7 @@ Specify in config via `task_type`, `env_type`, `instruction_strategy`. See [Data
 
 ## Evaluation Framework (navarena-bench)
 
-The framework uses a registration mechanism:
+The framework uses **decorator-based registration** (`@Env.register`, `@Agent.register`, `@Evaluator.register`, `@Metric.register`, `@BaseReplayer.register`). Ensure the module containing your extension class is imported so that registration runs.
 
 - **New Environment** - Subclass `Env` and register
 - **New Agent** - Subclass `Agent` and register

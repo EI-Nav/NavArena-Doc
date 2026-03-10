@@ -36,7 +36,7 @@
 
 ## 评测框架扩展（navarena-bench）
 
-评测框架采用注册机制，可以轻松添加新组件：
+评测框架采用**装饰器注册**机制（`@Env.register`、`@Agent.register`、`@Evaluator.register`、`@Metric.register`、`@BaseReplayer.register`），可以轻松添加新组件。使用前需确保扩展类所在模块已被导入，以便完成注册。
 
 - **新环境** - 继承 `Env` 基类并注册
 - **新智能体** - 继承 `Agent` 基类并注册

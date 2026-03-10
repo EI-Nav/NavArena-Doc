@@ -23,12 +23,12 @@ $NAVARENA_DATA_DIR/
 │               │   ├── info.json       # Task-level metadata
 │               │   └── episodes.parquet # Consolidated episode index (all chunks)
 │               ├── data/
-│               │   └── chunk-NNN/      # Chunked storage (default 1000 episodes per chunk)
+│               │   └── chunk-XXXXXX/   # Chunked storage (e.g. chunk-000000, default 1000 episodes per chunk)
 │               │       ├── trajectories.parquet  # GT trajectories
 │               │       └── episodes.parquet      # Per-chunk episode metadata (incremental)
 │               ├── goal_images/        # Goal images (imagenav only, optional)
 │               │   └── {episode_id}_goal.jpg
-│               └── rendered_videos/    # Rendered videos (optional, multi-camera support)
+│               └── videos/             # Rendered videos (optional, multi-camera support)
 │                   └── {episode_id}/
 │                       ├── rgb/                     # Single camera mode
 │                       └── {camera_name}/           # Multi-camera mode
@@ -39,8 +39,8 @@ $NAVARENA_DATA_DIR/
 
 **Directory structure notes**:
 - **Parquet format**: Episode metadata and GT trajectories are stored in Parquet format, version 1.0.0
-- **Chunked storage**: Trajectories are written in chunks (default 1000 episodes per chunk), supporting streaming generation and crash recovery
-- **scene_path**: Typically `{group}/{scene_id}`, e.g. `x2robot/17dc3367`
+- **Chunked storage**: Trajectories are written in chunks (folder names zero-padded, e.g. `chunk-000000`, `chunk-000001`; default 1000 episodes per chunk), supporting streaming generation and crash recovery
+- **scene_path**: In config and paths typically `{group}/{scene_id}`, e.g. `x2robot/17dc3367`, `sage-3d/00666b7a`, `scenesplat/{scene_id}`; in metadata may be `assets/{group}/{scene_id}` (Explorer convention). The unique identity for an episode is `scene_path + task_type + split + episode_id`
 
 ## 2. Metadata File Formats
 
@@ -104,7 +104,7 @@ Located at `{task_dir}/meta/info.json`:
 
 ### 3.1 Episode Metadata Schema (episodes.parquet)
 
-Both `meta/episodes.parquet` and `data/chunk-NNN/episodes.parquet` use the same schema:
+Both `meta/episodes.parquet` and `data/chunk-XXXXXX/episodes.parquet` use the same schema:
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -129,7 +129,7 @@ Both `meta/episodes.parquet` and `data/chunk-NNN/episodes.parquet` use the same 
 
 ### 3.2 Trajectory Schema (trajectories.parquet)
 
-`data/chunk-NNN/trajectories.parquet` stores GT trajectory steps:
+`data/chunk-XXXXXX/trajectories.parquet` stores GT trajectory steps:
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -289,8 +289,8 @@ $NAVARENA_DATA_DIR/
 2. **Quaternion order**: Use `[qx, qy, qz, qw]` consistently (ROS/SciPy compatible)
 3. **Episode ID**: Format `{split}_{index}`, unique within task directory
 4. **Metadata auto-maintenance**: `dataset_meta.json`, `scene_meta.json`, and `meta/info.json` are auto-created and updated during data generation
-5. **Crash recovery**: Generator uses a lightweight checkpoint (`.{split}_checkpoint.json`) for crash recovery
-6. **goal_images and rendered_videos**: Optional directories, paths associated with episode_id
+5. **Crash recovery**: Generator uses a lightweight checkpoint (e.g. `.train_checkpoint.json`) for crash recovery
+6. **goal_images and videos**: Optional directories, paths associated with episode_id
 
 ## 8. Usage Examples
 

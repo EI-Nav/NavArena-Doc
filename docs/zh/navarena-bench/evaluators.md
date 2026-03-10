@@ -246,10 +246,10 @@ task:
   task_settings:
     success_distance: 0.5
 
-# 数据集配置
+# 数据集配置（dataset_path 指向含 meta/、data/ 的任务目录）
 dataset:
   dataset_type: "episode"
-  dataset_path: "navarena_data/episodes.json"
+  dataset_path: "$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav"
   shuffle: false
 
 # 评测设置

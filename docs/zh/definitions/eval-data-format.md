@@ -17,7 +17,11 @@
 
 ## 2. 数据加载方式
 
-评测框架通过 `ParquetDatasetReader` 从任务目录加载数据：
+评测时，配置中的 `dataset_path` 需指向**任务目录**（即包含 `meta/`、`data/` 的目录），例如：
+
+`$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav`
+
+评测框架通过 `ParquetDatasetReader` 从该任务目录加载数据：
 
 ```python
 from navarena_core.data.parquet_io import ParquetDatasetReader
@@ -36,7 +40,7 @@ trajectory = reader.read_trajectory("train_000001")
 | 字段 | 类型 | 必需 | 说明 |
 |------|------|------|------|
 | `episode_id` | string | 是 | 唯一标识，格式 `{split}_{序号}` |
-| `scene_path` | string | 是 | 场景路径，格式 `{dataset}/{scene_id}` |
+| `scene_path` | string | 是 | 场景路径，格式 `{group}/{scene_id}`，如 x2robot/17dc3367 |
 | `task_type` | string | 是 | `pointnav` \| `imagenav` \| `objectnav` \| `vln` |
 | `start_state` | object | 是 | `{position: [x,y,z], rotation: [qx,qy,qz,qw]}` |
 | `goals` | array | 是 | 至少一个目标，见下表 goal_type |

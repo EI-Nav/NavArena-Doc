@@ -246,10 +246,10 @@ task:
   task_settings:
     success_distance: 0.5
 
-# Dataset config
+# Dataset config (dataset_path points to task dir with meta/ and data/)
 dataset:
   dataset_type: "episode"
-  dataset_path: "navarena_data/episodes.json"
+  dataset_path: "$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav"
   shuffle: false
 
 # Evaluation settings

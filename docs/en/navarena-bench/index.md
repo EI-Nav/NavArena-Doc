@@ -256,7 +256,7 @@ task:
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "vln_data/scenes/"
+  dataset_path: "$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav"
 
 eval_settings:
   num_episodes: 100

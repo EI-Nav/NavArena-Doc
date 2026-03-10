@@ -329,15 +329,17 @@ duckdb: 1.4.4
 
 ### 5.2 运行示例
 
+以下命令均在 **NavArena 仓库根目录** 执行，且需已设置 `NAVARENA_DATA_DIR`：
+
 ```bash
 # 数据生成器帮助信息
-cd navarena-gen && python scripts/generate_data.py --help
+python navarena-gen/scripts/generate_data.py --help
 
 # 生成 PointNav 数据（示例）
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
+python navarena-gen/scripts/generate_data.py --config navarena-gen/configs/examples/pointnav_example.yaml
 
-# 启动 Web Viewer
-python scripts/run_viewer.py --data-dir vln_data
+# 启动 Web Viewer（数据目录由环境变量指定，或传入 --data-dir）
+python navarena-gen/scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR
 # 浏览器访问 http://localhost:5173
 ```
 
