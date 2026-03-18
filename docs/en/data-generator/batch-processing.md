@@ -87,6 +87,9 @@ python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
 # Render trajectories for other task types
 python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
 
+# Render GridTraj in RGBD: keep RGB MP4 and additionally write depth PNG sequences
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task gridtraj --rgbd
+
 # Explicit task dir (relative to $NAVARENA_DATA_DIR/datasets/, contains meta/ and data/)
 python scripts/render_episodes.py --scene x2robot/17dc3367 \
     --dataset-name navarena_dataset_v1 --task pointnav
@@ -127,8 +130,14 @@ All paths relative to `$NAVARENA_DATA_DIR/datasets/`:
         │   └── chunk-NNN/
         │       ├── trajectories.parquet
         │       └── episodes.parquet
-        ├── goal_images/        # ImageNav (optional)
-        └── rendered_videos/    # optional
+        └── videos/             # optional
+            ├── goal_images/    # ImageNav goal images (PNG)
+            ├── goal_depth/     # ImageNav goal depth (PNG, optional)
+            └── chunk-XXXXXX/
+                └── {camera_name}/
+                    ├── {episode_id}.mp4
+                    └── depth/ (optional)
+                        └── {episode_id}/frame_XXXXXX.png
 ```
 
 ## FAQ

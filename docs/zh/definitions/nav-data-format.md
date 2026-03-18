@@ -18,7 +18,7 @@ $NAVARENA_DATA_DIR/
 │       ├── dataset_meta.json            # 数据集级别元数据
 │       └── {scene_path}/                # 如 x2robot/17dc3367 或 sage-3d/00666b7a
 │           ├── scene_meta.json          # 场景元数据
-│           └── {task_type}/             # pointnav/imagenav/objectnav/vln
+│           └── {task_type}/             # pointnav/gridtraj/imagenav/objectnav/vln
 │               ├── meta/
 │               │   ├── info.json        # 任务级元信息
 │               │   └── episodes.parquet # 合并后的 Episode 索引（所有 chunk）
@@ -28,12 +28,15 @@ $NAVARENA_DATA_DIR/
 │               │       └── episodes.parquet       # 每块 Episode 元数据（增量写入）
 │               ├── goal_images/         # 目标图像（仅 imagenav，可选）
 │               │   └── {episode_id}_goal.jpg
-│               └── videos/              # 渲染视频（可选，支持多相机）
-│                   └── {episode_id}/
-│                       ├── rgb/                      # 单相机模式
-│                       └── {camera_name}/           # 多相机模式
-│                           ├── rgb/
+│               └── videos/              # 渲染结果（可选，支持多相机）
+│                   ├── goal_images/                 # ImageNav 目标图像（PNG）
+│                   ├── goal_depth/                  # ImageNav 目标深度（PNG，可选）
+│                   └── chunk-XXXXXX/
+│                       └── {camera_name}/
+│                           ├── {episode_id}.mp4     # RGB 轨迹视频
 │                           └── depth/ (可选)
+│                               └── {episode_id}/
+│                                   └── frame_XXXXXX.png
 └── shared/                              # 共享配置（相机等）
 ```
 
@@ -111,7 +114,7 @@ $NAVARENA_DATA_DIR/
 | episode_id | string | 唯一标识符，格式 `{split}_{序号}` 如 `train_000001` |
 | chunk_index | int32 | 轨迹所属 chunk 索引 |
 | scene_path | string | 场景路径，如 `x2robot/17dc3367` |
-| task_type | string | 任务类型：pointnav / imagenav / objectnav / vln |
+| task_type | string | 任务类型：pointnav / gridtraj / imagenav / objectnav / vln |
 | split | string | 数据划分：train / val_seen / val_unseen / test |
 | start_position_x, start_position_y, start_position_z | float64 | 起始位置 [x, y, z] |
 | start_rotation_qx, qy, qz, qw | float64 | 起始朝向四元数 [qx, qy, qz, qw] |
@@ -266,10 +269,10 @@ $NAVARENA_DATA_DIR/
                 │   │   ├── info.json
                 │   │   └── episodes.parquet
                 │   └── data/
-                │       ├── chunk-000/
+                │       ├── chunk-000000/
                 │       │   ├── trajectories.parquet
                 │       │   └── episodes.parquet
-                │       └── chunk-001/
+                │       └── chunk-000001/
                 │           ├── trajectories.parquet
                 │           └── episodes.parquet
                 ├── imagenav/
@@ -278,6 +281,17 @@ $NAVARENA_DATA_DIR/
                 │   └── goal_images/
                 │       ├── train_000000_goal.jpg
                 │       └── ...
+                ├── gridtraj/
+                │   ├── meta/
+                │   ├── data/
+                │   └── videos/
+                │       └── chunk-000000/
+                │           └── {camera_name}/
+                │               ├── train_000000.mp4
+                │               └── depth/
+                │                   └── train_000000/
+                │                       ├── frame_000000.png
+                │                       └── ...
                 └── vln/
                     ├── meta/
                     └── data/
@@ -299,7 +313,7 @@ navarena-gen 的 Web Explorer 会使用以下额外文件与约定：
 3. **Episode ID**：格式 `{split}_{序号}`，在任务目录内唯一
 4. **元数据自动维护**：`dataset_meta.json`、`scene_meta.json`、`meta/info.json` 在数据生成时自动创建和更新
 5. **断点续传**：生成器使用轻量级 checkpoint（如 `.train_checkpoint.json`）支持崩溃恢复
-6. **goal_images 与 videos**：为可选目录，路径与 episode_id 关联
+6. **goal_images 与 videos**：为可选目录；轨迹渲染默认输出 RGB MP4，`render_episodes.py --rgbd` 会额外输出 depth PNG 序列
 
 ## 9. 使用示例
 
@@ -319,7 +333,32 @@ python navarena-gen/scripts/generate_data.py --env gs --task pointnav \
     --scene x2robot/17dc3367 --num-episodes 1000
 ```
 
-### 9.2 启动 Web 查看器
+### 9.2 轨迹 RGBD 渲染
+
+```bash
+cd NavArena  # 或 cd navarena-gen
+export NAVARENA_DATA_DIR=/path/to/data
+
+# 为 GridTraj 保留 RGB MP4，同时输出 depth PNG 序列
+python navarena-gen/scripts/render_episodes.py \
+    --scene x2robot/17dc3367 \
+    --task gridtraj \
+    --rgbd
+```
+
+输出示例：
+
+```text
+datasets/{dataset_name}/x2robot/17dc3367/gridtraj/videos/chunk-000000/
+└── {camera_name}/
+    ├── train_000000.mp4
+    └── depth/
+        └── train_000000/
+            ├── frame_000000.png
+            └── ...
+```
+
+### 9.3 启动 Web 查看器
 
 ```bash
 cd NavArena

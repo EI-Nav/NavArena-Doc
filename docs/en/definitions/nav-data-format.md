@@ -18,7 +18,7 @@ $NAVARENA_DATA_DIR/
 │       ├── dataset_meta.json           # Dataset-level metadata
 │       └── {scene_path}/                # e.g. x2robot/17dc3367 or sage-3d/00666b7a
 │           ├── scene_meta.json         # Scene metadata
-│           └── {task_type}/             # pointnav/imagenav/objectnav/vln
+│           └── {task_type}/             # pointnav/gridtraj/imagenav/objectnav/vln
 │               ├── meta/
 │               │   ├── info.json       # Task-level metadata
 │               │   └── episodes.parquet # Consolidated episode index (all chunks)
@@ -28,12 +28,15 @@ $NAVARENA_DATA_DIR/
 │               │       └── episodes.parquet      # Per-chunk episode metadata (incremental)
 │               ├── goal_images/        # Goal images (imagenav only, optional)
 │               │   └── {episode_id}_goal.jpg
-│               └── videos/             # Rendered videos (optional, multi-camera support)
-│                   └── {episode_id}/
-│                       ├── rgb/                     # Single camera mode
-│                       └── {camera_name}/           # Multi-camera mode
-│                           ├── rgb/
+│               └── videos/             # Rendered outputs (optional, multi-camera support)
+│                   ├── goal_images/                # ImageNav goal images (PNG)
+│                   ├── goal_depth/                 # ImageNav goal depth (PNG, optional)
+│                   └── chunk-XXXXXX/
+│                       └── {camera_name}/
+│                           ├── {episode_id}.mp4    # RGB trajectory video
 │                           └── depth/ (optional)
+│                               └── {episode_id}/
+│                                   └── frame_XXXXXX.png
 └── shared/                             # Shared configs (camera, etc.)
 ```
 
@@ -111,7 +114,7 @@ Both `meta/episodes.parquet` and `data/chunk-XXXXXX/episodes.parquet` use the sa
 | episode_id | string | Unique identifier, format `{split}_{index}` e.g. `train_000001` |
 | chunk_index | int32 | Chunk index containing the trajectory |
 | scene_path | string | Scene path, e.g. `x2robot/17dc3367` |
-| task_type | string | Task type: pointnav / imagenav / objectnav / vln |
+| task_type | string | Task type: pointnav / gridtraj / imagenav / objectnav / vln |
 | split | string | Data split: train / val_seen / val_unseen / test |
 | start_position_x, start_position_y, start_position_z | float64 | Start position [x, y, z] |
 | start_rotation_qx, qy, qz, qw | float64 | Start orientation quaternion [qx, qy, qz, qw] |
@@ -266,10 +269,10 @@ $NAVARENA_DATA_DIR/
                 │   │   ├── info.json
                 │   │   └── episodes.parquet
                 │   └── data/
-                │       ├── chunk-000/
+                │       ├── chunk-000000/
                 │       │   ├── trajectories.parquet
                 │       │   └── episodes.parquet
-                │       └── chunk-001/
+                │       └── chunk-000001/
                 │           ├── trajectories.parquet
                 │           └── episodes.parquet
                 ├── imagenav/
@@ -278,6 +281,17 @@ $NAVARENA_DATA_DIR/
                 │   └── goal_images/
                 │       ├── train_000000_goal.jpg
                 │       └── ...
+                ├── gridtraj/
+                │   ├── meta/
+                │   ├── data/
+                │   └── videos/
+                │       └── chunk-000000/
+                │           └── {camera_name}/
+                │               ├── train_000000.mp4
+                │               └── depth/
+                │                   └── train_000000/
+                │                       ├── frame_000000.png
+                │                       └── ...
                 └── vln/
                     ├── meta/
                     └── data/
@@ -299,7 +313,7 @@ navarena-gen's Web Explorer uses these additional files and conventions:
 3. **Episode ID**: Format `{split}_{index}`, unique within task directory
 4. **Metadata auto-maintenance**: `dataset_meta.json`, `scene_meta.json`, and `meta/info.json` are auto-created and updated during data generation
 5. **Crash recovery**: Generator uses a lightweight checkpoint (e.g. `.train_checkpoint.json`) for crash recovery
-6. **goal_images and videos**: Optional directories, paths associated with episode_id
+6. **goal_images and videos**: Optional directories; trajectory rendering writes RGB MP4 by default, and `render_episodes.py --rgbd` additionally writes depth PNG sequences
 
 ## 9. Usage Examples
 
@@ -319,7 +333,32 @@ python navarena-gen/scripts/generate_data.py --env gs --task pointnav \
     --scene x2robot/17dc3367 --num-episodes 1000
 ```
 
-### 9.2 Launch Web Viewer
+### 9.2 Trajectory RGBD Rendering
+
+```bash
+cd NavArena  # or cd navarena-gen
+export NAVARENA_DATA_DIR=/path/to/data
+
+# Keep RGB MP4 for GridTraj and additionally emit depth PNG sequences
+python navarena-gen/scripts/render_episodes.py \
+    --scene x2robot/17dc3367 \
+    --task gridtraj \
+    --rgbd
+```
+
+Example output:
+
+```text
+datasets/{dataset_name}/x2robot/17dc3367/gridtraj/videos/chunk-000000/
+└── {camera_name}/
+    ├── train_000000.mp4
+    └── depth/
+        └── train_000000/
+            ├── frame_000000.png
+            └── ...
+```
+
+### 9.3 Launch Web Viewer
 
 ```bash
 cd NavArena

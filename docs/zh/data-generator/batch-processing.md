@@ -87,6 +87,9 @@ python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
 # 渲染其他任务类型的轨迹
 python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
 
+# 渲染 GridTraj 的 RGBD：保留 RGB MP4，并额外输出 depth PNG 序列
+python scripts/render_episodes.py --scene x2robot/17dc3367 --task gridtraj --rgbd
+
 # 显式指定任务目录（相对于 $NAVARENA_DATA_DIR/datasets/，含 meta/ 与 data/）
 python scripts/render_episodes.py --scene x2robot/17dc3367 \
     --dataset-name navarena_dataset_v1 --task pointnav
@@ -127,8 +130,14 @@ python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
         │   └── chunk-NNN/
         │       ├── trajectories.parquet
         │       └── episodes.parquet
-        ├── goal_images/        # ImageNav（可选）
-        └── rendered_videos/    # 可选
+        └── videos/             # 可选
+            ├── goal_images/    # ImageNav 目标图像（PNG）
+            ├── goal_depth/     # ImageNav 目标深度（PNG，可选）
+            └── chunk-XXXXXX/
+                └── {camera_name}/
+                    ├── {episode_id}.mp4
+                    └── depth/ (可选)
+                        └── {episode_id}/frame_XXXXXX.png
 ```
 
 ## 常见问题
