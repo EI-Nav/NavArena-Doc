@@ -293,6 +293,22 @@ replayer = BaseReplayer.init("my_replayer", loader)
 replayer.replay("output.mp4")
 ```
 
+## Entry Points 与外部包注册
+
+若扩展写在独立 Python 包中，可通过 PyPI entry points 注册，评测框架会在加载时发现：
+
+```toml
+[project.entry-points."navarena.evaluators"]
+vln = "my_package.vln_evaluator:VLNEvaluator"
+```
+
+| Entry Point 组 | 用途 |
+|----------------|------|
+| `navarena.agents` | 自定义智能体 |
+| `navarena.envs` | 自定义环境 |
+| `navarena.evaluators` | 自定义评测器（任务类型） |
+| `navarena.metrics` | 自定义指标 |
+
 ## 最佳实践
 
 ### 1. 遵循接口规范

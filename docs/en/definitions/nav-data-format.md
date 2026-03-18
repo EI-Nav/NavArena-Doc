@@ -283,7 +283,16 @@ $NAVARENA_DATA_DIR/
                     └── data/
 ```
 
-## 7. Notes
+## 7. Explorer-Related Files (Web Viewer)
+
+navarena-gen's Web Explorer uses these additional files and conventions:
+
+- **explorer_episodes.parquet**: At `$NAVARENA_DATA_DIR/datasets/{dataset_name}/explorer_episodes.parquet`, a dataset-level materialized index refreshed by the generator after writing `meta/episodes.parquet`, so Explorer avoids repeated scans of scattered `meta/*.parquet`. Key columns include `episode_uid`, `episode_id`, `scene_path`, `scene_group`, `scene_id`, `scene_relpath`, `task_type`, `split`, `trajectory_file`; `trajectory_file` points to the concrete chunk path, e.g. `{group}/{scene_id}/{task_type}/data/chunk-XXXXXX/trajectories.parquet`.
+- **dataset_meta.json**: Explorer uses it first for filter options (dataset_name, scene_paths, task_types, etc.) instead of DISTINCT over the full episodes table.
+- **scene_meta.json**: At `datasets/{dataset_name}/{group}/{scene_id}/scene_meta.json`; Explorer uses it for scene summaries, falling back to `assets/{group}/{scene_id}/manifest.json` if missing.
+- **scene_path**: Config uses paths relative to `assets/` (e.g. `x2robot/17dc3367`); generated episode metadata may use `assets/{group}/{scene_id}` for Explorer. Stable identity in Explorer is `scene_path + task_type + split + episode_id`.
+
+## 8. Notes
 
 1. **Environment variable**: `NAVARENA_DATA_DIR` must be set as the data root
 2. **Quaternion order**: Use `[qx, qy, qz, qw]` consistently (ROS/SciPy compatible)
@@ -292,11 +301,11 @@ $NAVARENA_DATA_DIR/
 5. **Crash recovery**: Generator uses a lightweight checkpoint (e.g. `.train_checkpoint.json`) for crash recovery
 6. **goal_images and videos**: Optional directories, paths associated with episode_id
 
-## 8. Usage Examples
+## 9. Usage Examples
 
 Examples assume running from **NavArena project root** or **navarena-gen**; config paths (e.g. `configs/examples/...`) are relative to the current working directory.
 
-### 8.1 Data Generation
+### 9.1 Data Generation
 
 ```bash
 cd NavArena  # or cd navarena-gen
@@ -310,7 +319,7 @@ python navarena-gen/scripts/generate_data.py --env gs --task pointnav \
     --scene x2robot/17dc3367 --num-episodes 1000
 ```
 
-### 8.2 Launch Web Viewer
+### 9.2 Launch Web Viewer
 
 ```bash
 cd NavArena

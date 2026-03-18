@@ -293,6 +293,22 @@ replayer = BaseReplayer.init("my_replayer", loader)
 replayer.replay("output.mp4")
 ```
 
+## Entry Points and External Packages
+
+To register extensions from a separate Python package, use PyPI entry points so the evaluation framework discovers them at load time:
+
+```toml
+[project.entry-points."navarena.evaluators"]
+vln = "my_package.vln_evaluator:VLNEvaluator"
+```
+
+| Entry point group | Purpose |
+|-------------------|---------|
+| `navarena.agents` | Custom agents |
+| `navarena.envs` | Custom environments |
+| `navarena.evaluators` | Custom evaluators (task types) |
+| `navarena.metrics` | Custom metrics |
+
 ## Best Practices
 
 ### 1. Follow Interface Convention

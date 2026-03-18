@@ -283,7 +283,16 @@ $NAVARENA_DATA_DIR/
                     └── data/
 ```
 
-## 7. 注意事项
+## 7. Explorer 相关文件（Web 查看器）
+
+navarena-gen 的 Web Explorer 会使用以下额外文件与约定：
+
+- **explorer_episodes.parquet**：位于 `$NAVARENA_DATA_DIR/datasets/{dataset_name}/explorer_episodes.parquet`，为数据集级物化索引，由生成脚本在写完 `meta/episodes.parquet` 后刷新，用于避免 Explorer 查询时反复扫描分散的 `meta/*.parquet`。关键列包括 `episode_uid`、`episode_id`、`scene_path`、`scene_group`、`scene_id`、`scene_relpath`、`task_type`、`split`、`trajectory_file` 等；其中 `trajectory_file` 指向具体 chunk 的轨迹文件路径，形如 `{group}/{scene_id}/{task_type}/data/chunk-XXXXXX/trajectories.parquet`。
+- **dataset_meta.json**：Explorer 优先用其提供筛选项（dataset_name、scene_paths、task_types 等），而不是对整张 episodes 表做 DISTINCT。
+- **scene_meta.json**：位于 `datasets/{dataset_name}/{group}/{scene_id}/scene_meta.json`，Explorer 优先用它生成场景摘要；缺失时回退到 `assets/{group}/{scene_id}/manifest.json`。
+- **scene_path 写法**：配置层使用相对于 `assets/` 的路径（如 `x2robot/17dc3367`）；生成后 episode 元数据中可能写作 `assets/{group}/{scene_id}` 以与 Explorer 一致。Explorer 中的稳定身份为 `scene_path + task_type + split + episode_id`。
+
+## 8. 注意事项
 
 1. **环境变量**：必须设置 `NAVARENA_DATA_DIR` 作为数据根目录
 2. **四元数顺序**：统一使用 `[qx, qy, qz, qw]`（ROS/SciPy 兼容）
@@ -292,11 +301,11 @@ $NAVARENA_DATA_DIR/
 5. **断点续传**：生成器使用轻量级 checkpoint（如 `.train_checkpoint.json`）支持崩溃恢复
 6. **goal_images 与 videos**：为可选目录，路径与 episode_id 关联
 
-## 8. 使用示例
+## 9. 使用示例
 
 以下示例均在 **NavArena 项目根目录** 或 **navarena-gen 目录** 下运行；配置文件路径（如 `configs/examples/...`）相对于当前工作目录。
 
-### 8.1 数据生成
+### 9.1 数据生成
 
 ```bash
 cd NavArena  # 或 cd navarena-gen
@@ -310,7 +319,7 @@ python navarena-gen/scripts/generate_data.py --env gs --task pointnav \
     --scene x2robot/17dc3367 --num-episodes 1000
 ```
 
-### 8.2 启动 Web 查看器
+### 9.2 启动 Web 查看器
 
 ```bash
 cd NavArena
