@@ -8,7 +8,6 @@ The data generator supports single-scene and multi-scene batch generation, paral
 |--------|---------|
 | `scripts/generate_data.py` | Main data generation entry |
 | `scripts/render_episodes.py` | Goal images and trajectory video rendering |
-| `scripts/validate_data.py` | Validate generated data |
 | `scripts/run_viewer.py` | Web viewer launcher |
 
 ## Single Scene
@@ -95,24 +94,7 @@ python scripts/render_episodes.py --scene x2robot/17dc3367 \
 
 ## Data Validation
 
-Paths are relative to `$NAVARENA_DATA_DIR/datasets/`:
-
-```bash
-# Shorthand via --scene + --task
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav
-
-# Via --scene + --task + --dataset-name
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --dataset-name navarena_dataset_v1
-
-# Validate all datasets in directory
-python scripts/validate_data.py navarena_dataset_v1/ --all
-
-# Check if referenced files exist
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --check-files
-
-# Verbose output
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --verbose
-```
+The repository does not ship a standalone `validate_data.py`. You can write a script that reads `meta/episodes.parquet` and `data/chunk-*/trajectories.parquet` to check consistency (e.g. episode_id mapping, trajectory step counts).
 
 ## Web Viewer
 
@@ -123,7 +105,8 @@ python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `--data-dir` | Data directory path | - |
-| `--port` | Backend service port | `5000` |
+| `--backend-port` | Backend service port | `8000` |
+| `--frontend-port` | Frontend service port | `5173` |
 | `--skip-frontend` | Start backend only | `false` |
 | `--skip-backend` | Start frontend only | `false` |
 

@@ -8,7 +8,6 @@
 |------|------|
 | `scripts/generate_data.py` | 数据生成主入口 |
 | `scripts/render_episodes.py` | 目标图像与轨迹视频渲染 |
-| `scripts/validate_data.py` | 生成数据验证 |
 | `scripts/run_viewer.py` | Web 查看器启动 |
 
 ## 单场景生成
@@ -95,24 +94,7 @@ python scripts/render_episodes.py --scene x2robot/17dc3367 \
 
 ## 数据验证
 
-路径相对于 `$NAVARENA_DATA_DIR/datasets/`：
-
-```bash
-# 使用 --scene + --task 快捷方式
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav
-
-# 使用 --scene + --task + --dataset-name 指定任务
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --dataset-name navarena_dataset_v1
-
-# 验证目录下所有数据集
-python scripts/validate_data.py navarena_dataset_v1/ --all
-
-# 检查引用的文件是否存在
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --check-files
-
-# 显示详细错误和警告
-python scripts/validate_data.py --scene x2robot/17dc3367 --task pointnav --verbose
-```
+当前仓库未提供独立的 `validate_data.py`。可自行编写脚本读取 `meta/episodes.parquet` 与 `data/chunk-*/trajectories.parquet` 做一致性检查（如 episode_id 对应、轨迹步数等）。
 
 ## Web 查看器
 
@@ -123,7 +105,8 @@ python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
 | `--data-dir` | 数据目录路径 | - |
-| `--port` | 后端服务端口 | `5000` |
+| `--backend-port` | 后端服务端口 | `8000` |
+| `--frontend-port` | 前端服务端口 | `5173` |
 | `--skip-frontend` | 只启动后端 | `false` |
 | `--skip-backend` | 只启动前端 | `false` |
 

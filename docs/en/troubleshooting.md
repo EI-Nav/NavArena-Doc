@@ -74,7 +74,7 @@ pip install --user -e .
 
 - Ensure `NAVARENA_DATA_DIR` is set: `echo $NAVARENA_DATA_DIR`
 - Check that `scene_path` in your config matches the actual directory under `$NAVARENA_DATA_DIR/assets/`
-- The config `scene_path` format is `{dataset}/{scene_id}` (e.g. `x2robot/17dc3367`)
+- The config `scene_path` format is `{group}/{scene_id}` (e.g. `x2robot/17dc3367`, where group is the scene group name)
 
 ### No episodes generated / empty output
 

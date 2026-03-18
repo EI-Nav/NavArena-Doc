@@ -17,17 +17,17 @@
 configs/
 ├── defaults/
 │   ├── env/
-│   │   ├── gs.yaml
-│   │   ├── habitat.yaml
-│   │   └── isaac.yaml
+│   │   └── gs.yaml                 # 当前仅实现 gs（3DGS）环境；habitat/isaac 为占位
 │   ├── task/
 │   │   ├── pointnav.yaml
+│   │   ├── gridtraj.yaml
 │   │   ├── imagenav.yaml
 │   │   ├── objectnav.yaml
 │   │   └── vln.yaml
 │   └── planner.yaml
 └── examples/
     ├── pointnav_example.yaml
+    ├── gridtraj_example.yaml
     ├── imagenav_example.yaml
     ├── objectnav_example.yaml
     ├── vln_zh_example.yaml

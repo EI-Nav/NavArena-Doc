@@ -17,17 +17,17 @@ User config wins; missing fields are merged from the above defaults.
 configs/
 ├── defaults/
 │   ├── env/
-│   │   ├── gs.yaml
-│   │   ├── habitat.yaml
-│   │   └── isaac.yaml
+│   │   └── gs.yaml                 # Only gs (3DGS) is implemented; habitat/isaac are placeholders
 │   ├── task/
 │   │   ├── pointnav.yaml
+│   │   ├── gridtraj.yaml
 │   │   ├── imagenav.yaml
 │   │   ├── objectnav.yaml
 │   │   └── vln.yaml
 │   └── planner.yaml
 └── examples/
     ├── pointnav_example.yaml
+    ├── gridtraj_example.yaml
     ├── imagenav_example.yaml
     ├── objectnav_example.yaml
     ├── vln_zh_example.yaml

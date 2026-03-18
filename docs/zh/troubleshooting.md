@@ -74,7 +74,7 @@ pip install --user -e .
 
 - 确认已设置 `NAVARENA_DATA_DIR`：`echo $NAVARENA_DATA_DIR`
 - 检查配置中的 `scene_path` 与实际目录 `$NAVARENA_DATA_DIR/assets/` 下结构一致
-- `scene_path` 格式为 `{dataset}/{scene_id}`（如 `x2robot/17dc3367`）
+- `scene_path` 格式为 `{group}/{scene_id}`（如 `x2robot/17dc3367`，其中 group 为场景组名）
 
 ### 未生成 Episode / 输出为空
 
