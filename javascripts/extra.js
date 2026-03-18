@@ -1,29 +1,18 @@
 (function() {
   'use strict';
 
-  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  document.documentElement.classList.add('js');
-
-  function updateMotionPreference() {
-    document.documentElement.style.scrollBehavior = prefersReducedMotion.matches ? 'auto' : 'smooth';
-  }
+  /* 平滑滚动 */
+  document.documentElement.style.scrollBehavior = 'smooth';
 
   function initReveal() {
     var revealElements = document.querySelectorAll('.reveal');
     if (!revealElements.length) return;
-    if (prefersReducedMotion.matches || typeof IntersectionObserver === 'undefined') {
-      revealElements.forEach(function(el) {
-        el.classList.add('revealed');
-      });
-      return;
-    }
 
     var observer = new IntersectionObserver(
       function(entries) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('revealed');
-            observer.unobserve(entry.target);
           }
         });
       },
@@ -54,7 +43,6 @@
   }
 
   function init() {
-    updateMotionPreference();
     initReveal();
     initMermaidTheme();
   }
@@ -73,11 +61,5 @@
       attributes: true,
       attributeFilter: ['data-md-color-scheme']
     });
-  }
-
-  if (typeof prefersReducedMotion.addEventListener === 'function') {
-    prefersReducedMotion.addEventListener('change', updateMotionPreference);
-  } else if (typeof prefersReducedMotion.addListener === 'function') {
-    prefersReducedMotion.addListener(updateMotionPreference);
   }
 })();
