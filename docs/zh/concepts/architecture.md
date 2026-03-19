@@ -6,28 +6,33 @@
 
 ```mermaid
 flowchart TB
+    classDef core   fill:#FFF7ED,stroke:#F97316,stroke-width:1.5px,color:#7C2D12,font-weight:600
+    classDef forge  fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F
+    classDef gen    fill:#F0FDFA,stroke:#0D9488,stroke-width:1.5px,color:#0F4C43
+    classDef bench  fill:#F5F3FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B1F6E
+
     subgraph Core[navarena-core]
-        Rendering[rendering]
-        Utils[utils]
-        Config[config]
-        Data[data]
+        Rendering[rendering]:::core
+        Utils[utils]:::core
+        Config[config]:::core
+        Data[data]:::core
     end
     
     subgraph Forge[navarena-forge]
-        Pipeline[Pipeline]
-        Steps[ProcessingStep]
+        Pipeline[Pipeline]:::forge
+        Steps[ProcessingStep]:::forge
     end
     
     subgraph Gen[navarena-gen]
-        Generators[generators]
-        Envs[envs]
-        Planning[planning]
+        Generators[generators]:::gen
+        Envs[envs]:::gen
+        Planning[planning]:::gen
     end
     
     subgraph Bench[navarena-bench]
-        Evaluator[Evaluator]
-        Agent[Agent]
-        Env[Env]
+        Evaluator[Evaluator]:::bench
+        Agent[Agent]:::bench
+        Env[Env]:::bench
     end
     
     Core --> Forge
@@ -48,12 +53,16 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    A["Raw PLY\nInteriorGS / ScanNet++"] --> B[navarena-forge]
-    B --> C["V1 资产\nassets/"]
-    C --> D[navarena-gen]
-    D --> E["Parquet 数据集\ndatasets/"]
-    E --> F[navarena-bench]
-    F --> G["评测结果\nMetrics / Replay"]
+    classDef data    fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F
+    classDef module  fill:#F0FDFA,stroke:#0D9488,stroke-width:1.5px,color:#0F4C43,font-weight:600
+    classDef output  fill:#F5F3FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B1F6E
+
+    A["Raw PLY\nInteriorGS / ScanNet++"]:::data --> B[navarena-forge]:::module
+    B --> C["V1 资产\nassets/"]:::data
+    C --> D[navarena-gen]:::module
+    D --> E["Parquet 数据集\ndatasets/"]:::data
+    E --> F[navarena-bench]:::module
+    F --> G["评测结果\nMetrics / Replay"]:::output
 ```
 
 1. **资产预处理**：原始 3DGS PLY 经过 `coordinate_normalize` → `pcd_to_map` → `valid_region_estimate` → `compress_ply`，产出 `manifest.json`、`aligned.ply`、`nav_map.pgm`、`nav_mask.png` 等。

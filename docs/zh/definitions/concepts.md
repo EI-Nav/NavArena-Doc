@@ -90,32 +90,38 @@ $NAVARENA_DATA_DIR/
 
 ```mermaid
 flowchart TB
+    classDef core   fill:#FFF7ED,stroke:#F97316,stroke-width:1.5px,color:#7C2D12,font-weight:600
+    classDef forge  fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F
+    classDef gen    fill:#F0FDFA,stroke:#0D9488,stroke-width:1.5px,color:#0F4C43
+    classDef bench  fill:#F5F3FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B1F6E
+    classDef data   fill:#FFFBEB,stroke:#D97706,stroke-width:1.5px,color:#92400E
+
     subgraph Core [navarena-core]
-        C[config, data, rendering, utils]
+        C[config, data, rendering, utils]:::core
     end
     
     subgraph Forge [navarena-forge]
-        F[资产预处理]
+        F[资产预处理]:::forge
     end
     
     subgraph Gen [navarena-gen]
-        G[数据生成]
+        G[数据生成]:::gen
     end
     
     subgraph Bench [navarena-bench]
-        B[评测]
+        B[评测]:::bench
     end
     
     Core --> Forge
     Core --> Gen
     Core --> Bench
     
-    PLY[原始 PLY] --> Forge
-    Forge --> V1[V1 资产]
+    PLY[原始 PLY]:::data --> Forge
+    Forge --> V1[V1 资产]:::data
     V1 --> Gen
-    Gen --> EP[Episode 数据]
+    Gen --> EP[Episode 数据]:::data
     EP --> Bench
-    Bench --> Results[评测结果]
+    Bench --> Results[评测结果]:::data
 ```
 
 navarena-core 为共享基础库；forge、gen、bench 均依赖它。数据流：PLY → V1 资产（forge）→ Episodes（gen）→ 评测结果（bench）。

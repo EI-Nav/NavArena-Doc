@@ -90,32 +90,38 @@ $NAVARENA_DATA_DIR/
 
 ```mermaid
 flowchart TB
+    classDef core   fill:#FFF7ED,stroke:#F97316,stroke-width:1.5px,color:#7C2D12,font-weight:600
+    classDef forge  fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F
+    classDef gen    fill:#F0FDFA,stroke:#0D9488,stroke-width:1.5px,color:#0F4C43
+    classDef bench  fill:#F5F3FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B1F6E
+    classDef data   fill:#FFFBEB,stroke:#D97706,stroke-width:1.5px,color:#92400E
+
     subgraph Core [navarena-core]
-        C[config, data, rendering, utils]
+        C[config, data, rendering, utils]:::core
     end
     
     subgraph Forge [navarena-forge]
-        F[Asset Preprocessing]
+        F[Asset Preprocessing]:::forge
     end
     
     subgraph Gen [navarena-gen]
-        G[Data Generation]
+        G[Data Generation]:::gen
     end
     
     subgraph Bench [navarena-bench]
-        B[Evaluation]
+        B[Evaluation]:::bench
     end
     
     Core --> Forge
     Core --> Gen
     Core --> Bench
     
-    PLY[Raw PLY] --> Forge
-    Forge --> V1[V1 Assets]
+    PLY[Raw PLY]:::data --> Forge
+    Forge --> V1[V1 Assets]:::data
     V1 --> Gen
-    Gen --> EP[Episode Data]
+    Gen --> EP[Episode Data]:::data
     EP --> Bench
-    Bench --> Results[Eval Results]
+    Bench --> Results[Eval Results]:::data
 ```
 
 navarena-core is the shared foundation; forge, gen, and bench each depend on it. Data flows: PLY → V1 assets (forge) → Episodes (gen) → evaluation results (bench).

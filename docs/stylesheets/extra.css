@@ -448,12 +448,167 @@ details {
   background: rgba(96, 165, 250, 0.12);
 }
 
+/* ── Mermaid diagram container ── */
+
 .md-typeset .mermaid {
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   border: 1px solid var(--navarena-border);
   border-radius: var(--navarena-radius-sm);
   background: var(--navarena-surface);
   box-shadow: var(--navarena-shadow-sm);
+  overflow-x: auto;
+}
+
+/* Centre the rendered SVG */
+.md-typeset .mermaid svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* ── Flowchart: regular nodes ── */
+
+.md-typeset .mermaid .node rect,
+.md-typeset .mermaid .node polygon,
+.md-typeset .mermaid .node circle,
+.md-typeset .mermaid .node ellipse {
+  rx: 8;
+  ry: 8;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.06));
+  stroke-width: 1.5px !important;
+}
+
+.md-typeset .mermaid .node .label {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+/* ── Flowchart: subgraph clusters ── */
+
+.md-typeset .mermaid .cluster rect {
+  rx: 10 !important;
+  ry: 10 !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 5 3 !important;
+}
+
+.md-typeset .mermaid .cluster-label .nodeLabel,
+.md-typeset .mermaid .cluster-label foreignObject p {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+/* ── Flowchart: edges ── */
+
+.md-typeset .mermaid .edgePath .path {
+  stroke-width: 1.75px !important;
+}
+
+.md-typeset .mermaid .edgeLabel {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+  padding: 2px 6px !important;
+}
+
+.md-typeset .mermaid .edgeLabel rect {
+  rx: 6 !important;
+  ry: 6 !important;
+  opacity: 0.85 !important;
+}
+
+/* ── Flowchart: arrowheads ── */
+
+.md-typeset .mermaid marker path {
+  stroke-width: 1 !important;
+}
+
+/* ── Sequence diagrams: actors ── */
+
+.md-typeset .mermaid .actor {
+  rx: 6 !important;
+  ry: 6 !important;
+  stroke-width: 1.5px !important;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.06));
+}
+
+.md-typeset .mermaid .actor-line {
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 4 3 !important;
+}
+
+.md-typeset .mermaid text.actor {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+/* ── Sequence diagrams: messages ── */
+
+.md-typeset .mermaid .messageText {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif !important;
+  font-size: 12.5px !important;
+}
+
+.md-typeset .mermaid line.messages {
+  stroke-width: 1.5px !important;
+}
+
+.md-typeset .mermaid .messageLine0,
+.md-typeset .mermaid .messageLine1 {
+  stroke-width: 1.5px !important;
+}
+
+/* ── Sequence diagrams: loop / alt / opt boxes ── */
+
+.md-typeset .mermaid .loopText,
+.md-typeset .mermaid .loopText > tspan {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+}
+
+.md-typeset .mermaid rect.rect {
+  rx: 6 !important;
+  ry: 6 !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 5 3 !important;
+}
+
+/* ── Sequence diagrams: notes ── */
+
+.md-typeset .mermaid .note {
+  rx: 6 !important;
+  ry: 6 !important;
+  stroke-width: 1.5px !important;
+  filter: drop-shadow(0 1px 3px rgba(15, 23, 42, 0.08));
+}
+
+.md-typeset .mermaid .noteText {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif !important;
+  font-size: 12px !important;
+}
+
+/* ── Dark mode overrides ── */
+
+[data-md-color-scheme="slate"] .md-typeset .mermaid .node rect,
+[data-md-color-scheme="slate"] .md-typeset .mermaid .node polygon,
+[data-md-color-scheme="slate"] .md-typeset .mermaid .node circle,
+[data-md-color-scheme="slate"] .md-typeset .mermaid .node ellipse {
+  filter: drop-shadow(0 2px 6px rgba(2, 6, 23, 0.35));
+}
+
+[data-md-color-scheme="slate"] .md-typeset .mermaid .actor {
+  filter: drop-shadow(0 2px 6px rgba(2, 6, 23, 0.35));
+}
+
+[data-md-color-scheme="slate"] .md-typeset .mermaid .note {
+  filter: drop-shadow(0 1px 4px rgba(2, 6, 23, 0.4));
 }
 
 .md-footer {

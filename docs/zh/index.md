@@ -40,12 +40,16 @@
 
 ```mermaid
 flowchart LR
-    A["Raw 3DGS Scenes"] --> B["navarena-forge\nAsset Preprocessing"]
-    B --> C["Standardized Assets"]
-    C --> D["navarena-gen\nData Generator"]
-    D --> E["Training/Eval Data"]
-    E --> F["navarena-bench\nEvaluation"]
-    F --> G["Metrics & Replay"]
+    classDef data    fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F
+    classDef module  fill:#F0FDFA,stroke:#0D9488,stroke-width:1.5px,color:#0F4C43,font-weight:600
+    classDef output  fill:#F5F3FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B1F6E
+
+    A["Raw 3DGS Scenes"]:::data --> B["navarena-forge\nAsset Preprocessing"]:::module
+    B --> C["Standardized Assets"]:::data
+    C --> D["navarena-gen\nData Generator"]:::module
+    D --> E["Training/Eval Data"]:::data
+    E --> F["navarena-bench\nEvaluation"]:::module
+    F --> G["Metrics & Replay"]:::output
 ```
 
 ## 谁应该阅读本文档
