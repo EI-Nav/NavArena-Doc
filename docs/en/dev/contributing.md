@@ -1,6 +1,6 @@
 # Contributing Guide
 
-Thank you for contributing to NavArena! This guide explains how to participate in both **code** and **documentation** contributions.
+This guide explains how to contribute code and documentation to NavArena.
 
 ## Repositories
 

@@ -260,7 +260,4 @@ replay:
 !!! question "观测图像缺失"
     确保评测时保存了观测图像，检查图像路径是否正确。
 
-!!! tip "下一步"
-    - 学习如何 **[扩展框架](extending.md)**
-    - 查看 **[评测器模块](evaluators.md)** 的使用方法
-    - 了解 **[环境模块](environment.md)** 的详细说明
+**参见**：[扩展指南](extending.md) · [评测器模块](evaluators.md) · [环境模块](environment.md)

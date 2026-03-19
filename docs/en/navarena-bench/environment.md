@@ -1,15 +1,6 @@
 # Environment Module
 
-The environment module provides the navigation simulation interface, including 3D Gaussian Splatting rendering and occupancy grid collision detection.
-
-## Overview
-
-The environment module is a core component of the evaluation framework, responsible for:
-
-- **Scene Rendering** - Render scenes with 3D GS technology
-- **Collision Detection** - Collision detection based on occupancy grid map
-- **State Management** - Robot position, orientation, etc.
-- **Goal Validation** - Check if goal is reached
+The environment module provides scene rendering (3D GS), occupancy grid collision detection, robot state management, and goal validation.
 
 ## 3D GS Environment
 
@@ -340,7 +331,4 @@ env_settings:
 !!! question "Multi-camera config error"
     Ensure camera config format is correct and intrinsics/extrinsics are set.
 
-!!! tip "Next Steps"
-    - Learn how to configure the **[Agent Module](agents.md)**
-    - View **[Evaluator Module](evaluators.md)** usage
-    - Learn how to **[Extend the Framework](extending.md)**
+**See also**: [Agent Module](agents.md) · [Evaluator Module](evaluators.md) · [Extending](extending.md)

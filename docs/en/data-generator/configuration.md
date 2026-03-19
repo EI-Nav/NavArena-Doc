@@ -201,6 +201,4 @@ python scripts/generate_data.py --config configs/examples/pointnav_example.yaml 
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --append
 ```
 
-!!! tip "Next Steps"
-    - View full CLI parameters in **[Batch Processing](batch-processing.md)**
-    - Learn **[Asset Preprocessing](../asset-preprocessing/)** for scene preparation
+**See also**: [Batch Processing](batch-processing.md) · [Asset Preprocessing](../asset-preprocessing/)

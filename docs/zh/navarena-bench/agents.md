@@ -1,14 +1,6 @@
 # 智能体模块
 
-智能体模块提供导航模型的接口，支持多种实现方式，包括本地模型、远程服务和预训练模型。
-
-## 概述
-
-智能体是导航模型与评测框架之间的接口，负责：
-
-- **接收观测** - 从环境获取观测数据
-- **生成动作** - 根据观测生成导航动作
-- **管理状态** - 管理模型内部状态
+智能体模块是导航模型与评测框架之间的接口，负责接收观测、生成导航动作，支持本地模型、远程服务和预训练模型等多种实现方式。
 
 ## 智能体类型
 
@@ -147,7 +139,7 @@ agent:
 
 ### NoMaDAgent
 
-NoMaD (Normalizing Flow Models for Robotic Navigation) 模型智能体。
+NoMaD (Goal Masking Diffusion Policies for Navigation and Exploration) 模型智能体。
 
 #### 配置
 
@@ -343,7 +335,4 @@ agent = Agent.init(config)
 !!! question "观测格式不匹配"
     检查环境返回的观测格式是否与智能体期望的格式一致。
 
-!!! tip "下一步"
-    - 了解 **[评测器模块](evaluators.md)** 的使用方法
-    - 查看 **[回放模块](replay.md)** 的功能
-    - 学习如何 **[扩展框架](extending.md)**
+**参见**：[评测器模块](evaluators.md) · [回放模块](replay.md) · [扩展指南](extending.md)

@@ -1,6 +1,6 @@
 # Concepts & Architecture
 
-This section covers NavArena's core terminology, overall architecture, and data flows to help you build a mental model before diving into individual modules.
+This section covers NavArena's core terminology, overall architecture, and data flows. Read this before diving into individual modules.
 
 ## Contents
 

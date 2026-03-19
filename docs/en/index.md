@@ -39,7 +39,7 @@
   </div>
 </div>
 
-Welcome to NavArena documentation! NavArena provides asset automation, data generation, and navigation evaluation capabilities. This documentation includes complete usage guides, API references, and best practices.
+This documentation covers usage guides, API references, and best practices for NavArena — an infrastructure for embodied navigation covering asset preprocessing, data generation, and model evaluation.
 
 ## Workflow Overview
 

@@ -1,6 +1,6 @@
 # Core Concepts
 
-This document introduces the core concepts, terminology, and workflows of the NavArena embodied navigation infrastructure to help users understand the overall architecture.
+This document defines the core concepts, terminology, and workflows of the NavArena embodied navigation infrastructure.
 
 ## 1. NavArena Workflow
 

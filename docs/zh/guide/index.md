@@ -1,17 +1,10 @@
 # 用户指南
 
-本指南按 NavArena 的实际工作流组织，帮助您完成从原始场景到评测结果的完整流程。
+本指南按 NavArena 的实际工作流组织，覆盖从原始场景到评测结果的完整流程。
 
 ## 三模块工作流
 
-```mermaid
-flowchart LR
-    A["1. 资产预处理"] --> B["2. 数据生成"]
-    B --> C["3. 评测"]
-    A -.navarena-forge.-> A
-    B -.navarena-gen.-> B
-    C -.navarena-bench.-> C
-```
+三个模块依次执行，上一步的输出是下一步的输入：
 
 ## 模块入口
 
@@ -48,4 +41,4 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 - **远程 / ViNT 智能体**：在评测配置中设置 `agent_type: "remote"` 或 `agent_type: "vint"`，详见 [智能体模块](../navarena-bench/agents.md)
 
 !!! tip "下一步"
-    根据您的目标选择对应模块的文档深入阅读，或参考 [核心概念](../definitions/concepts.md) 理解整体架构与术语。
+    根据目标选择对应模块的文档深入阅读，或参考 [核心概念](../definitions/concepts.md) 理解整体架构与术语。

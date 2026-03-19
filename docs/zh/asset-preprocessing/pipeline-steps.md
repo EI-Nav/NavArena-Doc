@@ -136,6 +136,4 @@ graph LR
     S1 -.可选.-> S4[compress_ply]
 ```
 
-!!! tip "下一步"
-    - 查看 **[配置说明](configuration.md)**
-    - 使用 **[CLI 命令](cli.md)** 运行 Pipeline
+**参见**：[配置说明](configuration.md) · [CLI 命令](cli.md)

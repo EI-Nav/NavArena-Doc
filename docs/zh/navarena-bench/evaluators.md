@@ -1,15 +1,6 @@
 # 评测器模块
 
-评测器模块负责协调环境、智能体和数据集进行评测，计算评测指标并保存结果。
-
-## 概述
-
-评测器是评测框架的核心组件，负责：
-
-- **管理评测流程** - 协调环境、智能体和数据集
-- **执行评测循环** - 运行 episode 并收集数据
-- **计算指标** - 计算成功率、路径长度比等指标
-- **保存结果** - 保存评测结果和轨迹数据
+评测器模块协调环境、智能体和数据集，执行评测循环，计算指标并保存结果。
 
 ## 评测器类型
 
@@ -351,16 +342,16 @@ SR = (成功 episode 数) / (总 episode 数)
 
 ### Success weighted by Path Length (SPL)
 
-路径长度加权成功率，考虑路径效率。
+路径长度加权成功率，兼顾导航成功与路径效率。定义来自 Anderson et al., "On Evaluation of Embodied Navigation Agents", CVPR 2018。
 
 ```
-SPL = (1/N) * Σ(S_i * L_i / max(L_i, G_i))
+SPL = (1/N) * Σ(S_i * G_i / max(P_i, G_i))
 
 其中：
-- N: 总 episode 数
-- S_i: Episode i 是否成功（1 或 0）
-- L_i: Episode i 的实际路径长度
-- G_i: Episode i 的最短路径长度
+- N:   总 episode 数
+- S_i: episode i 是否成功（1 或 0）
+- P_i: episode i 的实际路径长度（米）
+- G_i: episode i 起点到目标的最短路径长度（geodesic distance，米）
 ```
 
 ### Navigation Error (NE)
@@ -424,7 +415,4 @@ evaluator = Evaluator.init(config)
 !!! question "Episode 格式错误"
     验证 episode JSON 格式，确保必需字段存在。
 
-!!! tip "下一步"
-    - 了解 **[回放模块](replay.md)** 的功能
-    - 学习如何 **[扩展框架](extending.md)**
-    - 查看 **[环境模块](environment.md)** 的详细说明
+**参见**：[回放模块](replay.md) · [扩展指南](extending.md) · [环境模块](environment.md)

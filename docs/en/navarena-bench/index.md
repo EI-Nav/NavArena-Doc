@@ -9,8 +9,8 @@ navarena-bench is a navigation model evaluation framework based on 3D Gaussian S
 
 The evaluation framework provides:
 
-- **Modular Design** - Registration-based, easy to extend with new environments, tasks, evaluators, agents, and metrics
-- **3D GS Rendering** - High-quality rendering with gsplat
+- **Modular Design** - Registration-based architecture; supports extension with new environments, tasks, evaluators, agents, and metrics
+- **3D GS Rendering** - Scene rendering via gsplat
 - **Collision Detection** - Collision detection based on occupancy grid map
 - **Multi-Task Support** - PointNav, ObjectNav, ImageNav, VLN
 - **Multi-Agent Support** - Local, Remote, ViNT, GNM, NoMaD, MultiModalNav, LanguageNav
@@ -63,71 +63,44 @@ flowchart TB
 
 ### Evaluator
 
-The evaluator coordinates the environment, agent, and dataset for evaluation.
-
-**Main functions:**
-- Manage evaluation flow
-- Coordinate environment, agent, and dataset
-- Compute evaluation metrics
-- Record evaluation results
+The evaluator coordinates the environment, agent, and dataset, runs the evaluation loop, and aggregates metrics.
 
 **Supported evaluators:**
-- `PointNavEvaluator` - Point goal navigation evaluation
-- `ObjectNavEvaluator` - Object goal navigation evaluation
-- `ImageNavEvaluator` - Image goal navigation evaluation
-- `VLNEvaluator` - Vision-Language Navigation evaluation
+- `PointNavEvaluator` - Point goal navigation
+- `ObjectNavEvaluator` - Object goal navigation
+- `ImageNavEvaluator` - Image goal navigation
+- `VLNEvaluator` - Vision-Language Navigation
 
 ### Environment
 
-The environment provides the navigation simulation interface, including rendering and collision detection.
-
-**Main functions:**
-- 3D GS scene rendering
-- Occupancy grid collision detection
-- Robot state management
-- Goal validation
+The environment provides scene rendering (3D GS), occupancy grid collision detection, robot state management, and goal validation.
 
 **Supported environments:**
 - `GaussianSplattingEnv` - 3D GS environment
 
 ### Agent
 
-The agent is the interface to navigation models, supporting multiple implementations.
-
-**Main functions:**
-- Receive environment observations
-- Generate navigation actions
-- Manage model state
+The agent encapsulates the navigation model interface, receiving observations and producing actions.
 
 **Supported agents:**
-- `LocalAgent` - Local model agent
-- `RemoteAgent` - Remote service agent
-- `ViNTAgent` - ViNT model agent
-- `GNMAgent` - GNM model agent
-- `NoMaDAgent` - NoMaD model agent
+- `LocalAgent` - Local model
+- `RemoteAgent` - Remote HTTP service
+- `ViNTAgent` - ViNT model
+- `GNMAgent` - GNM model
+- `NoMaDAgent` - NoMaD model
 - `MultiModalNavAgent` - Multi-modal navigation (language/image/object goals)
-- `LanguageNavAgent` - Language navigation agent (Voronoi-based path planning)
+- `LanguageNavAgent` - Language navigation (Voronoi-based planning)
 
 ### Dataset
 
-The dataset manages episode data for evaluation.
-
-**Main functions:**
-- Load episode data
-- Data format validation
-- Data iteration
+The dataset module loads, validates, and iterates evaluation episode data.
 
 **Supported datasets:**
 - `EpisodeDataset` - Episode format dataset
 
 ### Metrics
 
-Metrics compute navigation performance indicators.
-
-**Main functions:**
-- Success Rate (SR)
-- Success weighted by Path Length (SPL)
-- Navigation Error (NE)
+The metrics module computes SR (Success Rate), SPL (Success weighted by Path Length), and NE (Navigation Error).
 
 **Supported metrics:**
 - `NavigationMetrics` - Navigation metrics
@@ -160,7 +133,7 @@ sequenceDiagram
 
 ## Registration Mechanism
 
-The framework uses a decorator registration mechanism for easy extension:
+The framework uses a decorator registration mechanism to support extension:
 
 ### Register Environment
 
@@ -295,7 +268,7 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 
 ## Extensibility
 
-The framework is designed for high extensibility:
+Each component is extensible via the registration mechanism:
 
 - **New environment**: Subclass `Env` and register
 - **New agent**: Subclass `Agent` and register
@@ -303,9 +276,5 @@ The framework is designed for high extensibility:
 - **New metric**: Subclass `Metric` and register
 - **New replayer**: Subclass `BaseReplayer` and register
 
-!!! tip "Next Steps"
-    - Learn about the **[Environment Module](environment.md)**
-    - See how to configure the **[Agent Module](agents.md)**
-    - View **[Evaluator Module](evaluators.md)** usage
-    - Learn about the **[Replay Module](replay.md)**
+**See also**: [Environment](environment.md) · [Agents](agents.md) · [Evaluators](evaluators.md) · [Replay](replay.md) · [Extending](extending.md)
     - Learn how to **[Extend the Framework](extending.md)**

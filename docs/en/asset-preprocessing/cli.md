@@ -180,5 +180,4 @@ All commands support:
 
 - `-v` / `--verbose` — Enable debug logging
 
-!!! tip "Next Steps"
-    - Use the **[Web Viewer](web-viewer.md)** to browse processed assets
+**See also**: [Web Viewer](web-viewer.md)

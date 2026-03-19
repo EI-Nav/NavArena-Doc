@@ -1,17 +1,10 @@
 # User Guide
 
-This guide is organized by the NavArena workflow, helping you complete the full pipeline from raw scenes to evaluation results.
+This guide is organized by the NavArena workflow, covering the full pipeline from raw scenes to evaluation results.
 
 ## Three-Module Workflow
 
-```mermaid
-flowchart LR
-    A["1. Asset Preprocessing"] --> B["2. Data Generation"]
-    B --> C["3. Evaluation"]
-    A -.navarena-forge.-> A
-    B -.navarena-gen.-> B
-    C -.navarena-bench.-> C
-```
+The three modules execute sequentially, with each step's output feeding the next:
 
 ## Module Entries
 
@@ -47,5 +40,4 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 - **Batch preprocessing**: Use the [CLI batch command](../asset-preprocessing/cli.md)
 - **Remote / ViNT agents**: Set `agent_type: "remote"` or `agent_type: "vint"` in eval config; see [Agents](../navarena-bench/agents.md)
 
-!!! tip "Next Steps"
-    Choose the module documentation based on your goals, or refer to [Core Concepts](../definitions/concepts.md) for architecture and terminology.
+**See also**: module documentation linked in the table above, or [Core Concepts](../definitions/concepts.md) for architecture and terminology.

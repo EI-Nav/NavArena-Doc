@@ -1,6 +1,6 @@
 # Getting Started
 
-Welcome to NavArena! Follow these steps to set up your environment and run your first examples.
+Follow these steps to set up your environment and run your first examples.
 
 ## Steps Overview
 

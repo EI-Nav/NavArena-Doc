@@ -422,7 +422,4 @@ def test_my_agent():
 !!! question "接口不完整"
     确保实现所有必需的方法，参考基类文档。
 
-!!! tip "下一步"
-    - 查看 **[环境模块](environment.md)** 的详细说明
-    - 了解 **[智能体模块](agents.md)** 的使用方法
-    - 学习 **[评测器模块](evaluators.md)** 的功能
+**参见**：[环境模块](environment.md) · [智能体模块](agents.md) · [评测器模块](evaluators.md)

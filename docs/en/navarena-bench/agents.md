@@ -1,14 +1,6 @@
 # Agent Module
 
-The agent module provides the interface to navigation models, supporting multiple implementations including local models, remote services, and pre-trained models.
-
-## Overview
-
-The agent is the interface between navigation models and the evaluation framework, responsible for:
-
-- **Receive Observations** - Get observations from the environment
-- **Generate Actions** - Produce navigation actions from observations
-- **Manage State** - Manage internal model state
+The agent module is the interface between navigation models and the evaluation framework, receiving observations and producing navigation actions. Supports local models, remote services, and pre-trained models.
 
 ## Agent Types
 
@@ -147,7 +139,7 @@ agent:
 
 ### NoMaDAgent
 
-NoMaD (Normalizing Flow Models for Robotic Navigation) agent.
+NoMaD (Goal Masking Diffusion Policies for Navigation and Exploration) agent.
 
 #### Configuration
 
@@ -343,7 +335,4 @@ agent = Agent.init(config)
 !!! question "Observation format mismatch"
     Check that env observations match the agent’s expected format.
 
-!!! tip "Next Steps"
-    - Learn **[Evaluator Module](evaluators.md)** usage
-    - View **[Replay Module](replay.md)** functionality
-    - Learn how to **[Extend the Framework](extending.md)**
+**See also**: [Evaluator Module](evaluators.md) · [Replay Module](replay.md) · [Extending](extending.md)

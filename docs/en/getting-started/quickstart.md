@@ -1,22 +1,13 @@
 # Quickstart
 
-This tutorial provides **minimal runnable examples** for the three modules to help you verify your setup. For detailed usage, see each module's user guide.
+This tutorial provides **minimal runnable examples** for the three modules to verify your setup. For detailed usage, see each module's user guide.
 
 !!! tip "Path placeholders"
     Replace `/path/to/scenes/` or `/path/to/raw_scenes/` with your actual data directory. For centralized asset management, use `$NAVARENA_DATA_DIR/assets/{dataset}/{scene_id}/` (e.g. `$NAVARENA_DATA_DIR/assets/x2robot/17dc3367/`).
 
-## End-to-End Workflow Summary
+## End-to-End Workflow
 
-```mermaid
-flowchart LR
-    A[1. Asset Preprocessing] --> B[2. Data Generation]
-    B --> C[3. Evaluation]
-    A -.navarena-forge.-> A
-    B -.navarena-gen.-> B
-    C -.navarena-bench.-> C
-```
-
-Prerequisites for each step build on the previous: raw PLY → V1 assets → Episodes → eval results.
+The three modules execute sequentially; each step's prerequisites are the outputs of the previous step: raw PLY → V1 assets → Episodes → eval results.
 
 ---
 

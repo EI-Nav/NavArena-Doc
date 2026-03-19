@@ -1,6 +1,6 @@
 # Data Generator Overview
 
-The Data Generator (navarena-gen) is a multi-task Vision-Language Navigation (VLN) data generation framework for PointNav, ImageNav, ObjectNav, and VLN tasks. It generates high-quality Episode data from 3D Gaussian Splatting scenes using grid sampling, path planning, and instruction generation.
+The Data Generator (navarena-gen) is a multi-task Vision-Language Navigation (VLN) data generation framework for PointNav, ImageNav, ObjectNav, and VLN tasks. It generates Episode data from 3D Gaussian Splatting scenes using grid sampling, path planning, and instruction generation.
 
 !!! info "Prerequisites"
     Before using the Data Generator, complete [asset preprocessing](../asset-preprocessing/) to convert raw 3DGS scenes to V1 unified asset format (manifest.json, nav_map.pgm, etc.). V1 assets should be located under `$NAVARENA_DATA_DIR/assets/`.
@@ -116,7 +116,4 @@ Actual storage: `meta/episodes.parquet` and `data/chunk-NNN/trajectories.parquet
 
 The data generator depends on **asset preprocessing** output in V1 format. Use [navarena-forge](../asset-preprocessing/) first to preprocess scenes.
 
-!!! tip "Next Steps"
-    - Learn about **[Pipeline Stages](pipeline.md)**
-    - See **[Configuration](configuration.md)**
-    - View **[Batch Processing](batch-processing.md)**
+**See also**: [Pipeline Stages](pipeline.md) · [Configuration](configuration.md) · [Batch Processing](batch-processing.md)

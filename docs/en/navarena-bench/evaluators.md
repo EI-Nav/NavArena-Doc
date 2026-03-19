@@ -1,15 +1,6 @@
 # Evaluator Module
 
-The evaluator module coordinates the environment, agent, and dataset for evaluation, computes metrics, and saves results.
-
-## Overview
-
-The evaluator is a core component of the evaluation framework, responsible for:
-
-- **Manage Evaluation Flow** - Coordinate environment, agent, and dataset
-- **Run Evaluation Loop** - Execute episodes and collect data
-- **Compute Metrics** - Success rate, SPL, etc.
-- **Save Results** - Save evaluation results and trajectories
+The evaluator module coordinates the environment, agent, and dataset, executes the evaluation loop, computes metrics, and saves results.
 
 ## Evaluator Types
 
@@ -351,16 +342,16 @@ SR = (successful episodes) / (total episodes)
 
 ### Success weighted by Path Length (SPL)
 
-Path-length weighted success, accounting for efficiency.
+Path-length weighted success rate, accounting for both navigation success and path efficiency. Definition from Anderson et al., "On Evaluation of Embodied Navigation Agents", CVPR 2018.
 
 ```
-SPL = (1/N) * Σ(S_i * L_i / max(L_i, G_i))
+SPL = (1/N) * Σ(S_i * G_i / max(P_i, G_i))
 
 Where:
-- N: Total episodes
-- S_i: Episode i success (1 or 0)
-- L_i: Episode i path length
-- G_i: Episode i shortest path length
+- N:   total episodes
+- S_i: success of episode i (1 or 0)
+- P_i: actual path length of episode i (meters)
+- G_i: shortest path length from start to goal of episode i (geodesic distance, meters)
 ```
 
 ### Navigation Error (NE)
@@ -424,7 +415,4 @@ evaluator = Evaluator.init(config)
 !!! question "Episode format error"
     Validate episode JSON and ensure required fields exist.
 
-!!! tip "Next Steps"
-    - Learn about the **[Replay Module](replay.md)**
-    - Learn how to **[Extend the Framework](extending.md)**
-    - View the **[Environment Module](environment.md)** in detail
+**See also**: [Replay Module](replay.md) · [Extending](extending.md) · [Environment Module](environment.md)

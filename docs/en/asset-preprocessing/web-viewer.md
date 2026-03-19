@@ -105,6 +105,4 @@ Visit `http://localhost:41005/` for:
 - Scene metadata display
 - Orbit / pan / zoom controls
 
-!!! tip "Next Steps"
-    - Return to **[Overview](index.md)** for architecture
-    - Use **[CLI Commands](cli.md)** to process scenes
+**See also**: [Overview](index.md) · [CLI Commands](cli.md)

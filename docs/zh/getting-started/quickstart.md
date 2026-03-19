@@ -1,22 +1,13 @@
 # 快速入门
 
-本教程提供三个模块的**最小可运行示例**，帮助您快速验证环境。详细用法请参阅各模块用户指南。
+本教程提供三个模块的**最小可运行示例**，用于验证环境配置是否正确。详细用法请参阅各模块用户指南。
 
 !!! tip "路径占位符"
-    将 `/path/to/scenes/` 或 `/path/to/raw_scenes/` 替换为你的实际数据目录。若需统一管理资产，可使用 `$NAVARENA_DATA_DIR/assets/{dataset}/{scene_id}/`（如 `$NAVARENA_DATA_DIR/assets/x2robot/17dc3367/`）。
+    将 `/path/to/scenes/` 或 `/path/to/raw_scenes/` 替换为实际数据目录。若需统一管理资产，可使用 `$NAVARENA_DATA_DIR/assets/{dataset}/{scene_id}/`（如 `$NAVARENA_DATA_DIR/assets/x2robot/17dc3367/`）。
 
-## 端到端工作流总览
+## 端到端工作流
 
-```mermaid
-flowchart LR
-    A[1. 资产预处理] --> B[2. 数据生成]
-    B --> C[3. 评测]
-    A -.navarena-forge.-> A
-    B -.navarena-gen.-> B
-    C -.navarena-bench.-> C
-```
-
-每步的前置条件依赖上一步产出：原始 PLY → V1 资产 → Episodes → 评测结果。
+三个模块依次执行，每步前置条件依赖上一步产出：原始 PLY → V1 资产 → Episodes → 评测结果。
 
 ---
 

@@ -422,7 +422,4 @@ def test_my_agent():
 !!! question "Incomplete interface"
     Implement all required methods; refer to base class docs.
 
-!!! tip "Next Steps"
-    - View the **[Environment Module](environment.md)** in detail
-    - Learn about the **[Agent Module](agents.md)**
-    - Learn **[Evaluator Module](evaluators.md)** functionality
+**See also**: [Environment Module](environment.md) · [Agent Module](agents.md) · [Evaluator Module](evaluators.md)

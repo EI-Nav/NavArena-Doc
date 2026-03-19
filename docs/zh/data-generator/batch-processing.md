@@ -151,6 +151,4 @@ python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
 !!! question "并行内存不足"
     减小 `--num-workers` 或 `task_config.max_start_points`。
 
-!!! tip "下一步"
-    - 学习 **[配置说明](configuration.md)**
-    - 了解 **[资产预处理](../asset-preprocessing/)** 流程
+**参见**：[配置说明](configuration.md) · [资产预处理](../asset-preprocessing/)

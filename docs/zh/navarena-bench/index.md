@@ -9,8 +9,8 @@ navarena-bench 是一个基于 3D Gaussian Splatting 和占据栅格的导航模
 
 评测框架提供以下核心特性：
 
-- **模块化设计** - 采用注册机制，易于扩展新的环境、任务、评测器、智能体和指标
-- **3D GS 渲染** - 基于 gsplat 进行高质量渲染
+- **模块化设计** - 采用注册机制，支持扩展新的环境、任务、评测器、智能体和指标
+- **3D GS 渲染** - 基于 gsplat 进行场景渲染
 - **碰撞检测** - 基于占据栅格地图进行碰撞检测
 - **多任务支持** - 支持 PointNav、ObjectNav、ImageNav、VLN 等任务
 - **多智能体支持** - 支持 Local、Remote、ViNT、GNM、NoMaD、MultiModalNav、LanguageNav 等智能体
@@ -63,13 +63,7 @@ flowchart TB
 
 ### 评测器 (Evaluator)
 
-评测器是框架的核心，负责协调环境、智能体和数据集进行评测。
-
-**主要功能：**
-- 管理评测流程
-- 协调环境、智能体和数据集
-- 计算评测指标
-- 记录评测结果
+评测器负责协调环境、智能体和数据集，执行评测循环并汇总指标。
 
 **支持的评测器：**
 - `PointNavEvaluator` - 点目标导航评测
@@ -79,55 +73,34 @@ flowchart TB
 
 ### 环境 (Environment)
 
-环境提供导航仿真的接口，包括渲染和碰撞检测。
-
-**主要功能：**
-- 3D GS 场景渲染
-- 占据栅格碰撞检测
-- 机器人状态管理
-- 目标验证
+环境提供场景渲染（3D GS）和占据栅格碰撞检测接口，管理机器人状态并负责目标验证。
 
 **支持的环境：**
 - `GaussianSplattingEnv` - 3D GS 环境
 
 ### 智能体 (Agent)
 
-智能体是导航模型的接口，支持多种实现方式。
-
-**主要功能：**
-- 接收环境观测
-- 生成导航动作
-- 管理模型状态
+智能体封装导航模型接口，接收环境观测并输出动作。
 
 **支持的智能体：**
-- `LocalAgent` - 本地模型智能体
-- `RemoteAgent` - 远程服务智能体
-- `ViNTAgent` - ViNT 模型智能体
-- `GNMAgent` - GNM 模型智能体
-- `NoMaDAgent` - NoMaD 模型智能体
-- `MultiModalNavAgent` - 多模态导航智能体（支持语言/图像/物体目标）
-- `LanguageNavAgent` - 语言导航智能体（基于 Voronoi 路径规划）
+- `LocalAgent` - 本地模型
+- `RemoteAgent` - 远程 HTTP 服务
+- `ViNTAgent` - ViNT 模型
+- `GNMAgent` - GNM 模型
+- `NoMaDAgent` - NoMaD 模型
+- `MultiModalNavAgent` - 多模态导航（支持语言/图像/物体目标）
+- `LanguageNavAgent` - 语言导航（基于 Voronoi 路径规划）
 
 ### 数据集 (Dataset)
 
-数据集管理评测用的 episode 数据。
-
-**主要功能：**
-- 加载 episode 数据
-- 数据格式验证
-- 数据迭代
+数据集模块负责加载、验证和迭代评测用 Episode 数据。
 
 **支持的数据集：**
 - `EpisodeDataset` - Episode 格式数据集
 
 ### 指标 (Metrics)
 
-指标计算导航性能指标。
-
-**主要功能：**
-- 计算成功率 (SR)
-- 计算路径长度比 (SPL)
-- 计算导航效率 (NE)
+指标模块计算 SR（成功率）、SPL（路径长度加权成功率）、NE（导航误差）等导航性能指标。
 
 **支持的指标：**
 - `NavigationMetrics` - 导航指标
@@ -160,7 +133,7 @@ sequenceDiagram
 
 ## 注册机制
 
-框架采用装饰器注册机制，可以轻松扩展新组件：
+框架采用装饰器注册机制，支持扩展新组件：
 
 ### 注册环境
 
@@ -295,7 +268,7 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 
 ## 扩展性
 
-框架设计为高度可扩展：
+框架各组件均支持通过注册机制扩展：
 
 - **新环境**: 继承 `Env` 基类并注册
 - **新智能体**: 继承 `Agent` 基类并注册
@@ -303,9 +276,4 @@ python scripts/replay_eval.py --results eval_results/ --output replay.mp4
 - **新指标**: 继承 `Metric` 基类并注册
 - **新回放器**: 继承 `BaseReplayer` 基类并注册
 
-!!! tip "下一步"
-    - 了解 **[环境模块](environment.md)** 的详细说明
-    - 学习如何配置 **[智能体模块](agents.md)**
-    - 查看 **[评测器模块](evaluators.md)** 的使用方法
-    - 了解 **[回放模块](replay.md)** 的功能
-    - 学习如何 **[扩展框架](extending.md)**
+**参见**：[环境模块](environment.md) · [智能体模块](agents.md) · [评测器模块](evaluators.md) · [回放模块](replay.md) · [扩展指南](extending.md)

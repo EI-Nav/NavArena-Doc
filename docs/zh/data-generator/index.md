@@ -1,6 +1,6 @@
 # 数据生成器概述
 
-数据生成器（navarena-gen）是多任务视觉语言导航（VLN）数据生成框架，用于生成 PointNav、ImageNav、ObjectNav、VLN 等任务的训练和评测数据集。基于 3D Gaussian Splatting 场景，采用网格采样、路径规划与指令生成等模块生成高质量 Episode 数据。
+数据生成器（navarena-gen）是多任务视觉语言导航（VLN）数据生成框架，用于生成 PointNav、ImageNav、ObjectNav、VLN 等任务的训练和评测数据集。基于 3D Gaussian Splatting 场景，采用网格采样、路径规划与指令生成等模块生成 Episode 数据。
 
 !!! info "前提条件"
     使用数据生成器前，需先通过 [资产预处理](../asset-preprocessing/) 将原始 3DGS 场景转换为 V1 统一资产格式（manifest.json、nav_map.pgm 等）。V1 资产应位于 `$NAVARENA_DATA_DIR/assets/` 下。
@@ -116,7 +116,4 @@ Parquet 存储的 Episode 在应用层可理解为：
 
 数据生成器依赖 **资产预处理** 输出的 V1 格式场景。请先使用 [navarena-forge](../asset-preprocessing/) 完成场景预处理。
 
-!!! tip "下一步"
-    - 了解 **[Pipeline 阶段](pipeline.md)** 的详细说明
-    - 学习如何 **[配置](configuration.md)** 数据生成
-    - 查看 **[批量处理](batch-processing.md)** 用法
+**参见**：[Pipeline 阶段](pipeline.md) · [配置说明](configuration.md) · [批量处理](batch-processing.md)

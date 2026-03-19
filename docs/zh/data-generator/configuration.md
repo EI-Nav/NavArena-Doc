@@ -201,6 +201,4 @@ python scripts/generate_data.py --config configs/examples/pointnav_example.yaml 
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --append
 ```
 
-!!! tip "下一步"
-    - 查看 **[批量处理](batch-processing.md)** 的完整 CLI 参数
-    - 学习 **[资产预处理](../asset-preprocessing/)** 以准备场景
+**参见**：[批量处理](batch-processing.md) · [资产预处理](../asset-preprocessing/)

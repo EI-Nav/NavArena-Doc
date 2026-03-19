@@ -85,8 +85,4 @@ Scene ID 由 `SHA-256("{dataset}:{original_name}")` 的前 8 位十六进制字�
 
 上述文件名均为固定名称，不按 scene_id 前缀，便于下游统一解析。
 
-!!! tip "下一步"
-    - 了解 **[Pipeline 步骤](pipeline-steps.md)** 的详细说明
-    - 学习 **[配置说明](configuration.md)**
-    - 使用 **[CLI 命令](cli.md)** 处理场景
-    - 通过 **[Web 查看器](web-viewer.md)** 浏览资产
+**参见**：[Pipeline 步骤](pipeline-steps.md) · [配置说明](configuration.md) · [CLI 命令](cli.md) · [Web 查看器](web-viewer.md)

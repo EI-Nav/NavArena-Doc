@@ -151,6 +151,4 @@ All paths relative to `$NAVARENA_DATA_DIR/datasets/`:
 !!! question "Parallel out of memory"
     Reduce `--num-workers` or `task_config.max_start_points`.
 
-!!! tip "Next Steps"
-    - See **[Configuration](configuration.md)**
-    - Learn **[Asset Preprocessing](../asset-preprocessing/)**
+**See also**: [Configuration](configuration.md) · [Asset Preprocessing](../asset-preprocessing/)
