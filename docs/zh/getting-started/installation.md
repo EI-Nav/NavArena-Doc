@@ -1,6 +1,6 @@
 # 安装指南
 
-本页面说明 NavArena 具身导航基础设施的安装与配置流程。NavArena 采用 uv 工作空间管理四个子项目：**核心库** (navarena-core)、**资产预处理** (navarena-forge)、**数据生成器** (navarena-gen) 和 **评测框架** (navarena-bench)。
+本页面说明 NavArena 具身导航平台的安装与配置流程。NavArena 采用 uv 工作空间管理四个子项目：**核心库** (navarena-core)、**资产预处理** (navarena-forge)、**数据生成器** (navarena-gen) 和 **评测框架** (navarena-bench)。
 
 ## 系统要求
 

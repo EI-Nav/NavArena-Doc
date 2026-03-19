@@ -25,7 +25,7 @@
       <polyline points="29.5,15 35,13 37,19" stroke="url(#hl-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </svg>
     <h1>NavArena</h1>
-    <p>具身导航基础设施</p>
+    <p>具身导航平台</p>
     <p class="hero-subtitle">资产自动化处理 · 数据生成 · 导航评测</p>
     <div class="hero-buttons">
       <a href="getting-started/installation/" class="md-button md-button--primary">快速开始</a>

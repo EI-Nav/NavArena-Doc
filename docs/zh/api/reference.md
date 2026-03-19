@@ -1,6 +1,6 @@
 # API 参考
 
-本文档提供 NavArena 具身导航基础设施的 API 参考。NavArena 包含四个子项目：**核心库** (navarena-core)、**资产预处理** (navarena-forge)、**数据生成器** (navarena-gen) 和 **评测框架** (navarena-bench)。
+本文档提供 NavArena 具身导航平台的 API 参考。NavArena 包含四个子项目：**核心库** (navarena-core)、**资产预处理** (navarena-forge)、**数据生成器** (navarena-gen) 和 **评测框架** (navarena-bench)。
 
 ## 核心库 API (navarena-core)
 
