@@ -1,6 +1,6 @@
 # 站点信息
-site_name: NavArena 文档
-site_description: NavArena 具身导航基础设施——资产预处理、数据生成与导航评测使用指南
+site_name: NavArena Docs
+site_description: Documentation for NavArena asset preprocessing, data generation, evaluation, and developer workflows
 site_author: NavArena Team
 site_url: https://ei-nav.github.io/NavArena-Doc/
 
@@ -18,22 +18,22 @@ theme:
   language: zh
   custom_dir: overrides
   
-  # 颜色方案（深蓝 + 青色科技感）
+  # 颜色方案（更克制的文档风格）
   palette:
     # 亮色模式
     - scheme: default
-      primary: blue
-      accent: cyan
+      primary: indigo
+      accent: teal
       toggle:
         icon: material/weather-night
-        name: 切换到暗色模式
+        name: 切换到暗色模式 / Switch to dark mode
     # 暗色模式
     - scheme: slate
-      primary: blue
-      accent: cyan
+      primary: indigo
+      accent: teal
       toggle:
         icon: material/weather-sunny
-        name: 切换到亮色模式
+        name: 切换到亮色模式 / Switch to light mode
   
   # 字体
   font:
@@ -49,8 +49,6 @@ theme:
   
   # 功能特性
   features:
-    - navigation.instant
-    - navigation.instant.progress
     - navigation.tracking
     - navigation.tabs
     - navigation.sections
@@ -58,7 +56,6 @@ theme:
     - navigation.top
     - navigation.indexes
     - content.tabs.link
-    - header.autohide
     - search.suggest
     - search.highlight
     - search.share
@@ -103,24 +100,24 @@ plugins:
             智能体模块: Agents
             评测器模块: Evaluators
             回放模块: Replay
+            扩展指南: Extending
             参考手册: Reference
+            API 文档: API Documentation
+            数据生成器 API: Data Generator API
+            评测框架 API: Evaluation Framework API
             3D GS 资产规范: 3D GS Asset Specification
             导航训练数据格式: Navigation Training Data Format
             导航评测数据格式: Navigation Evaluation Data Format
             概念与架构: Concepts & Architecture
-            常见问题: Troubleshooting
             核心概念: Core Concepts
             架构设计: Architecture
             开发者指南: Developer Guide
             贡献指南: Contributing
-            扩展指南: Extending
             更新日志: Changelog
-            API 参考: API Reference
-            API 文档: API Documentation
-            数据生成器 API: Data Generator API
-            评测框架 API: Evaluation Framework API
+            常见问题: Troubleshooting
   - git-revision-date-localized:
       enable_creation_date: true
+      enable_git_follow: false
       type: datetime
       timezone: Asia/Shanghai
       fallback_to_build_date: true
@@ -180,10 +177,10 @@ extra:
   # 语言切换器
   alternate:
     - name: 简体中文
-      link: /zh/
+      link: /NavArena-Doc/
       lang: zh
     - name: English
-      link: /en/
+      link: /NavArena-Doc/en/
       lang: en
   
   # 社交链接
@@ -200,8 +197,7 @@ nav:
     - 快速入门: getting-started/quickstart.md
   - 用户指南:
     - guide/index.md
-    - 核心库:
-      - core/index.md
+    - 核心库: core/index.md
     - 资产预处理:
       - asset-preprocessing/index.md
       - Pipeline 步骤: asset-preprocessing/pipeline-steps.md
@@ -219,20 +215,21 @@ nav:
       - 智能体模块: navarena-bench/agents.md
       - 评测器模块: navarena-bench/evaluators.md
       - 回放模块: navarena-bench/replay.md
+      - 扩展指南: navarena-bench/extending.md
   - 参考手册:
     - reference/index.md
-    - API:
-      - 数据生成器 API: api/data-generator-api.md
-      - 评测框架 API: api/navarena-bench-api.md
-    - 数据格式:
-      - 3D GS 资产规范: definitions/gs-assets.md
-      - 导航训练数据格式: definitions/nav-data-format.md
-      - 导航评测数据格式: definitions/eval-data-format.md
+    - API 文档: api/reference.md
+    - 数据生成器 API: api/data-generator-api.md
+    - 评测框架 API: api/navarena-bench-api.md
+    - 3D GS 资产规范: definitions/gs-assets.md
+    - 导航训练数据格式: definitions/nav-data-format.md
+    - 导航评测数据格式: definitions/eval-data-format.md
   - 概念与架构:
+    - concepts/index.md
     - 核心概念: definitions/concepts.md
     - 架构设计: concepts/architecture.md
-  - 常见问题: troubleshooting.md
   - 开发者指南:
+    - dev/index.md
     - 贡献指南: dev/contributing.md
-    - 扩展指南: navarena-bench/extending.md
     - 更新日志: dev/changelog.md
+  - 常见问题: troubleshooting.md
