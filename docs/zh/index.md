@@ -36,21 +36,9 @@
 
 本文档涵盖 NavArena 的使用指南、API 参考与最佳实践。
 
-## 整体工作流
+## 系统框架
 
-```mermaid
-flowchart LR
-    classDef data    fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F
-    classDef module  fill:#F0FDFA,stroke:#0D9488,stroke-width:1.5px,color:#0F4C43,font-weight:600
-    classDef output  fill:#F5F3FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B1F6E
-
-    A["Raw 3DGS Scenes"]:::data --> B["navarena-forge\nAsset Preprocessing"]:::module
-    B --> C["Standardized Assets"]:::data
-    C --> D["navarena-gen\nData Generator"]:::module
-    D --> E["Training/Eval Data"]:::data
-    E --> F["navarena-bench\nEvaluation"]:::module
-    F --> G["Metrics & Replay"]:::output
-```
+![系统框架](../assets/images/framework.png)
 
 ## 谁应该阅读本文档
 
@@ -109,38 +97,6 @@ flowchart LR
     <a href="navarena-bench/">查看文档 →</a>
   </div>
 </div>
-
-## 快速示例
-
-=== "资产预处理"
-
-    ```bash
-    cd navarena-forge
-    python -m navarena_forge batch --scenes-root /path/to/scenes \
-        --config pipeline.yaml --source-dataset InteriorGS
-    ```
-
-=== "数据生成"
-
-    ```bash
-    cd navarena-gen
-    python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
-
-    # 并行生成
-    python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \
-        --parallel --num-workers 4 --batch-size 20
-    ```
-
-=== "评测"
-
-    ```bash
-    cd navarena-bench
-    # 运行评测
-    python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
-
-    # 生成回放视频
-    python scripts/replay_eval.py --results eval_results/ --output replay.mp4
-    ```
 
 ## 获取帮助
 

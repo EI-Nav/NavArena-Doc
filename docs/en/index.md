@@ -41,21 +41,9 @@
 
 This documentation covers usage guides, API references, and best practices for NavArena — an infrastructure for embodied navigation covering asset preprocessing, data generation, and model evaluation.
 
-## Workflow Overview
+## System Framework
 
-```mermaid
-flowchart LR
-    classDef data    fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A5F
-    classDef module  fill:#F0FDFA,stroke:#0D9488,stroke-width:1.5px,color:#0F4C43,font-weight:600
-    classDef output  fill:#F5F3FF,stroke:#7C3AED,stroke-width:1.5px,color:#3B1F6E
-
-    A["Raw 3DGS Scenes"]:::data --> B["navarena-forge\nAsset Preprocessing"]:::module
-    B --> C["Standardized Assets"]:::data
-    C --> D["navarena-gen\nData Generator"]:::module
-    D --> E["Training/Eval Data"]:::data
-    E --> F["navarena-bench\nEvaluation"]:::module
-    F --> G["Metrics & Replay"]:::output
-```
+![System framework overview](../assets/images/framework.png)
 
 ## Who Should Read This
 
@@ -114,38 +102,6 @@ flowchart LR
     <a href="navarena-bench/">View Docs →</a>
   </div>
 </div>
-
-## Quick Examples
-
-=== "Asset Preprocessing"
-
-    ```bash
-    cd navarena-forge
-    python -m navarena_forge batch --scenes-root /path/to/scenes \
-        --config pipeline.yaml --source-dataset InteriorGS
-    ```
-
-=== "Data Generation"
-
-    ```bash
-    cd navarena-gen
-    python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
-
-    # Parallel generation
-    python scripts/generate_data.py --config configs/examples/vln_zh_example.yaml \
-        --parallel --num-workers 4 --batch-size 20
-    ```
-
-=== "Evaluation"
-
-    ```bash
-    cd navarena-bench
-    # Run evaluation
-    python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
-
-    # Generate replay video
-    python scripts/replay_eval.py --results eval_results/ --output replay.mp4
-    ```
 
 ## Getting Help
 
