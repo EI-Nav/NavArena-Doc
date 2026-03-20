@@ -43,7 +43,7 @@ This documentation covers usage guides, API references, and best practices for N
 
 ## System Framework
 
-![System framework overview](../assets/images/framework.png)
+![System framework overview](../assets/images/framework_en.png)
 
 ## Who Should Read This
 

@@ -38,7 +38,7 @@
 
 ## 系统框架
 
-![系统框架](../assets/images/framework.png)
+![系统框架](../assets/images/framework_zh.png)
 
 ## 谁应该阅读本文档
 
