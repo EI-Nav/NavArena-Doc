@@ -39,8 +39,6 @@
   </div>
 </div>
 
-This documentation covers usage guides, API references, and best practices for NavArena — an infrastructure for embodied navigation covering asset preprocessing, data generation, and model evaluation.
-
 ## System Framework
 
 ![System framework overview](../assets/images/framework_en.png)
@@ -103,16 +101,20 @@ This documentation covers usage guides, API references, and best practices for N
   </div>
 </div>
 
-## Getting Help
+## Troubleshooting & Support
 
-- Browse this documentation and module READMEs
-- Submit an [Issue](https://github.com/EI-Nav/NavArena-Doc/issues) on GitHub
+- See [Troubleshooting](troubleshooting/)
+- Submit an [Issue](https://github.com/EI-Nav/NavArena/issues) on GitHub
 
 ## Contributing
 
-1. Fork this repository
-2. Create a feature branch
-3. Commit your changes and open a Pull Request
+We welcome help in these areas:
+
+- **Code and features**: Improvements to the core library, asset preprocessing, data generator, and evaluation framework; bug fixes, new tasks/agents/metrics, performance, and extensibility
+- **Documentation and examples**: User guides and tutorials, keeping Chinese and English in sync, corrections, and best practices
+- **Feedback and collaboration**: [Issues](https://github.com/EI-Nav/NavArena/issues) for bug reports, usage questions, or feature discussion
+
+For environment setup and Fork/PR workflow, see [Contributing](dev/contributing/).
 
 ---
 

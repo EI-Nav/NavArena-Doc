@@ -4,10 +4,10 @@ site_description: Documentation for NavArena asset preprocessing, data generatio
 site_author: NavArena Team
 site_url: https://ei-nav.github.io/NavArena-Doc/
 
-# 仓库信息
-repo_name: EI-Nav/NavArena-Doc
-repo_url: https://github.com/EI-Nav/NavArena-Doc
-edit_uri: edit/docs/docs/
+# 仓库信息（页眉仓库图标指向主仓库；编辑链接仍指向文档仓库）
+repo_name: EI-Nav/NavArena
+repo_url: https://github.com/EI-Nav/NavArena
+edit_uri: https://github.com/EI-Nav/NavArena-Doc/edit/docs/docs/
 
 # 版权信息
 copyright: Copyright &copy; 2026 NavArena Team
@@ -186,7 +186,7 @@ extra:
   # 社交链接
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/EI-Nav/NavArena-Doc
+      link: https://github.com/EI-Nav/NavArena
 
 # 导航结构
 nav:

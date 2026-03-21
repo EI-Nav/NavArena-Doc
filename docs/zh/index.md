@@ -34,8 +34,6 @@
   </div>
 </div>
 
-本文档涵盖 NavArena 的使用指南、API 参考与最佳实践。
-
 ## 系统框架
 
 ![系统框架](../assets/images/framework_zh.png)
@@ -98,16 +96,20 @@
   </div>
 </div>
 
-## 获取帮助
+## 常见问题与支持
 
-- 查阅本文档及各模块 README
-- 在 GitHub 提交 [Issue](https://github.com/EI-Nav/NavArena-Doc/issues)
+- 查看 [常见问题](troubleshooting/)
+- 在 GitHub 提交 [Issue](https://github.com/EI-Nav/NavArena/issues)
 
 ## 参与贡献
 
-1. Fork 本仓库
-2. 创建功能分支
-3. 提交更改并发起 Pull Request
+我们欢迎你在以下方面提供帮助：
+
+- **代码与功能**：改进核心库、资产预处理、数据生成器、评测框架等；修复 Bug、扩展任务/智能体/指标、提升性能与可扩展性
+- **文档与示例**：完善用户指南与教程、保持中英文同步、勘误与补充最佳实践
+- **反馈与协作**：通过 [Issue](https://github.com/EI-Nav/NavArena/issues) 报告问题、讨论使用疑问或功能需求
+
+环境与 Fork/PR 等具体流程见 [贡献指南](dev/contributing/)。
 
 ---
 
