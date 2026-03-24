@@ -136,7 +136,7 @@ flowchart TB
     
     subgraph Forge [navarena-forge]
         FN[Coordinate Normalize]
-        FM[PGM Map]
+        FM[Occupancy grid map]
         FV[Valid Region]
         PLY --> FN --> FM --> FV
     end

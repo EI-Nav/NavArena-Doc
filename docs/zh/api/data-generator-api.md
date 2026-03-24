@@ -263,7 +263,7 @@ class GridAStarPlanner:
     ):
         """
         Args:
-            pgm_map: PGM 占据栅格地图
+            pgm_map: 占据栅格地图
             resolution: 地图分辨率（米/像素）
             origin: 地图原点 [x, y, theta]
             free_thresh: 自由空间阈值
@@ -325,7 +325,7 @@ class TwoStageTrajectoryPlanner:
         """
         Args:
             config: 机器人配置（RobotConfig）
-            pgm_map: PGM 占据栅格
+            pgm_map: 占据栅格地图
             resolution: 地图分辨率
             origin: 地图原点
             free_thresh: 自由空间阈值

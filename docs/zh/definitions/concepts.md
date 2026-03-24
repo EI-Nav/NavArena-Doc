@@ -136,7 +136,7 @@ flowchart TB
     
     subgraph Forge [navarena-forge]
         FN[坐标归一化]
-        FM[PGM 地图]
+        FM[占据栅格地图]
         FV[可导航区域]
         PLY --> FN --> FM --> FV
     end

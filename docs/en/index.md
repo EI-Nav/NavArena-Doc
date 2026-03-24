@@ -66,7 +66,7 @@
       </svg>
     </div>
     <h3>Asset Preprocessing</h3>
-    <p>Convert raw 3DGS scenes to standardized assets with coordinate normalization, PGM map generation, valid region estimation, V1 unified format, and web viewer.</p>
+    <p>Convert raw 3DGS scenes to standardized assets with coordinate normalization, occupancy grid map generation, valid region estimation, V1 unified format, and web viewer.</p>
     <a href="asset-preprocessing/">View Docs →</a>
   </div>
   <div class="feature-card reveal">

@@ -137,7 +137,7 @@ manifest.json 的 `source` 字段记录场景溯源信息，navarena-forge 自�
 |------|------|------|
 | `source_ply` | string\|null | 原始 3DGS PLY（未归一化） |
 | `aligned_ply` | string\|null | 归一化后的 3DGS PLY（地面 Z=0） |
-| `nav_map` | string\|null | PGM 占据栅格地图 |
+| `nav_map` | string\|null | 占据栅格地图 |
 | `nav_map_config` | string\|null | YAML 地图配置 |
 | `nav_mask` | string\|null | 有效区域掩码 PNG |
 | `labels` | string\|null | 语义标注 JSON |
@@ -189,7 +189,7 @@ manifest.json 的 `source` 字段记录场景溯源信息，navarena-forge 自�
 
 ### nav_map.pgm
 
-PGM P5 (binary) 格式灰度图。
+占据栅格地图以 PGM P5（binary）灰度图编码存储。
 
 - 像素值 0 = 占据（黑色）
 - 像素值 255 = 自由空间（白色）

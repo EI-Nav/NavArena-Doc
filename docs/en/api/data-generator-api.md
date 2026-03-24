@@ -263,7 +263,7 @@ class GridAStarPlanner:
     ):
         """
         Args:
-            pgm_map: PGM occupancy map
+            pgm_map: Occupancy grid map
             resolution: Map resolution (meters per pixel)
             origin: Map origin [x, y, theta]
             free_thresh: Free space threshold
@@ -325,7 +325,7 @@ class TwoStageTrajectoryPlanner:
         """
         Args:
             config: Robot configuration
-            pgm_map: PGM occupancy grid
+            pgm_map: Occupancy grid map
             resolution: Map resolution
             origin: Map origin
             free_thresh: Free space threshold

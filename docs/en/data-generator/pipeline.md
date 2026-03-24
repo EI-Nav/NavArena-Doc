@@ -16,7 +16,7 @@ Load scene from V1 unified asset format (`$NAVARENA_DATA_DIR/assets/`) and initi
 ### Flow
 
 1. Read manifest.json for scene_id, map_info
-2. Load PGM occupancy grid and YAML config (resolution, origin)
+2. Load occupancy grid map and YAML config (resolution, origin)
 3. Optionally load nav_mask.png, labels.json
 4. Initialize A* path planner
 

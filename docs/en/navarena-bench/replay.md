@@ -253,7 +253,7 @@ replay:
     Check output path permissions and disk space.
 
 !!! question "Trajectory display incorrect"
-    Verify PGM map file exists and coordinate transform is correct.
+    Verify occupancy grid map file exists and coordinate transform is correct.
 
 !!! question "Observation images missing"
     Ensure observation images were saved during evaluation and paths are correct.

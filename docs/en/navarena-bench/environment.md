@@ -132,7 +132,7 @@ The environment uses occupancy grid maps for collision detection.
 
 ### Loading Occupancy Grid
 
-Occupancy grid is loaded from the scene PGM map:
+Occupancy grid is loaded from the scene occupancy grid map file:
 
 ```python
 # Auto-loaded from scene directory
@@ -154,7 +154,7 @@ if info.get("collision"):
 
 ### Occupancy Grid Config
 
-PGM map config format:
+Occupancy grid map config format:
 
 ```yaml
 image: nav_map.pgm
@@ -323,7 +323,7 @@ env_settings:
     Check scene directory structure and that required metadata files exist.
 
 !!! question "Inaccurate collision detection"
-    Check PGM map generation and verify `occupied_thresh` and `free_thresh`.
+    Check occupancy grid map generation and verify `occupied_thresh` and `free_thresh`.
 
 !!! question "Slow rendering"
     Lower image resolution or disable depth; use GPU acceleration.

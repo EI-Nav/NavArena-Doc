@@ -132,7 +132,7 @@ info = env.get_info()
 
 ### 加载占据栅格
 
-占据栅格从场景的 PGM 地图文件加载：
+占据栅格从场景的占据栅格地图文件加载：
 
 ```python
 # 自动从 V1 资产目录加载
@@ -154,7 +154,7 @@ if info.get("collision"):
 
 ### 占据栅格配置
 
-PGM 地图配置文件格式：
+占据栅格地图配置文件格式：
 
 ```yaml
 image: nav_map.pgm
@@ -308,7 +308,7 @@ env_settings:
     检查场景目录结构是否正确，确保包含必需的元数据文件。
 
 !!! question "碰撞检测不准确"
-    检查 PGM 地图文件是否正确生成，验证 `occupied_thresh` 和 `free_thresh` 参数。
+    检查占据栅格地图文件是否正确生成，验证 `occupied_thresh` 和 `free_thresh` 参数。
 
 !!! question "渲染速度慢"
     降低图像分辨率或禁用深度图，使用 GPU 加速渲染。

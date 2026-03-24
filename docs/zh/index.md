@@ -61,7 +61,7 @@
       </svg>
     </div>
     <h3>资产预处理</h3>
-    <p>将原始 3DGS 场景转换为标准化资产，支持坐标归一化、PGM 地图生成、可导航区域估计，提供 V1 统一资产格式与 Web 查看器。</p>
+    <p>将原始 3DGS 场景转换为标准化资产，支持坐标归一化、占据栅格地图生成、可导航区域估计，提供 V1 统一资产格式与 Web 查看器。</p>
     <a href="asset-preprocessing/">查看文档 →</a>
   </div>
   <div class="feature-card reveal">

@@ -21,7 +21,7 @@
 ### 处理流程
 
 1. 读取 `manifest.json` 获取 scene_id、map_info 等
-2. 加载 PGM 占据栅格及 YAML 配置（resolution、origin）
+2. 加载占据栅格地图及 YAML 配置（resolution、origin）
 3. 可选加载 `nav_mask.png`、`labels.json`
 4. 初始化 A* 路径规划器
 

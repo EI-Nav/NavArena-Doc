@@ -137,7 +137,7 @@ The `source` field in manifest.json records scene provenance; navarena-forge gen
 |-------|------|-------------|
 | `source_ply` | string\|null | Original 3DGS PLY (unnormalized) |
 | `aligned_ply` | string\|null | Normalized 3DGS PLY (ground Z=0) |
-| `nav_map` | string\|null | PGM occupancy grid map |
+| `nav_map` | string\|null | Occupancy grid map |
 | `nav_map_config` | string\|null | YAML map config |
 | `nav_mask` | string\|null | Valid region mask PNG |
 | `labels` | string\|null | Semantic annotations JSON |
@@ -189,7 +189,7 @@ Required attributes:
 
 ### nav_map.pgm
 
-PGM P5 (binary) format grayscale image.
+The occupancy grid map is stored as a PGM P5 (binary) grayscale image.
 
 - Pixel value 0 = Occupied (black)
 - Pixel value 255 = Free space (white)

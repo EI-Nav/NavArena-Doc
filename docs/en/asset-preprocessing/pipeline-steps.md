@@ -48,7 +48,7 @@ Project point cloud to a 2D occupancy grid map for path planning and collision d
 
 - Project 3D points to 2D (X–Y plane)
 - Filter by height relative to ground (default 0.1m–0.8m)
-- Output ROS-compatible PGM + YAML
+- Output ROS-compatible occupancy grid map (PGM) and YAML metadata
 
 ### Input / Output
 
@@ -76,7 +76,7 @@ height_filter:
 
 ### Purpose
 
-Estimate navigable region from the PGM map and generate `nav_mask.png`.
+Estimate navigable region from the occupancy grid map and generate `nav_mask.png`.
 
 ### Algorithm
 
