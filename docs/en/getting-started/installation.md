@@ -345,69 +345,6 @@ python navarena-gen/scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR
 
 ## 6. FAQ
 
-!!! question "gsplat Compilation Failed"
-    If gsplat fails to compile, check:
-
-    1. CUDA version matches PyTorch: `python -c "import torch; print(torch.version.cuda)"`
-    2. C++ compiler is installed: `gcc --version`
-    3. Sufficient disk space (compilation requires temporary space)
-    4. First `import gsplat` triggers JIT compilation which may take several minutes
-
-!!! question "CUDA Version Mismatch"
-    Ensure the installed PyTorch version is compatible with your system CUDA driver:
-    ```bash
-    nvidia-smi              # Check max CUDA version supported by driver
-    python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
-    ```
-    The driver's CUDA version must be ≥ the CUDA version PyTorch was compiled with.
-
-!!! question "open3d Installation Failed"
-    open3d only supports Python 3.8-3.11, and some systems may lack dependencies:
-    ```bash
-    # Ubuntu/Debian
-    sudo apt-get install libgl1-mesa-glx libglib2.0-0
-    ```
-
-!!! question "Node.js / npm install Failed"
-    The Web Viewer frontend requires Node.js. Install via conda:
-    ```bash
-    conda install -c conda-forge nodejs -y
-    ```
-    If `npm install` fails, try clearing the cache:
-    ```bash
-    cd navarena-gen/web/frontend
-    rm -rf node_modules package-lock.json
-    npm install
-    ```
-
-!!! question "`conda env create` fails due to network issues"
-    A common cause is GitHub-based dependencies (like CLIP) failing to download. `requirements-lock.txt` has separated CLIP into an optional post-install step, so it will not block the main installation.
-
-    `requirements-lock.txt` has a built-in Alibaba Cloud pip mirror (`--index-url https://mirrors.aliyun.com/pypi/simple/`) for fast downloads in China. If you still encounter issues, try an alternative mirror:
-    ```bash
-    # Temporary mirror override
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements-lock.txt
-
-    # conda mirror
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
-    ```
-
-    If CLIP installation fails (`ConnectionResetError`), retry later or use a proxy:
-    ```bash
-    # Retry
-    pip install git+https://github.com/ultralytics/CLIP.git
-
-    # Via proxy
-    pip install --proxy http://your-proxy:port git+https://github.com/ultralytics/CLIP.git
-    ```
-    CLIP is only needed for semantic detection (ObjectNav). Core features like PointNav/ImageNav/VLN work without it.
-
-!!! question "Permission Errors"
-    If you encounter permission-related errors:
-    ```bash
-    pip install --user -e .
-    ```
-
 !!! tip "Next Steps"
     After installation, continue reading:
 

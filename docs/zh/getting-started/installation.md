@@ -345,69 +345,6 @@ python navarena-gen/scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR
 
 ## 6. 常见问题
 
-!!! question "gsplat 编译失败"
-    若 gsplat 编译失败，请检查：
-
-    1. CUDA 版本是否与 PyTorch 匹配：`python -c "import torch; print(torch.version.cuda)"`
-    2. 是否安装了 C++ 编译器：`gcc --version`
-    3. 磁盘空间是否充足（编译需要临时空间）
-    4. 首次 import gsplat 时会触发 JIT 编译，可能需要数分钟
-
-!!! question "CUDA 版本不匹配"
-    确保安装的 PyTorch 版本与系统 CUDA 驱动兼容：
-    ```bash
-    nvidia-smi              # 查看驱动支持的最高 CUDA 版本
-    python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
-    ```
-    驱动支持的 CUDA 版本需 ≥ PyTorch 编译所用的 CUDA 版本。
-
-!!! question "open3d 安装失败"
-    open3d 仅支持 Python 3.8-3.11，且部分系统可能缺少依赖：
-    ```bash
-    # Ubuntu/Debian
-    sudo apt-get install libgl1-mesa-glx libglib2.0-0
-    ```
-
-!!! question "Node.js / npm install 失败"
-    Web Viewer 前端需要 Node.js。推荐通过 conda 安装：
-    ```bash
-    conda install -c conda-forge nodejs -y
-    ```
-    若 `npm install` 失败，尝试清除缓存后重试：
-    ```bash
-    cd navarena-gen/web/frontend
-    rm -rf node_modules package-lock.json
-    npm install
-    ```
-
-!!! question "网络问题导致 `conda env create` 失败"
-    常见原因是 CLIP 等 GitHub 依赖在国内网络下载失败。`requirements-lock.txt` 已将 CLIP 分离为可选步骤，不会阻塞主安装流程。
-
-    `requirements-lock.txt` 已内置阿里云 pip 镜像（`--index-url https://mirrors.aliyun.com/pypi/simple/`），国内用户无需额外配置即可快速下载。若仍遇到问题，可尝试其他镜像：
-    ```bash
-    # 临时使用清华镜像
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements-lock.txt
-
-    # conda 镜像
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
-    ```
-
-    若 CLIP 安装失败（`ConnectionResetError`），可稍后重试或使用代理：
-    ```bash
-    # 重试
-    pip install git+https://github.com/ultralytics/CLIP.git
-
-    # 通过代理
-    pip install --proxy http://your-proxy:port git+https://github.com/ultralytics/CLIP.git
-    ```
-    CLIP 仅用于语义检测（ObjectNav），不影响 PointNav/ImageNav/VLN 等核心功能。
-
-!!! question "权限错误"
-    若遇到权限相关错误：
-    ```bash
-    pip install --user -e .
-    ```
-
 !!! tip "下一步"
     安装完成后，继续阅读：
 
