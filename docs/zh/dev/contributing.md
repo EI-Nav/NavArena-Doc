@@ -19,7 +19,7 @@ NavArena 针对不同贡献类型使用不同仓库：
 ### 开发环境搭建
 
 1. 克隆主仓库：`git clone https://github.com/EI-Nav/NavArena.git`
-2. 按照 [安装指南](../getting-started/installation.md) 搭建开发环境（建议贡献者使用第三节：手动安装）
+2. 按照 [安装指南](../getting-started/installation.md) 搭建开发环境（推荐第一节快速安装，或使用第二节 uv 工作空间）
 3. 以可编辑模式安装：`pip install -e "navarena-core[rendering,export]"`，其他子包按需安装
 
 ### 提交流程

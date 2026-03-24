@@ -28,20 +28,17 @@ flowchart TD
     Q1 -->|是| Lock[第一节：快速安装\n使用 environment.yml 或 requirements-lock.txt]
     Q1 -->|否| Q2{已安装 uv？}
     Q2 -->|是| UV[第二节：uv workspace\n注意：需先安装 PyTorch]
-    Q2 -->|否| Q3{需要自定义版本？}
-    Q3 -->|是| Manual[第三节：手动安装]
-    Q3 -->|否| Lock
+    Q2 -->|否| Lock
 ```
 
 ## 版本策略
 
-NavArena 提供三层安装方式，适用于不同场景：
+NavArena 提供两种主要安装方式，适用于不同场景：
 
 | 方式 | 文件 | 适用场景 |
 |------|------|---------|
 | **精确复现** | `requirements-lock.txt` | 需要 100% 复现已验证环境 |
 | **一键创建** | `environment.yml` | 快速搭建，自动处理 conda + pip |
-| **手动安装** | 本文档第 3 节 | 需要灵活控制版本（如适配新 CUDA） |
 
 ## 1. 快速安装（精确复现）
 
@@ -86,36 +83,7 @@ NavArena 提供三层安装方式，适用于不同场景：
 若已安装 [uv](https://github.com/astral-sh/uv)，可以使用工作空间模式一次性安装所有子项目：
 
 !!! warning "前置条件：先安装 PyTorch"
-    uv 工作空间模式无法处理 CUDA 专用索引 URL。执行 `uv sync` 前**必须先手动安装 PyTorch**（第 3.2 节），否则 uv 会安装仅 CPU 版本。
-
-```bash
-cd NavArena
-
-# 安装 uv（如未安装）
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# 先按 3.2 节安装 PyTorch，再执行：
-uv sync --all-packages
-
-# 或使用 Makefile
-make install
-```
-
-!!! info "uv vs pip"
-    uv 工作空间模式可自动解析子项目依赖。安装 PyTorch 后，`uv sync` 会安装其余依赖。
-
-## 3. 手动安装（分步说明）
-
-手动安装允许逐项控制每个依赖的版本。每个关键包旁标注了已验证版本供参考。
-
-### 3.1 创建 Conda 环境
-
-```bash
-conda create -n navarena python=3.9 -y
-conda activate navarena
-```
-
-### 3.2 安装 PyTorch
+    uv 工作空间模式无法处理 CUDA 专用索引 URL。执行 `uv sync` 前**必须先在本环境中用 pip 安装 PyTorch**（见下方命令），否则 uv 会安装仅 CPU 版本。
 
 ```bash
 # 已验证：torch==2.8.0+cu128, torchvision==0.23.0
@@ -126,126 +94,24 @@ pip install "torch>=2.8.0,<3.0" "torchvision>=0.23.0,<1.0" \
 !!! note "CUDA 版本"
     上述命令安装 CUDA 12.8 版本的 PyTorch。如需其他 CUDA 版本，请将 `cu128` 替换为对应版本（如 `cu121`、`cu124`），并确保系统 CUDA 驱动兼容。
 
-### 3.3 安装 navarena-core
-
 ```bash
 cd NavArena
-pip install -e "navarena-core[rendering,export]"
+
+# 安装 uv（如未安装）
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv sync --all-packages
+
+# 或使用 Makefile
+make install
 ```
 
-navarena-core 将自动安装以下依赖（torch 需先按 3.2 节单独安装）：
+!!! info "uv vs pip"
+    uv 工作空间模式可自动解析子项目依赖。安装 PyTorch 后，`uv sync` 会安装其余依赖。
 
-| 包 | 版本范围 | 已验证版本 | 用途 |
-|----|---------|-----------|------|
-| numpy | ≥1.22.0 | 1.26.4 | 数值计算 |
-| scipy | ≥1.9.1 | 1.13.1 | 科学计算 |
-| Pillow | ≥8.0.0 | 11.3.0 | 图像处理 |
-| PyYAML | ≥5.4.0 | 6.0.3 | 配置文件解析 |
-| pyarrow | ≥14.0.0 | 21.0.0 | Parquet 数据读写 |
-| duckdb | ≥0.9.0 | 1.4.4 | 数据查询引擎 |
-| gsplat | ≥1.0.0 | 1.5.3 | 3DGS 渲染（rendering extra） |
-| plyfile | ≥1.0.0 | 1.1.3 | PLY 文件读写（rendering extra） |
-| imageio | ≥2.20.0 | 2.37.0 | 图像/视频 I/O（rendering extra） |
-| huggingface_hub | ≥0.20.0 | 1.2.3 | 模型/数据集上传（export extra） |
+## 3. 数据与环境变量配置
 
-### 3.4 各子项目依赖
-
-#### navarena-gen（数据生成）
-
-```bash
-pip install "open3d>=0.17.0" "shapely>=2.0.0" "matplotlib>=3.3.0" \
-    "imageio[ffmpeg]>=2.31.0" "imageio-ffmpeg>=0.5.0" "opencv-python>=4.5.0"
-```
-
-??? note "已验证版本"
-    open3d==0.19.0, shapely==2.0.7, matplotlib==3.9.4, imageio==2.37.0, imageio-ffmpeg==0.6.0, opencv-python==4.11.0.86
-
-#### navarena-bench（评估框架）
-
-```bash
-pip install "requests>=2.25.0" "scikit-image>=0.20.0" "skan>=0.9" \
-    "networkx>=3.1" "imageio[ffmpeg]>=2.31.0" "decord>=0.6.0"
-```
-
-!!! warning "decord 注意"
-    `decord` 未包含在 `requirements-lock.txt` 中。若使用快速安装方式，需额外安装：`pip install decord`
-
-??? note "已验证版本"
-    requests==2.32.5, scikit-image==0.24.0, skan==0.13.0, networkx==3.2.1, imageio==2.37.0, imageio-ffmpeg==0.6.0
-
-#### navarena-forge（场景预处理）
-
-```bash
-pip install "open3d>=0.17.0" "plyfile>=1.0.0" "scikit-learn>=1.0.0" "shapely>=2.0.0"
-```
-
-??? note "已验证版本"
-    open3d==0.19.0, plyfile==1.1.3, scikit-learn==1.6.1, shapely==2.0.7
-
-#### Web Viewer（前端 + 后端）
-
-```bash
-# 后端依赖
-pip install "fastapi>=0.100.0" "uvicorn>=0.23.0" "python-multipart>=0.0.5" \
-    "Flask>=3.0.0" "flask-cors>=4.0.0" "Flask-SocketIO>=5.0.0"
-
-# 前端依赖（需要 Node.js）
-conda install -c conda-forge nodejs -y
-cd navarena-gen/web/frontend && npm install && cd -
-```
-
-??? note "已验证版本"
-    fastapi==0.115.0, uvicorn==0.30.0, python-multipart==0.0.9, Flask==3.1.2, flask-cors==6.0.1, Flask-SocketIO==5.5.1, Node.js v25.2.1
-
-### 3.5 可选依赖
-
-#### 目标检测（ObjectNav 数据生成）
-
-```bash
-pip install "ultralytics>=8.0.0" "supervision>=0.20.0"
-# 已验证：ultralytics==8.3.228, supervision==0.27.0
-```
-
-#### CLIP（语义检测）
-
-```bash
-pip install git+https://github.com/ultralytics/CLIP.git
-```
-
-#### 数据分析工具
-
-```bash
-pip install polars pandas plotly dash openpyxl numba
-```
-
-#### ViNT/GNM/NoMaD 智能体（评测框架）
-
-如需使用 ViNT、GNM 或 NoMaD 等预训练导航智能体：
-
-```bash
-# 1. 克隆 visualnav-transformer（与 NavArena 项目并列）
-git clone https://github.com/robodhruv/visualnav-transformer
-
-# 2. 安装额外依赖
-pip install wandb warmup_scheduler diffusers efficientnet_pytorch \
-    einops vit_pytorch lmdb prettytable
-
-# 3. 安装 diffusion_policy
-pip install -e navarena-bench/src/diffusion_policy/
-```
-
-!!! tip "可跳过"
-    若不使用 ViNT 系列智能体，可跳过上述步骤。LocalAgent、RemoteAgent 等无需额外依赖。
-
-#### MkDocs 文档构建
-
-```bash
-pip install -r navarena-doc/requirements.txt
-```
-
-## 4. 数据与环境变量配置
-
-### 4.1 设置 NAVARENA_DATA_DIR
+### 3.1 设置 NAVARENA_DATA_DIR
 
 NavArena 使用 `NAVARENA_DATA_DIR` 作为统一数据根目录：
 
@@ -263,7 +129,7 @@ cp .env.example .env
 export NAVARENA_DATA_DIR=/path/to/your/navarena-data-root
 ```
 
-### 4.2 数据目录结构
+### 3.2 数据目录结构
 
 `NAVARENA_DATA_DIR` 下应包含以下子目录（可使用符号链接）：
 
@@ -280,7 +146,7 @@ $NAVARENA_DATA_DIR/
     └── visualnav-transformer/         # ViNT 模型权重（可选）
 ```
 
-### 4.3 CUDA 设置
+### 3.3 CUDA 设置
 
 确保 CUDA 环境变量正确设置：
 
@@ -290,9 +156,9 @@ export PATH=$CUDA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 ```
 
-## 5. 验证安装
+## 4. 验证安装
 
-### 5.1 Python 包导入测试
+### 4.1 Python 包导入测试
 
 ```bash
 python -c "
@@ -327,7 +193,7 @@ open3d: 0.19.0
 duckdb: 1.4.4
 ```
 
-### 5.2 运行示例
+### 4.2 运行示例
 
 以下命令均在 **NavArena 仓库根目录** 执行，且需已设置 `NAVARENA_DATA_DIR`：
 
@@ -343,7 +209,7 @@ python navarena-gen/scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR
 # 浏览器访问 http://localhost:5173
 ```
 
-## 6. 常见问题
+## 5. 常见问题
 
 !!! tip "下一步"
     安装完成后，继续阅读：

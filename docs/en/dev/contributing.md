@@ -19,7 +19,7 @@ NavArena uses separate repositories for different contribution types:
 ### Development Setup
 
 1. Clone the main repository: `git clone https://github.com/EI-Nav/NavArena.git`
-2. Set up the development environment per the [Installation Guide](../getting-started/installation.md) (Section 3: Manual Installation recommended for contributors)
+2. Set up the development environment per the [Installation Guide](../getting-started/installation.md) (Section 1 Quick Install, or Section 2 uv workspace)
 3. Install in editable mode: `pip install -e "navarena-core[rendering,export]"` and equivalent for other sub-packages as needed
 
 ### Submission Process
