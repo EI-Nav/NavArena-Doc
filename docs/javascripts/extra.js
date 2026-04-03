@@ -38,7 +38,7 @@
   function initMermaidTheme() {
     if (typeof mermaid === 'undefined') return;
     var isDark = document.querySelector('[data-md-color-scheme="slate"]');
-    var fontFamily = "'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif";
+    var fontFamily = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
 
     var lightVars = {
       /* typography */

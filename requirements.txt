@@ -1,17 +1,10 @@
-# MkDocs 核心依赖
+# MkDocs
 mkdocs>=1.5.3
 
-# Material 主题
+# Material theme
 mkdocs-material>=9.5.0
-
-# 常用插件
 mkdocs-material-extensions>=1.3.1
 
-# 搜索增强（支持中文分词）
-jieba>=0.42.1
-
-# 其他有用的插件
-mkdocs-git-revision-date-localized-plugin>=1.2.4  # 显示文档更新时间
-mkdocs-minify-plugin>=0.8.0  # 压缩HTML
-pymdown-extensions>=10.7  # Markdown 扩展语法支持
-mkdocs-static-i18n>=1.2.0  # 多语言支持
+# Plugins
+mkdocs-minify-plugin>=0.8.0
+pymdown-extensions>=10.7
