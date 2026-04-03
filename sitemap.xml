@@ -1,493 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/troubleshooting/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/troubleshooting/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/troubleshooting/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/troubleshooting/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/api/data-generator-api/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/api/data-generator-api/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/api/data-generator-api/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/api/data-generator-api/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/api/navarena-bench-api/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/api/navarena-bench-api/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/api/navarena-bench-api/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/api/navarena-bench-api/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/api/reference/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/api/reference/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/api/reference/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/api/reference/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/cli/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/cli/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/cli/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/cli/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/configuration/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/configuration/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/configuration/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/configuration/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/pipeline-steps/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/pipeline-steps/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/pipeline-steps/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/pipeline-steps/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/web-viewer/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/web-viewer/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/web-viewer/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/web-viewer/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/concepts/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/concepts/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/concepts/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/concepts/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/concepts/architecture/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/concepts/architecture/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/concepts/architecture/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/concepts/architecture/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/core/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/core/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/core/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/core/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/batch-processing/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/batch-processing/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/batch-processing/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/batch-processing/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/configuration/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/configuration/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/configuration/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/configuration/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/pipeline/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/pipeline/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/pipeline/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/pipeline/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/definitions/concepts/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/concepts/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/concepts/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/definitions/concepts/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/definitions/eval-data-format/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/eval-data-format/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/eval-data-format/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/definitions/eval-data-format/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/definitions/gs-assets/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/gs-assets/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/gs-assets/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/definitions/gs-assets/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/definitions/nav-data-format/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/nav-data-format/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/nav-data-format/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/definitions/nav-data-format/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/dev/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/dev/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/dev/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/dev/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/dev/changelog/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/dev/changelog/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/dev/changelog/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/dev/changelog/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/dev/contributing/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/dev/contributing/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/dev/contributing/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/dev/contributing/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/getting-started/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/getting-started/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/installation/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/getting-started/installation/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/getting-started/installation/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/installation/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/quickstart/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/getting-started/quickstart/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/getting-started/quickstart/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/quickstart/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/guide/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/guide/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/guide/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/guide/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/agents/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/agents/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/agents/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/agents/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/environment/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/environment/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/environment/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/environment/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/evaluators/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/evaluators/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/evaluators/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/evaluators/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/extending/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/extending/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/extending/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/extending/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/replay/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/replay/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/replay/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/replay/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
     <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/reference/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/reference/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/reference/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/troubleshooting/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/troubleshooting/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/troubleshooting/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/api/data-generator-api/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/api/data-generator-api/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/api/data-generator-api/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/api/navarena-bench-api/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/api/navarena-bench-api/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/api/navarena-bench-api/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/api/reference/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/api/reference/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/api/reference/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/cli/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/cli/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/cli/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/configuration/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/configuration/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/configuration/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/pipeline-steps/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/pipeline-steps/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/pipeline-steps/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/web-viewer/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/asset-preprocessing/web-viewer/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/web-viewer/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/concepts/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/concepts/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/concepts/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/concepts/architecture/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/concepts/architecture/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/concepts/architecture/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/core/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/core/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/core/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/data-generator/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/data-generator/batch-processing/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/batch-processing/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/batch-processing/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/data-generator/configuration/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/configuration/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/configuration/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/data-generator/pipeline/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/data-generator/pipeline/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/data-generator/pipeline/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/definitions/concepts/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/concepts/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/concepts/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/definitions/eval-data-format/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/eval-data-format/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/eval-data-format/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/definitions/gs-assets/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/gs-assets/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/gs-assets/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/definitions/nav-data-format/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/definitions/nav-data-format/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/definitions/nav-data-format/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/dev/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/dev/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/dev/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/dev/changelog/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/dev/changelog/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/dev/changelog/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/dev/contributing/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/dev/contributing/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/dev/contributing/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/getting-started/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/getting-started/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/getting-started/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/getting-started/installation/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/getting-started/installation/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/getting-started/installation/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/getting-started/quickstart/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/getting-started/quickstart/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/getting-started/quickstart/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/guide/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/guide/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/guide/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/agents/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/agents/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/agents/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/environment/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/environment/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/environment/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/evaluators/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/evaluators/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/evaluators/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/extending/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/extending/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/extending/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/replay/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/navarena-bench/replay/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/navarena-bench/replay/"/>
-    </url>
-    <url>
-        <loc>https://ei-nav.github.io/NavArena-Doc/en/reference/</loc>
-        <lastmod>2026-03-24</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://ei-nav.github.io/NavArena-Doc/en/reference/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://ei-nav.github.io/NavArena-Doc/reference/"/>
+         <loc>https://ei-nav.github.io/NavArena-Doc/reference/</loc>
+         <lastmod>2026-04-03</lastmod>
     </url>
 </urlset>
