@@ -3,10 +3,15 @@
   <div class="hero-bg-pattern"></div>
   <!-- 中层：浮动几何体 -->
   <svg class="hero-floating-shapes" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid slice">
+    <!-- 浮动六边形 1 -->
     <polygon class="float-shape shape-1" points="120,40 150,22 180,40 180,76 150,94 120,76" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+    <!-- 浮动六边形 2 -->
     <polygon class="float-shape shape-2" points="620,60 658,38 696,60 696,104 658,126 620,104" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" fill="none"/>
+    <!-- 浮动六边形 3（大） -->
     <polygon class="float-shape shape-3" points="680,180 730,151 780,180 780,238 730,267 680,238" stroke="rgba(255,255,255,0.08)" stroke-width="2" fill="none"/>
+    <!-- 浮动圆形 1 -->
     <circle class="float-shape shape-4" cx="80" cy="220" r="35" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" fill="none"/>
+    <!-- 浮动圆形 2 -->
     <circle class="float-shape shape-5" cx="400" cy="30" r="20" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" fill="none"/>
   </svg>
   <!-- 上层：导航路径描绘动画 -->
@@ -25,27 +30,27 @@
       <polyline points="29.5,15 35,13 37,19" stroke="url(#hl-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </svg>
     <h1>NavArena</h1>
-    <p>具身导航平台</p>
-    <p class="hero-subtitle">资产自动化处理 · 数据生成 · 导航评测</p>
+    <p>Embodied Navigation Infrastructure</p>
+    <p class="hero-subtitle">Automated Asset Processing · Data Generation · Evaluation</p>
     <div class="hero-buttons">
-      <a href="getting-started/installation/" class="md-button md-button--primary">快速开始</a>
-      <a href="reference/" class="md-button">API 参考</a>
+      <a href="getting-started/installation/" class="md-button md-button--primary">Get Started</a>
+      <a href="reference/" class="md-button">API Reference</a>
     </div>
   </div>
 </div>
 
-## 系统框架
+## System Framework
 
-![系统框架](../assets/images/framework_zh.png)
+See [Architecture](concepts/architecture.md) for a detailed system overview. (A standalone framework diagram image can be added under `docs/assets/images/` when available.)
 
-## 谁应该阅读本文档
+## Who Should Read This
 
-- **新用户** → 从 [快速开始](getting-started/installation/) 入手
-- **数据工程师** → 关注 [资产预处理](asset-preprocessing/) 与 [数据生成器](data-generator/)
-- **研究人员** → 关注 [评测框架](navarena-bench/)
-- **开发者** → 查阅 [扩展指南](navarena-bench/extending/) 与 [API 参考](reference/)
+- **New users** → Start with [Getting Started](getting-started/installation/)
+- **Data engineers** → Focus on [Asset Preprocessing](asset-preprocessing/) and [Data Generator](data-generator/)
+- **Researchers** → Focus on [Evaluation Framework](navarena-bench/)
+- **Developers** → See [Extending Guide](navarena-bench/extending/) and [API Reference](reference/)
 
-## 核心模块
+## Core Modules
 
 <div class="feature-grid">
   <div class="feature-card reveal">
@@ -60,9 +65,9 @@
         <line x1="32.2" y1="15.8" x2="30.1" y2="17.9" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/><line x1="17.9" y1="30.1" x2="15.8" y2="32.2" stroke="url(#if-grad)" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </div>
-    <h3>资产预处理</h3>
-    <p>将原始 3DGS 场景转换为标准化资产，支持坐标归一化、占据栅格地图生成、可导航区域估计，提供 V1 统一资产格式与 Web 查看器。</p>
-    <a href="asset-preprocessing/">查看文档 →</a>
+    <h3>Asset Preprocessing</h3>
+    <p>Convert raw 3DGS scenes to standardized assets with coordinate normalization, occupancy grid map generation, valid region estimation, V1 unified format, and web viewer.</p>
+    <a href="asset-preprocessing/">View Docs →</a>
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">
@@ -75,9 +80,9 @@
         <rect x="20" y="12" width="3" height="5" rx="1" fill="url(#ig-grad)" opacity="0.6"/><rect x="25" y="10" width="3" height="7" rx="1" fill="url(#ig-grad)"/>
       </svg>
     </div>
-    <h3>数据生成器</h3>
-    <p>支持 PointNav、ImageNav、ObjectNav、VLN 等任务的数据生成，多任务 Pipeline、3D GS 场景渲染与并行 Episode 生成。</p>
-    <a href="data-generator/">查看文档 →</a>
+    <h3>Data Generator</h3>
+    <p>Generate data for PointNav, ImageNav, ObjectNav, VLN and more. Multi-task pipeline, 3D GS scene rendering, and parallel episode generation.</p>
+    <a href="data-generator/">View Docs →</a>
   </div>
   <div class="feature-card reveal">
     <div class="feature-card-icon">
@@ -90,28 +95,28 @@
         <polyline points="21,12 24,9 27,12" stroke="url(#ib-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
     </div>
-    <h3>评测框架</h3>
-    <p>基于 3D Gaussian Splatting 和占据栅格的评测框架，支持多种导航任务与智能体（ViNT、GNM、NoMaD），含回放与可视化。</p>
-    <a href="navarena-bench/">查看文档 →</a>
+    <h3>Evaluation Framework</h3>
+    <p>Evaluation framework based on 3D Gaussian Splatting and occupancy grids, supporting multiple tasks and agents (ViNT, GNM, NoMaD) with replay and visualization.</p>
+    <a href="navarena-bench/">View Docs →</a>
   </div>
 </div>
 
-## 常见问题与支持
+## Troubleshooting & Support
 
-- 查看 [常见问题](troubleshooting/)
-- 在 GitHub 提交 [Issue](https://github.com/EI-Nav/NavArena/issues)
+- See [Troubleshooting](troubleshooting/)
+- Submit an [Issue](https://github.com/EI-Nav/NavArena/issues) on GitHub
 
-## 参与贡献
+## Contributing
 
-我们欢迎你在以下方面提供帮助：
+We welcome help in these areas:
 
-- **代码与功能**：改进核心库、资产预处理、数据生成器、评测框架等；修复 Bug、扩展任务/智能体/指标、提升性能与可扩展性
-- **文档与示例**：完善用户指南与教程、保持中英文同步、勘误与补充最佳实践
-- **反馈与协作**：通过 [Issue](https://github.com/EI-Nav/NavArena/issues) 报告问题、讨论使用疑问或功能需求
+- **Code and features**: Improvements to the core library, asset preprocessing, data generator, and evaluation framework; bug fixes, new tasks/agents/metrics, performance, and extensibility
+- **Documentation and examples**: User guides and tutorials, keeping Chinese and English in sync, corrections, and best practices
+- **Feedback and collaboration**: [Issues](https://github.com/EI-Nav/NavArena/issues) for bug reports, usage questions, or feature discussion
 
-环境与 Fork/PR 等具体流程见 [贡献指南](dev/contributing/)。
+For environment setup and Fork/PR workflow, see [Contributing](dev/contributing/).
 
 ---
 
-!!! tip "下一步"
-    从 [安装指南](getting-started/installation/) 开始，或查看 [快速入门](getting-started/quickstart/) 快速上手。
+!!! tip "Next Steps"
+    Start with the [Installation Guide](getting-started/installation/) or [Quickstart](getting-started/quickstart/) to get up and running.

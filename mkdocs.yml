@@ -1,130 +1,63 @@
-# 站点信息
+# Site
 site_name: NavArena Docs
 site_description: Documentation for NavArena asset preprocessing, data generation, evaluation, and developer workflows
 site_author: NavArena Team
 site_url: https://ei-nav.github.io/NavArena-Doc/
 
-# 仓库信息（页眉仓库图标指向主仓库；编辑链接仍指向文档仓库）
+# Repository (header icon -> main repo; edit link -> doc repo)
 repo_name: EI-Nav/NavArena
 repo_url: https://github.com/EI-Nav/NavArena
 edit_uri: https://github.com/EI-Nav/NavArena-Doc/edit/docs/docs/
 
-# 版权信息
 copyright: Copyright &copy; 2026 NavArena Team
 
-# 主题配置
 theme:
   name: material
-  language: zh
+  language: en
   custom_dir: overrides
-  
-  # 颜色方案（更克制的文档风格）
+
   palette:
-    # 亮色模式
-    - scheme: default
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       primary: indigo
       accent: teal
       toggle:
-        icon: material/weather-night
-        name: 切换到暗色模式 / Switch to dark mode
-    # 暗色模式
-    - scheme: slate
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       primary: indigo
       accent: teal
       toggle:
-        icon: material/weather-sunny
-        name: 切换到亮色模式 / Switch to light mode
-  
-  # 字体
+        icon: material/brightness-4
+        name: Switch to light mode
+
   font:
     text: Inter
     code: JetBrains Mono
-  
-  # Favicon（header logo 通过 overrides/partials/logo.html 内联 SVG 实现）
+
   favicon: assets/images/favicon.svg
-  
-  # 图标
+
   icon:
     repo: fontawesome/brands/github
-  
-  # 功能特性
+
   features:
-    - navigation.tracking
-    - navigation.tabs
     - navigation.sections
+    - navigation.expand
     - navigation.path
     - navigation.top
     - navigation.indexes
-    - content.tabs.link
     - search.suggest
     - search.highlight
-    - search.share
     - content.code.copy
     - content.code.annotate
 
-# 插件
 plugins:
   - search:
-      lang:
-        - zh
-        - en
-      separator: '[\s\-\.]+'
-  - i18n:
-      docs_structure: folder
-      languages:
-        - locale: zh
-          default: true
-          name: 简体中文
-          build: true
-        - locale: en
-          name: English
-          build: true
-          nav_translations:
-            首页: Home
-            快速开始: Getting Started
-            安装指南: Installation
-            快速入门: Quickstart
-            用户指南: User Guide
-            核心库: Core Library
-            资产预处理: Asset Preprocessing
-            Pipeline 步骤: Pipeline Steps
-            CLI 命令: CLI Commands
-            Web 查看器: Web Viewer
-            数据生成器: Data Generator
-            概述: Overview
-            Pipeline 阶段详解: Pipeline Stages
-            配置说明: Configuration
-            批量处理: Batch Processing
-            评测框架: Evaluation Framework
-            环境模块: Environment
-            智能体模块: Agents
-            评测器模块: Evaluators
-            回放模块: Replay
-            扩展指南: Extending
-            参考手册: Reference
-            API 文档: API Documentation
-            数据生成器 API: Data Generator API
-            评测框架 API: Evaluation Framework API
-            3D GS 资产规范: 3D GS Asset Specification
-            导航训练数据格式: Navigation Training Data Format
-            导航评测数据格式: Navigation Evaluation Data Format
-            概念与架构: Concepts & Architecture
-            核心概念: Core Concepts
-            架构设计: Architecture
-            开发者指南: Developer Guide
-            贡献指南: Contributing
-            更新日志: Changelog
-            常见问题: Troubleshooting
-  - git-revision-date-localized:
-      enable_creation_date: true
-      enable_git_follow: false
-      type: datetime
-      timezone: Asia/Shanghai
-      fallback_to_build_date: true
+      lang: en
   - minify:
       minify_html: true
 
-# Markdown 扩展
 markdown_extensions:
   - abbr
   - admonition
@@ -163,73 +96,59 @@ markdown_extensions:
       custom_checkbox: true
   - pymdownx.tilde
 
-# 额外 JavaScript
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - javascripts/extra.js
 
-# 额外 CSS
 extra_css:
   - stylesheets/extra.css
 
-# 额外配置
 extra:
-  # 语言切换器
-  alternate:
-    - name: 简体中文
-      link: /NavArena-Doc/
-      lang: zh
-    - name: English
-      link: /NavArena-Doc/en/
-      lang: en
-  
-  # 社交链接
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/EI-Nav/NavArena
 
-# 导航结构
 nav:
-  - 首页: index.md
-  - 快速开始:
+  - Home: index.md
+  - Getting Started:
     - getting-started/index.md
-    - 安装指南: getting-started/installation.md
-    - 快速入门: getting-started/quickstart.md
-  - 用户指南:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+  - User Guide:
     - guide/index.md
-    - 核心库: core/index.md
-    - 资产预处理:
+    - Core Library: core/index.md
+    - Asset Preprocessing:
       - asset-preprocessing/index.md
-      - Pipeline 步骤: asset-preprocessing/pipeline-steps.md
-      - 配置说明: asset-preprocessing/configuration.md
-      - CLI 命令: asset-preprocessing/cli.md
-      - Web 查看器: asset-preprocessing/web-viewer.md
-    - 数据生成器:
+      - Pipeline Steps: asset-preprocessing/pipeline-steps.md
+      - Configuration: asset-preprocessing/configuration.md
+      - CLI Commands: asset-preprocessing/cli.md
+      - Web Viewer: asset-preprocessing/web-viewer.md
+    - Data Generator:
       - data-generator/index.md
-      - Pipeline 阶段详解: data-generator/pipeline.md
-      - 配置说明: data-generator/configuration.md
-      - 批量处理: data-generator/batch-processing.md
-    - 评测框架:
+      - Pipeline Stages: data-generator/pipeline.md
+      - Configuration: data-generator/configuration.md
+      - Batch Processing: data-generator/batch-processing.md
+    - Evaluation Framework:
       - navarena-bench/index.md
-      - 环境模块: navarena-bench/environment.md
-      - 智能体模块: navarena-bench/agents.md
-      - 评测器模块: navarena-bench/evaluators.md
-      - 回放模块: navarena-bench/replay.md
-      - 扩展指南: navarena-bench/extending.md
-  - 参考手册:
+      - Environment: navarena-bench/environment.md
+      - Agents: navarena-bench/agents.md
+      - Evaluators: navarena-bench/evaluators.md
+      - Replay: navarena-bench/replay.md
+      - Extending: navarena-bench/extending.md
+  - Reference:
     - reference/index.md
-    - API 文档: api/reference.md
-    - 数据生成器 API: api/data-generator-api.md
-    - 评测框架 API: api/navarena-bench-api.md
-    - 3D GS 资产规范: definitions/gs-assets.md
-    - 导航训练数据格式: definitions/nav-data-format.md
-    - 导航评测数据格式: definitions/eval-data-format.md
-  - 概念与架构:
+    - API Documentation: api/reference.md
+    - Data Generator API: api/data-generator-api.md
+    - Evaluation Framework API: api/navarena-bench-api.md
+    - 3D GS Asset Specification: definitions/gs-assets.md
+    - Navigation Training Data Format: definitions/nav-data-format.md
+    - Navigation Evaluation Data Format: definitions/eval-data-format.md
+  - Concepts & Architecture:
     - concepts/index.md
-    - 核心概念: definitions/concepts.md
-    - 架构设计: concepts/architecture.md
-  - 开发者指南:
+    - Core Concepts: definitions/concepts.md
+    - Architecture: concepts/architecture.md
+  - Developer Guide:
     - dev/index.md
-    - 贡献指南: dev/contributing.md
-    - 更新日志: dev/changelog.md
-  - 常见问题: troubleshooting.md
+    - Contributing: dev/contributing.md
+    - Changelog: dev/changelog.md
+  - Troubleshooting: troubleshooting.md
