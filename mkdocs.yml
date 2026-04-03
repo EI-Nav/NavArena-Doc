@@ -42,11 +42,10 @@ theme:
     repo: fontawesome/brands/github
 
   features:
-    - navigation.sections
-    - navigation.expand
     - navigation.path
     - navigation.top
     - navigation.indexes
+    - toc.integrate
     - search.suggest
     - search.highlight
     - content.code.copy

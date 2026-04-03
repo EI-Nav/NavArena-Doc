@@ -15,6 +15,7 @@
   --navarena-radius-md: 18px;
   --navarena-radius-sm: 12px;
   --navarena-content-width: 82rem;
+  --md-sidebar-width: 14rem !important;
 }
 
 [data-md-color-scheme="slate"] {
@@ -51,11 +52,11 @@ body {
 }
 
 .md-main__inner {
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 .md-content__inner {
-  margin-bottom: 3rem;
+  padding-right: 3rem;
 }
 
 .md-typeset {
@@ -90,9 +91,10 @@ body {
   margin: 0 0 1em;
 }
 
-/* hide the empty announce banner — Material renders it with a near-black bg by default */
+/* hide announce slot — outer .md-banner still reserves height in Material 9.x */
+[data-md-component="announce"],
 .md-banner {
-  display: none;
+  display: none !important;
 }
 
 .md-header {
@@ -629,9 +631,14 @@ details {
   background: rgba(37, 99, 235, 0.7);
 }
 
+
 @media screen and (max-width: 76.1875em) {
   .md-main__inner {
-    margin-top: 0.5rem;
+    margin-top: 0;
+  }
+
+  .md-content__inner {
+    padding-right: 1rem;
   }
 
   .hero-content {
