@@ -63,7 +63,7 @@ def init(cls, config: EvalCfg) -> 'Evaluator':
 
 #### eval()
 
-Run evaluation. Results are saved to `episode_results.json` and `summary.json` under `output_path`; returns nothing.
+Run evaluation. Results are saved to **`results.json`** (protocol 2.x) under `output_path`; returns **`None`** (read the JSON on disk).
 
 ```python
 def eval(self) -> None:

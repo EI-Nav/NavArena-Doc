@@ -1,39 +1,32 @@
-# Environment Module
+# Environment module
 
-The environment module provides scene rendering (3D GS), occupancy grid collision detection, robot state management, and goal validation.
+The **`gs`** environment (`GaussianSplattingEnv`) renders RGB (+ optional depth) with 3D Gaussian Splatting, maintains robot pose on the **XY plane**, and reports **collision** and **path length** from an occupancy grid. It does **not** decide task success — evaluators interpret `info` and observations.
 
-## 3D GS Environment
+!!! note "Yaw-only 2D navigation"
+    The GS env updates **x, y, yaw** only; pitch/roll are not used for stepping. This matches the design described in the upstream bench README.
 
-### GaussianSplattingEnv
+## Class and registration
 
-`GaussianSplattingEnv` is the environment implementation based on 3D Gaussian Splatting.
+- Registered name: **`gs`** (`@Env.register("gs")`).
+- Constructed via `Env.init(env_cfg, task_cfg)` with `env_type: "gs"`.
 
-#### Initialization
+## Configuration (`GSEnvConfig`)
 
-```python
-from navarena_bench.env import Env
-from navarena_bench.configs.env_config import EnvCfg, GSEnvConfig
-from navarena_bench.configs.eval_config import TaskCfg
+Scene geometry is **not** a single `scene_dir` field on the config: each **episode** carries `scene_path` (and assets resolve under `$NAVARENA_DATA_DIR`). Relevant `env_settings` keys:
 
-env_config = EnvCfg(
-    env_type="gs",
-    env_settings=GSEnvConfig(
-        scene_dir="/path/to/scenes",
-        camera_config="/path/to/camera.yaml",
-        enable_occupancy=True,
-        success_distance=0.5
-    )
-)
+| Field | Role |
+|-------|------|
+| `camera_config` | Path to intrinsics/extrinsics YAML |
+| `enable_occupancy` | Use nav map for collision |
+| `success_distance` | Geometric success radius (meters); also used for metric defaults |
+| `rotation_threshold` | Rotation tolerance where applicable (radians) |
+| `robot_radius` | Footprint inflation for occupancy collision (meters), default `0.4` |
+| `gpu_id` | Optional GPU index |
+| `enable_depth` / `enable_rgb` | Render toggles |
+| `camera_names` | List of camera frame ids (defaults `face`, `left`, `right`; eval YAMLs often use e.g. `camera_head_front_color_optical_frame`) |
+| `image_width` / `image_height` | Rendering resolution |
 
-task_config = TaskCfg(
-    task_type="pointnav",
-    task_settings={"success_distance": 0.5}
-)
-
-env = Env.init(env_config, task_config)
-```
-
-#### Configuration Parameters
+Example (abbreviated):
 
 ```yaml
 env:
@@ -42,293 +35,43 @@ env:
     camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
     enable_occupancy: true
     success_distance: 0.5
-    rotation_threshold: 0.2
-    gpu_id: null                            # GPU ID (null=auto)
-    enable_depth: true                      # Enable depth map
-    enable_rgb: true                        # Enable RGB image
-    camera_names: ["face", "left", "right"] # Camera names
-    image_width: 640                        # Image width
-    image_height: 480                       # Image height
+    robot_radius: 0.4
+    enable_depth: false
+    enable_rgb: true
+    camera_names: ["camera_head_front_color_optical_frame"]
+    image_width: 640
+    image_height: 480
 ```
 
-### Main Methods
+## `reset` / `step`
 
-#### reset()
+- **`reset(episode)`** — Loads scene from episode `scene_path`, places robot, returns first observation dict with `rgb` (per camera), `position`, `rotation` (quaternion **`[x, y, z, w]`**), etc.
+- **`step(action)`** — Applies low-level controller for waypoint or velocity actions (depending on runner + `action_space`). Returns `observation`, `reward` (unused), `done`, `info`.
 
-Reset environment for a new episode.
+## `get_info()` (environment facts)
 
-```python
-episode = {
-    "episode_id": "train_000001",
-    "scene_path": "x2robot/17dc3367",
-    "task_type": "pointnav",
-    "start_state": {
-        "position": [0.0, 0.0, 0.0],
-        "rotation": [0.0, 0.0, 0.0, 1.0]
-    },
-    "goals": [{"goal_type": "position", "position": [5.0, 0.0, 0.0]}]
-}
+Typical keys (see `navarena_bench.env.gs_env.GaussianSplattingEnv.get_info`):
 
-observation = env.reset(episode)
-```
+- `episode_step`, `path_length`
+- `robot_position`, `robot_rotation`, `robot_yaw`
+- `collision` — last-step collision flag
+- `position_goal_distance`, `position_goal_start_distance`, optional `position_goal_rotation_error` — geometry anchors for goal-based tasks
+- `occupancy_grid` — serialized grid info when enabled
 
-**Returns**: Initial observation dict with:
-- `rgb`: RGB image dict (by camera name)
-- `depth`: Depth map dict (optional)
-- `position`: Current position [x, y, z]
-- `rotation`: Current orientation (quaternion)
+There is **no** generic `success` or `geodesic_distance` key here — success is determined by the **evaluator** from protocol + `info` + optional **verifier**.
 
-#### step()
+## Occupancy and maps
 
-Execute one action step.
+Maps load from each scene’s V1 layout (`nav_map.pgm`, `nav_map.yaml`) under the resolved asset directory. See [3D GS asset specification](../definitions/gs-assets.md).
 
-```python
-action = {
-    "x": 0.5,      # Forward distance (meters)
-    "y": 0.0,      # Lateral distance (meters)
-    "yaw": 0.1     # Rotation angle (radians)
-}
+## Goals in episodes
 
-observation, reward, done, info = env.step(action)
-```
+- **PointNav** — Position (and optional rotation) goals.
+- **ObjectNav** — Category / instance fields as in Parquet episodes; verifier may use observations.
+- **ImageNav** — Use structured fields such as `image_goal` / `image_path` as produced by navarena-gen (see [evaluation data format](../definitions/eval-data-format.md)); do not rely on a loose `"image"`-only field.
 
-**Parameters**:
-- `action`: Action dict
-  - `x`: Forward/backward distance (meters)
-  - `y`: Lateral distance (meters)
-  - `yaw`: Rotation angle (radians)
+## Performance
 
-**Returns**:
-- `observation`: New observation
-- `reward`: Reward value (currently unused)
-- `done`: Whether episode is done
-- `info`: Info dict
+Lower resolution, disable depth, or pin `gpu_id` to reduce load.
 
-#### get_info()
-
-Get current environment info.
-
-```python
-info = env.get_info()
-# {
-#     "success": False,
-#     "distance_to_goal": 2.5,
-#     "path_length": 3.0,
-#     "geodesic_distance": 2.0,
-#     "collision": False
-# }
-```
-
-**Returns**: Info dict with:
-- `success`: Whether goal reached
-- `distance_to_goal`: Distance to goal
-- `path_length`: Path length traveled
-- `geodesic_distance`: Shortest path length to goal
-- `collision`: Whether collision occurred
-
-## Occupancy Grid
-
-The environment uses occupancy grid maps for collision detection.
-
-### Loading Occupancy Grid
-
-Occupancy grid is loaded from the scene occupancy grid map file:
-
-```python
-# Auto-loaded from scene directory
-# {scene_dir}/nav_map.pgm
-# {scene_dir}/nav_map.yaml
-```
-
-### Collision Detection
-
-Collision is checked automatically:
-
-```python
-# Auto-detected during step()
-observation, reward, done, info = env.step(action)
-
-if info.get("collision"):
-    print("Collision detected!")
-```
-
-### Occupancy Grid Config
-
-Occupancy grid map config format:
-
-```yaml
-image: nav_map.pgm
-resolution: 0.05
-origin: [-10.0, -10.0, 0.0]
-negate: 0
-occupied_thresh: 0.65
-free_thresh: 0.25
-```
-
-## Camera Configuration
-
-The environment supports multi-camera configuration.
-
-### Camera Config File
-
-```yaml
-cameras:
-  face:
-    intrinsic:
-      fx: 320.0
-      fy: 320.0
-      cx: 320.0
-      cy: 240.0
-    extrinsic:
-      translation: [0.0, 0.0, 0.0]
-      rotation: [1.0, 0.0, 0.0, 0.0]
-    image_size: [640, 480]
-  
-  left:
-    intrinsic:
-      fx: 320.0
-      fy: 320.0
-      cx: 320.0
-      cy: 240.0
-    extrinsic:
-      translation: [0.1, 0.0, 0.0]
-      rotation: [0.707, 0.0, 0.707, 0.0]
-    image_size: [640, 480]
-```
-
-### Multi-Camera Observations
-
-The environment returns multi-camera observations:
-
-```python
-observation = env.reset(episode)
-
-# RGB images
-rgb_face = observation["rgb"]["face"]
-rgb_left = observation["rgb"]["left"]
-rgb_right = observation["rgb"]["right"]
-
-# Depth (if enabled)
-if "depth" in observation:
-    depth_face = observation["depth"]["face"]
-```
-
-## Scene Management
-
-### Scene Directory Structure (V1 Asset Format)
-
-The environment loads the V1 unified asset format, aligned with asset preprocessing output:
-
-```
-{dataset}/{scene_id}/
-├── manifest.json          # required
-├── nav_map.pgm            # required
-├── nav_map.yaml           # required
-├── aligned.ply            # for rendering
-├── nav_mask.png          # optional
-└── labels.json           # optional
-```
-
-### Robot State Management
-
-The environment manages robot state (position, rotation, yaw), updated in `step()` from actions and exposed via `get_info()` for path length, distance to goal, etc.
-
-### Legacy Scene Metadata
-
-Legacy scene metadata format (for reference):
-
-```json
-{
-  "scene_id": "scene_001",
-  "pgm_file": "nav_map.pgm",
-  "yaml_file": "scene_001_transformed.yaml",
-  "ply_file": "scene_001_transformed.ply",
-  "ground_height": -0.9,
-  "is_normalized": true
-}
-```
-
-## Goal Validation
-
-The environment supports multiple goal types:
-
-### PointNav Goals
-
-```python
-episode = {
-    "goals": [
-        {
-            "position": [5.0, 0.0, 0.0],
-            "rotation": [1.0, 0.0, 0.0, 0.0]  # optional
-        }
-    ]
-}
-```
-
-### ObjectNav Goals
-
-```python
-episode = {
-    "goals": [
-        {
-            "position": [5.0, 0.0, 0.0],
-            "object_category": "bed"
-        }
-    ]
-}
-```
-
-### ImageNav Goals
-
-```python
-episode = {
-    "goals": [
-        {
-            "position": [5.0, 0.0, 0.0],
-            "rotation": [1.0, 0.0, 0.0, 0.0],  # required
-            "image": "/path/to/goal_image.jpg"  # optional
-        }
-    ]
-}
-```
-
-## Performance Tuning
-
-### GPU Settings
-
-```yaml
-env_settings:
-  gpu_id: 0  # Specify GPU, or null for auto
-```
-
-### Rendering Optimization
-
-```yaml
-env_settings:
-  enable_depth: false  # Disable depth for performance
-  image_width: 480     # Lower resolution
-  image_height: 360
-```
-
-### Occupancy Grid Optimization
-
-```yaml
-env_settings:
-  enable_occupancy: true  # Required for collision detection
-```
-
-## FAQ
-
-!!! question "Scene load failed"
-    Check scene directory structure and that required metadata files exist.
-
-!!! question "Inaccurate collision detection"
-    Check occupancy grid map generation and verify `occupied_thresh` and `free_thresh`.
-
-!!! question "Slow rendering"
-    Lower image resolution or disable depth; use GPU acceleration.
-
-!!! question "Multi-camera config error"
-    Ensure camera config format is correct and intrinsics/extrinsics are set.
-
-**See also**: [Agent Module](agents.md) · [Evaluator Module](evaluators.md) · [Extending](extending.md)
+**See also**: [Agent connection](agents.md) · [Evaluators](evaluators.md) · [Extending](extending.md)

@@ -8,15 +8,22 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), versio
 
 ### Added
 
-- Troubleshooting page consolidating installation, data generation, and evaluation FAQs
+- Documentation page **Model Server SDK** (`navarena-server`) for WebSocket agent developers
+- Troubleshooting entries for WebSocket / `eval_settings.output_path`
 
 ### Changed
 
-- Contributing guide extended with code contribution workflow and repository distinction
+- **Evaluation Framework** docs rewritten for WebSocket agents, `results.json`, and current metrics (no in-tree `Agent` package)
+- **Data generator** docs: GridTraj, accurate CLI (`--config` required), defaults aligned with `configs/defaults/`
+- **Asset preprocessing** docs: default pipeline vs optional `compress_ply`, richer Forge/WebViewer API notes
+- **Definitions / core / architecture**: Parquet columns (`goals_json`, `linear_acceleration`, `phase`), core responsibilities, five-package architecture
+- **Installation**: notes on `navarena-server`, `make install` vs CUDA PyTorch
+- **Contributing**: single `docs/` tree (removed obsolete bilingual directory instructions)
 
 ### Fixed
 
-- API reference: `evaluator.evaluate()` corrected to `evaluator.eval()`
+- API reference: removed obsolete Agent/VLN evaluator listings; `eval()` documented as returning None
+- API reference: `evaluator.evaluate()` corrected to `evaluator.eval()` (historical)
 - Installation: ViNT placeholder URL replaced with actual repository
 - Installation: Added uv prerequisite warning and environment.yml + navarena-core clarification
 

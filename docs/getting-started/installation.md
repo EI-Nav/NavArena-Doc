@@ -1,6 +1,6 @@
 # Installation Guide
 
-This page describes the installation and configuration of the NavArena embodied navigation infrastructure. NavArena uses a uv workspace to manage four sub-projects: **Core Library** (navarena-core), **Asset Preprocessing** (navarena-forge), **Data Generator** (navarena-gen), and **Evaluation Framework** (navarena-bench).
+This page describes the installation and configuration of the NavArena embodied navigation infrastructure. The root **uv workspace** includes **navarena-core**, **navarena-forge**, **navarena-gen**, **navarena-bench**, and **navarena-server** (WebSocket agent SDK). Forge/gen/bench are the main research toolchain; server ships the policy-side protocol.
 
 ## System Requirements
 
@@ -105,6 +105,9 @@ uv sync --all-packages
 # Or use Makefile
 make install
 ```
+
+!!! warning "make install vs CUDA PyTorch"
+    `make install` runs `uv sync` only. It does **not** install CUDA-enabled PyTorch for you. If you rely on GPU torch, install the appropriate `torch`/`torchvision` wheels **before** `uv sync` / `make install`, as described in the **Prerequisite** box above.
 
 !!! info "uv vs pip"
     uv workspace mode automatically resolves inter-project dependencies. After PyTorch is installed, `uv sync` will install the remaining packages.

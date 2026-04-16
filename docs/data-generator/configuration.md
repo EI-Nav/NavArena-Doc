@@ -1,77 +1,29 @@
 # Configuration
 
-The data generator uses YAML config files with a config hierarchy and CLI overrides. All paths are relative to `$NAVARENA_DATA_DIR`.
+YAML configs merge **user file → `defaults/env/{env_type}.yaml` → `defaults/task/{task_type}.yaml` → `defaults/planner.yaml`**. Paths are resolved from **`$NAVARENA_DATA_DIR`**.
 
-## Config Hierarchy
-
-1. **Main config** - User-provided full config (e.g. `examples/pointnav_example.yaml`)
-2. **defaults/env/{env_type}.yaml** - Environment defaults (e.g. `gs.yaml`)
-3. **defaults/task/{task_type}.yaml** - Task defaults (e.g. `pointnav.yaml`)
-4. **defaults/planner.yaml** - Trajectory planner defaults
-
-User config wins; missing fields are merged from the above defaults.
-
-## Config Structure
+## Config layout (repository)
 
 ```
 configs/
 ├── defaults/
-│   ├── env/
-│   │   └── gs.yaml                 # Only gs (3DGS) is implemented; habitat/isaac are placeholders
-│   ├── task/
-│   │   ├── pointnav.yaml
-│   │   ├── gridtraj.yaml
-│   │   ├── imagenav.yaml
-│   │   ├── objectnav.yaml
-│   │   └── vln.yaml
+│   ├── env/gs.yaml
+│   ├── task/pointnav.yaml, gridtraj.yaml, imagenav.yaml, objectnav.yaml, vln.yaml
 │   └── planner.yaml
 └── examples/
     ├── pointnav_example.yaml
     ├── gridtraj_example.yaml
     ├── imagenav_example.yaml
     ├── objectnav_example.yaml
-    ├── vln_zh_example.yaml
-    └── ...
+    ├── vln_en_example.yaml
+    ├── vln_path_based_example.yaml
+    ├── vln_object_goal_example.yaml
+    └── camera.yaml
 ```
 
-## Example Configs
+There is **no** `vln_zh_example.yaml`; use `vln_en_example.yaml` (or another VLN example) and set `language: zh-CN` under `task_config` if you need Chinese instructions.
 
-### PointNav
-
-```yaml
-env_type: gs
-scene_path: sage-3d/00666b7a
-
-env_config:
-  z_coordinate: 0.0
-  robot_radius: 0.4
-  max_linear_velocity: 0.5
-  max_angular_velocity: 1.0
-
-task_type: pointnav
-num_episodes: 1000
-split: train
-
-task_config:
-  start_constraints:
-    sampler: grid
-    grid_spacing: 0.5
-    max_start_points: null
-
-  goal_constraints:
-    sampler: grid
-    grid_spacing: 0.5
-    require_navigable_path: true
-
-  trajectory_constraints:
-    min_geodesic_distance: 0.5
-    max_geodesic_distance: 30.0
-    require_gt_path: true
-
-dataset_name: navarena_dataset_v1
-```
-
-### VLN (Chinese Instructions)
+## Example: PointNav (aligned with `pointnav_example.yaml`)
 
 ```yaml
 env_type: gs
@@ -80,125 +32,122 @@ scene_path: x2robot/17dc3367
 env_config:
   z_coordinate: 0.0
   robot_radius: 0.4
+  max_linear_velocity: 0.45
+  max_angular_velocity: 0.8
+  max_angular_accel: 0.6
+  max_linear_accel: 0.25
+  max_jerk: 0.4
+  max_lateral_accel: 0.25
+  dt: 0.05
+  goal_tolerance: 0.3
 
-task_type: vln
-num_episodes: 100
+task_type: pointnav
+num_episodes: 1000000
 split: train
 
 task_config:
   start_constraints:
     sampler: grid
-    grid_spacing: 0.5
+    grid_spacing: 1.0
+    max_start_points: null
+    rotation_num: 6
   goal_constraints:
     sampler: grid
-    grid_spacing: 0.5
+    grid_spacing: 1.0
+    rotation_num: 6
+    require_navigable_path: true
   trajectory_constraints:
-    min_geodesic_distance: 5.0
-    max_geodesic_distance: 12.0
+    min_geodesic_distance: 1.0
+    max_geodesic_distance: 30.0
+    require_gt_path: true
 
-  instruction_type: simple_direction   # simple_direction / path_based / object_goal
-  language: zh-CN
+dataset_name: navarena_dataset_v1
+```
+
+## Example: VLN (English template)
+
+Use `configs/examples/vln_en_example.yaml` or set:
+
+```yaml
+task_type: vln
+task_config:
+  instruction_type: simple_direction   # simple_direction | path_based | object_goal
+  language: en-US                     # or zh-CN
   num_instructions_per_episode: 1
-
-dataset_name: navarena_vln_zh
 ```
 
-## Parameter Reference
+## Parameter reference
 
-### Top-Level
+### Top-level
 
-| Parameter | Description | Default |
+| Parameter | Description | Typical |
 |-----------|-------------|---------|
-| `env_type` | Environment type: gs / habitat / isaac | `gs` |
-| `scene_path` | Scene path, e.g. `x2robot/17dc3367` | Required |
-| `task_type` | Task type: pointnav / imagenav / objectnav / vln | `pointnav` |
-| `num_episodes` | Number of episodes to generate | `100` |
-| `split` | Data split: train / val_seen / val_unseen / test | `train` |
-| `dataset_name` | Dataset name, output under `datasets/{dataset_name}/` | `navarena_dataset_v1` |
+| `env_type` | `gs` (supported) | `gs` |
+| `scene_path` | Relative to `assets/`, e.g. `x2robot/17dc3367` | required |
+| `task_type` | `pointnav` \| `gridtraj` \| `imagenav` \| `objectnav` \| `vln` | required |
+| `num_episodes` | Episodes to generate | from example |
+| `split` | e.g. `train`, `val_seen` | `train` |
+| `dataset_name` | Output root folder name under `datasets/` | `navarena_dataset_v1` |
 
-### env_config
+### `env_config` (defaults from `defaults/env/gs.yaml`)
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `z_coordinate` | Fixed height | `0.0` |
-| `robot_radius` | Collision radius (meters) | `0.4` |
-| `max_linear_velocity` | Max linear velocity (m/s) | `0.5` |
-| `max_angular_velocity` | Max angular velocity (rad/s) | `1.0` |
-| `max_linear_accel` | Max linear acceleration | `0.3` |
-| `max_angular_accel` | Max angular acceleration | `2.0` |
-| `max_jerk` | Max jerk | `0.5` |
-| `max_lateral_accel` | Max lateral acceleration | `0.3` |
-| `dt` | Time step (seconds) | `0.333` |
-| `goal_tolerance` | Goal tolerance (meters) | `0.3` |
+| Parameter | Default (gs.yaml) |
+|-----------|---------------------|
+| `robot_radius` | `0.4` |
+| `z_coordinate` | `0.0` |
+| `max_linear_velocity` | `0.45` |
+| `max_angular_velocity` | `0.8` |
+| `max_angular_accel` | `0.6` |
+| `max_linear_accel` | `0.25` |
+| `max_jerk` | `0.4` |
+| `max_lateral_accel` | `0.25` |
+| `dt` | `0.05` |
+| `goal_tolerance` | `0.3` |
+| `max_sampling_attempts` | `100` |
 
-### task_config
+### `task_config` (PointNav defaults from `defaults/task/pointnav.yaml`)
 
-#### start_constraints
+| Section | Notable defaults |
+|---------|-------------------|
+| `start_constraints` | `grid_spacing: 1.0`, `rotation_num: 6` |
+| `goal_constraints` | `grid_spacing: 1.0`, `require_navigable_path: true` |
+| `trajectory_constraints` | `min_geodesic_distance: 1.0`, `max_geodesic_distance: 30.0` |
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `sampler` | Sampler: grid | `grid` |
-| `grid_spacing` | Grid spacing (meters) | `0.5` |
-| `max_start_points` | Max start points, null = unlimited | `null` |
-| `rotation_num` | Orientations per point | `6` |
+VLN-specific: `instruction_type`, `language`, `num_instructions_per_episode` — see `defaults/task/vln.yaml` and examples.
 
-#### goal_constraints
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `sampler` | Sampler: grid | `grid` |
-| `grid_spacing` | Grid spacing (meters) | `0.5` |
-| `rotation_num` | Orientations per goal | `6` |
-| `require_navigable_path` | Goal must have navigable path from start | `true` |
-
-#### trajectory_constraints
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `min_geodesic_distance` | Min geodesic distance (meters) | `0.5` |
-| `max_geodesic_distance` | Max geodesic distance (meters) | `30.0` |
-| `require_gt_path` | Require valid GT path | `true` |
-
-#### VLN-specific
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `instruction_type` | simple_direction / path_based / object_goal | Required |
-| `language` | zh-CN / en-US | - |
-| `num_instructions_per_episode` | Instructions per episode | `1` |
-
-### planner_config (optional)
-
-Configure via `task_config.planner_config` or `defaults/planner.yaml`; passed to the trajectory planner.
-
-## Multi-File Merge
-
-Use `GeneratorConfig.from_files()` or `--env-config` / `--task-config` to merge fragments:
+## Multi-file merge
 
 ```bash
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml \
-    --env-config my_env.yaml --task-config my_task.yaml
+  --env-config my_env.yaml --task-config my_task.yaml
 ```
 
-## CLI Overrides
+## CLI
+
+**`--config` is required.** Task type always comes from the YAML (`task_type`); there is **no** `--task` flag.
 
 ```bash
-# Config file
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
+```
 
-# CLI only
-python scripts/generate_data.py --env gs --task pointnav \
-    --scene x2robot/17dc3367 --num-episodes 100
+Common overrides (see `generate_data.py`):
 
-# Parallel
+| Argument | Purpose |
+|----------|---------|
+| `--scene` | Override `scene_path` |
+| `--env` | Override `env_type` (`gs` / `habitat` / `isaac`) |
+| `--num-episodes` | Override count |
+| `--split` | Override split |
+| `--dataset-name` | Override dataset folder |
+| `--env-config` / `--task-config` | Merge YAML fragments |
+| `--parallel` / `--num-workers` / `--batch-size` | Parallel generation |
+| `--chunk-size` | Episodes per Parquet chunk |
+| `--resume` / `--append` | Checkpointing |
+| `--checkpoint-interval` | Save checkpoint every N episodes |
+
+```bash
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml \
-    --parallel --num-workers 4 --batch-size 20
-
-# Resume from checkpoint
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --resume
-
-# Append mode
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --append
+  --parallel --num-workers 4 --batch-size 20 --resume
 ```
 
 **See also**: [Batch Processing](batch-processing.md) · [Asset Preprocessing](../asset-preprocessing/)

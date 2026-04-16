@@ -1,108 +1,69 @@
 # Web Viewer
 
-The asset preprocessing project includes a FastAPI-based 3DGS web viewer for browsing processed scene assets in a browser.
+FastAPI service + static page for browsing **V1** assets that include **`compressed.splat`**.
 
-## Overview
+## Starting the viewer
 
-- **WebGL 3DGS rendering** — Render scenes in-browser (e.g. GaussianSplats3D)
-- **Dataset / scene browser** — Browse all scenes with `compressed.splat`
-- **REST API** — Scene lists, metadata, splat files, thumbnails
-
-## Starting the Viewer
+From `navarena-forge/`:
 
 ```bash
-cd navarena-forge
-python -m web_viewer.main --assets-dir /path/to/navarena_assets --port 41005
+python -m web_viewer.main --port 41005
+python -m web_viewer   # equivalent if package exposes __main__
 ```
 
-### Arguments
+| Argument | Default |
+|----------|---------|
+| `--assets-dir` | **`$NAVARENA_DATA_DIR/assets`** via `navarena_core.config.path_resolver.get_assets_dir()` when omitted |
+| `--host` | `0.0.0.0` |
+| `--port` | `41005` |
+| `--log-level` | `info` |
 
-| Argument | Description | Default |
-|----------|-------------|---------|
-| `--assets-dir` | V1 assets root directory | `/x2robot_v2/share/navarena-bench/navarena_assets` |
-| `--host` | Bind address | `0.0.0.0` |
-| `--port` | Bind port | `41005` |
-| `--log-level` | Log level | `info` |
+Only scenes with **`compressed.splat`** appear in the browser list — run **`compress`** first if needed.
 
-## Display Condition
+## API summary
 
-Only scenes that have `compressed.splat` appear in the list. Run the `compress` command first if you need web preview.
-
-## API Endpoints
-
-### List Datasets
+### Datasets and scenes
 
 ```http
 GET /api/datasets
-```
-
-**Response example:**
-```json
-[
-  {"name": "x2robot", "scene_count": 42},
-  {"name": "scenesplat", "scene_count": 15}
-]
-```
-
-### List Scenes
-
-```http
 GET /api/datasets/{dataset}/scenes
 ```
 
-**Response example:**
-```json
-[
-  {
-    "scene_id": "17dc3367",
-    "source": {},
-    "map_info": {"resolution": 0.05},
-    "splat_size_mb": 12.5,
-    "has_labels": true,
-    "has_nav_mask": true
-  }
-]
-```
+Scene list entries include: `scene_id`, `source`, `map_info`, `splat_size_mb`, `has_labels`, **`has_label_sources`**, **`label_source_count`**, `has_nav_mask`.
 
-### Scene Metadata
+### Scene payload
 
 ```http
 GET /api/scenes/{dataset}/{scene_id}/metadata
-```
-
-Returns full manifest.json.
-
-### Get compressed.splat
-
-```http
 GET /api/scenes/{dataset}/{scene_id}/compressed.splat
-```
-
-For WebGL clients to load the 3DGS scene. URL ends with `.splat` for format auto-detection.
-
-### Thumbnail
-
-```http
 GET /api/scenes/{dataset}/{scene_id}/thumbnail
-```
-
-Returns `nav_mask.png` as scene thumbnail.
-
-### labels.json
-
-```http
 GET /api/scenes/{dataset}/{scene_id}/labels
 ```
 
-Returns `labels.json` if present.
+### Label sources (read/write)
 
-## Frontend
+```http
+GET  /api/scenes/{dataset}/{scene_id}/label-sources
+GET  /api/scenes/{dataset}/{scene_id}/labels/{source_name}
+PUT  /api/scenes/{dataset}/{scene_id}/labels/{source_name}
+DELETE /api/scenes/{dataset}/{scene_id}/labels/{source_name}
+```
 
-Visit `http://localhost:41005/` for:
+- `source_name == "default"` maps to the root `labels.json` and is **read-only** for PUT/DELETE.
 
-- Sidebar: dataset and scene list
-- Main area: WebGL 3DGS rendering
-- Scene metadata display
-- Orbit / pan / zoom controls
+### Reviews
+
+```http
+GET /api/scenes/{dataset}/{scene_id}/reviews/{source_name}
+PUT /api/scenes/{dataset}/{scene_id}/reviews/{source_name}
+```
+
+### UI
+
+`GET /` serves the single-page viewer (`static/index.html`).
+
+## Ops
+
+Optional helper: `web_viewer/service.sh` in the forge repo for process management.
 
 **See also**: [Overview](index.md) · [CLI Commands](cli.md)

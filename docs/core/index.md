@@ -15,6 +15,8 @@ navarena-core is the shared foundation library for NavArena, providing configura
 
 ## Public API
 
+Only a **small** set of symbols is exported from `navarena_core` itself (`__version__`, `BaseConfig`, `get_logger`, `setup_logging`). Import data types from **`navarena_core.data`** (and other subpackages) explicitly.
+
 ```python
 # Package top-level
 from navarena_core import __version__, BaseConfig, get_logger, setup_logging

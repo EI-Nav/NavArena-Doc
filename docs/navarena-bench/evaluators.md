@@ -1,418 +1,158 @@
-# Evaluator Module
+# Evaluator module
 
-The evaluator module coordinates the environment, agent, and dataset, executes the evaluation loop, computes metrics, and saves results.
+Evaluators orchestrate **dataset → environment → WebSocket agent**, implement the **task protocol** (success / termination / metrics profile), and write **`results.json`**. There is **no** `VLNEvaluator` in the current codebase — only **`pointnav`**, **`objectnav`**, and **`imagenav`**.
 
-## Evaluator Types
+## Built-in evaluators
 
-### PointNavEvaluator
+Registered evaluator types match `eval_type` / task wiring:
 
-Point goal navigation evaluator for reaching specified 3D positions.
+| Task | Typical `success_policy` | Verifier |
+|------|---------------------------|----------|
+| `pointnav` | `geometric_distance` or `explicit_stop` | Not used |
+| `objectnav` | `verifier` when using semantic checks; configs may use geometric defaults for smoke tests | `object_semantic`, `object_position`, `image_similarity` |
+| `imagenav` | `geometric_distance` (goal image is observational) | Not used for success |
 
-#### Configuration
+ObjectNav episodes that require semantic success must configure `task.verifier` consistently with `success_policy` / `termination_policy`. If the protocol requires a verifier and none is configured, evaluation fails at startup.
 
-```yaml
-eval_type: "pointnav"
+## Task protocol and metrics profiles
 
-task:
-  task_type: "pointnav"
-  task_settings:
-    success_distance: 0.5  # Success distance (meters)
-```
+Each evaluator exposes a `TaskProtocol` (`task_type`, `success_policy`, `termination_policy`, `metrics_profile`, `requires_verifier`, …). Metric suites resolve **profiles** such as:
 
-#### Episode Format
+- `pointnav_standard` → `sr`, `spl`, `soft_spl`, `ne`, `cr`, `avg_steps`
+- `objectnav_standard` / `imagenav_standard` → include `osr` instead of some geometric-only metrics where applicable
 
-```json
-{
-  "episode_id": "001",
-  "scene_path": "x2robot/17dc3367",
-  "task_type": "pointnav",
-  "start_state": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0, 1.0]
-  },
-  "goals": [
-    {
-      "goal_type": "position",
-      "position": [5.0, 0.0, 0.0],
-      "rotation": [0.0, 0.0, 0.383, 0.924]
-    }
-  ]
-}
-```
+You can pass **`eval_settings.metrics`** to override the profile list (each name must be registered and compatible with the task).
 
-#### Metrics
+## Configuration example
 
-- **Success Rate (SR)**: Success rate
-- **Success weighted by Path Length (SPL)**: Path-length weighted success
-- **Navigation Error (NE)**: Navigation error
-
-### ObjectNavEvaluator
-
-Object goal navigation evaluator for finding objects of a given category.
-
-#### Configuration
-
-```yaml
-eval_type: "objectnav"
-
-task:
-  task_type: "objectnav"
-  task_settings:
-    success_distance: 0.5
-    object_categories: ["bed", "chair", "table"]
-```
-
-#### Episode Format
-
-```json
-{
-  "episode_id": "001",
-  "scene_path": "x2robot/17dc3367",
-  "task_type": "objectnav",
-  "start_state": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0, 1.0]
-  },
-  "goals": [
-    {
-      "goal_type": "object",
-      "object_category": "bed",
-      "object_id": "bed_0",
-      "position": [5.0, 0.0, 0.0]
-    }
-  ]
-}
-```
-
-### ImageNavEvaluator
-
-Image goal navigation evaluator for reaching a goal defined by an image.
-
-#### Configuration
-
-```yaml
-eval_type: "imagenav"
-
-task:
-  task_type: "imagenav"
-  task_settings:
-    success_distance: 0.5
-    success_angle: 0.5  # Success angle (radians)
-```
-
-#### Episode Format
-
-```json
-{
-  "episode_id": "001",
-  "scene_path": "x2robot/17dc3367",
-  "task_type": "imagenav",
-  "start_state": {
-    "position": [-6.0, -1.58, 0.0],
-    "rotation": [0.0, 0.0, 0.383, 0.924]
-  },
-  "goals": [
-    {
-      "goal_type": "image",
-      "image_goal": {
-        "image_path": "goal_images/train_000001_goal.jpg"
-      },
-      "position": [-0.9, -0.5, 0.0],
-      "rotation": [0.0, 0.0, -0.383, 0.924]
-    }
-  ]
-}
-```
-
-### VLNEvaluator
-
-Vision-Language Navigation evaluator for instruction-following navigation.
-
-#### Configuration
-
-```yaml
-eval_type: "vln"
-
-task:
-  task_type: "vln"
-
-agent:
-  agent_type: "language_nav"
-  model_settings:
-    waypoint_tolerance: 0.3
-    voronoi_closeness: 0.5
-```
-
-#### VLN Episode Format
-
-VLN requires an `instructions` field as an array of objects:
-
-```json
-{
-  "episode_id": "001",
-  "scene_path": "x2robot/17dc3367",
-  "task_type": "vln",
-  "start_state": {
-    "position": [0.0, 0.0, 0.0],
-    "rotation": [0.0, 0.0, 0.0, 1.0]
-  },
-  "instructions": [
-    {
-      "instruction_text": "Walk about 8 meters to the northeast",
-      "language": "en-US"
-    }
-  ],
-  "goals": [
-    {
-      "goal_type": "position",
-      "position": [5.0, 3.0, 0.0]
-    }
-  ]
-}
-```
-
-## Evaluation Flow
-
-```mermaid
-sequenceDiagram
-    participant Eval as Evaluator
-    participant Dataset as Dataset
-    participant Env as Environment
-    participant Agent as Agent
-    participant Metrics as Metrics
-    
-    Eval->>Dataset: Load Episode
-    Eval->>Env: reset(episode)
-    Env-->>Eval: observation
-    Eval->>Agent: reset(episode)
-    Eval->>Agent: act(observation)
-    Agent-->>Eval: action
-    
-    loop Each Step
-        Eval->>Env: step(action)
-        Env-->>Eval: observation, done, info
-        alt Not done
-            Eval->>Agent: act(observation)
-            Agent-->>Eval: action
-        end
-    end
-    
-    Eval->>Metrics: Compute metrics
-    Metrics-->>Eval: results
-    Eval->>Eval: Save results
-```
-
-## Evaluation Configuration
-
-### Full Config Example
+Minimal shape (from `configs/eval/default_eval.yaml`; adjust paths):
 
 ```yaml
 eval_type: "pointnav"
 
-# Environment config
 env:
   env_type: "gs"
   env_settings:
-    scene_dir: "/path/to/scenes"
-    camera_config: "/path/to/camera.yaml"
-    enable_occupancy: true
+    camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
     success_distance: 0.5
-    gpu_id: null
-    enable_depth: true
-    enable_rgb: true
-    camera_names: ["face", "left", "right"]
-    image_width: 640
-    image_height: 480
+    robot_radius: 0.4
 
-# Agent config
-agent:
-  agent_type: "local"
-  model_settings:
-    checkpoint_path: "/path/to/model.pth"  # Model path via model_settings
-  device: null
+server:
+  url: "ws://localhost:8765"
+  timeout: 30.0
+  image_format: "jpeg"
 
-# Task config
 task:
   task_type: "pointnav"
-  task_settings:
-    success_distance: 0.5
+  success_policy: "geometric_distance"
+  termination_policy: "success_or_timeout"
+  metrics_profile: "pointnav_standard"
 
-# Dataset config (dataset_path points to task dir with meta/ and data/)
 dataset:
   dataset_type: "episode"
-  dataset_path: "$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav"
-  shuffle: false
+  dataset_path: "${NAVARENA_DATA_DIR}/datasets/.../pointnav"
 
-# Evaluation settings
 eval_settings:
-  num_episodes: 100
+  action_space: "waypoint"
+  num_episodes: 10
+  batch_size: 1
   output_path: "./eval_results"
   max_steps_per_episode: 500
-  save_trajectories: false
+  save_trajectories: true
 ```
 
-## Running Evaluation
+ObjectNav with verifier (illustrative):
 
-### Command Line
+```yaml
+task:
+  task_type: "objectnav"
+  success_policy: "verifier"
+  termination_policy: "verifier_or_timeout"
+  metrics_profile: "objectnav_standard"
+  verifier:
+    verifier_type: "object_semantic"
+```
+
+## Evaluation flow
+
+```mermaid
+sequenceDiagram
+    participant E as Evaluator
+    participant D as Dataset
+    participant Env as Env
+    participant W as WebSocket agent
+    E->>D: load episode
+    E->>Env: reset
+    E->>W: episode start
+    loop Until decision
+        Env-->>E: obs + info
+        E->>W: observation
+        W-->>E: action
+        E->>Env: step
+        E->>E: evaluate_step / verifier
+    end
+    E->>E: metric suite + write results.json
+```
+
+## Running
 
 ```bash
-python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
+navarena-bench-eval --config navarena-bench/configs/eval/default_eval.yaml
 ```
 
-### Override Config
+Overrides:
 
 ```bash
-python -m navarena_bench.scripts.eval \
-    --config configs/eval/default_eval.yaml \
-    --num-episodes 50 \
-    --output-dir ./my_results
+navarena-bench-eval --config navarena-bench/configs/eval/default_eval.yaml \
+  --num-episodes 5 --output-dir ./out --metrics sr,spl,ne
 ```
 
-### Python API
+## Python API
 
 ```python
 from navarena_bench.evaluator import Evaluator
-from navarena_bench.scripts.eval import load_config_from_yaml
-
-# Load config
-config = load_config_from_yaml("configs/eval/default_eval.yaml")
-
-# Create evaluator
-evaluator = Evaluator.init(config)
-
-# Run evaluation (results saved to output_path)
-evaluator.eval()
-
-# Results in episode_results.json and summary.json
-```
-
-## Evaluation Results
-
-### Result Format
-
-After evaluation, results are saved in the output directory:
-
-```
-eval_results/
-├── episode_results.json   # Per-episode results
-├── summary.json           # Summary metrics and config
-└── trajectories/          # Trajectories (if save_trajectories: true)
-    ├── episode_001.json
-    └── ...
-```
-
-### Overall Results
-
-```json
-{
-  "num_episodes": 100,
-  "success_rate": 0.75,
-  "spl": 0.68,
-  "navigation_error": 0.32,
-  "avg_path_length": 4.5,
-  "avg_geodesic_distance": 3.2,
-  "avg_num_steps": 45
-}
-```
-
-### Episode Results
-
-```json
-{
-  "episode_id": "001",
-  "scene_path": "scene_001",
-  "success": true,
-  "path_length": 4.2,
-  "geodesic_distance": 3.0,
-  "final_distance": 0.3,
-  "num_steps": 42,
-  "status": "success"
-}
-```
-
-## Metric Definitions
-
-### Success Rate (SR)
-
-Success rate: fraction of episodes that reach the goal.
-
-```
-SR = (successful episodes) / (total episodes)
-```
-
-### Success weighted by Path Length (SPL)
-
-Path-length weighted success rate, accounting for both navigation success and path efficiency. Definition from Anderson et al., "On Evaluation of Embodied Navigation Agents", CVPR 2018.
-
-```
-SPL = (1/N) * Σ(S_i * G_i / max(P_i, G_i))
-
-Where:
-- N:   total episodes
-- S_i: success of episode i (1 or 0)
-- P_i: actual path length of episode i (meters)
-- G_i: shortest path length from start to goal of episode i (geodesic distance, meters)
-```
-
-### Navigation Error (NE)
-
-Navigation error: average distance from final position to goal.
-
-```
-NE = (1/N) * Σ(distance_to_goal_i)
-```
-
-## Custom Evaluators
-
-### Implement Custom Evaluator
-
-```python
-from navarena_bench.evaluator.base import Evaluator
-from navarena_bench.configs.eval_config import EvalCfg
-
-@Evaluator.register("my_eval")
-class MyEvaluator(Evaluator):
-    def __init__(self, config: EvalCfg):
-        super().__init__(config)
-        # Initialize
-        
-    def eval_episode(self, episode):
-        """Evaluate single episode"""
-        # Evaluation logic
-        result = {
-            "episode_id": episode["episode_id"],
-            "success": True,
-            "metric1": 0.5,
-            "metric2": 0.8
-        }
-        return result
-```
-
-### Use Custom Evaluator
-
-```yaml
-eval_type: "my_eval"
-```
-
-```python
-# Import custom evaluator so it registers
-import my_evaluator_module
 
 evaluator = Evaluator.init(config)
+evaluator.eval()   # runs async loop internally; persists results to output_path
+# Return value: None — read results.json on disk
 ```
 
-## FAQ
+Do not assign a return value from `eval()`.
 
-!!! question "Slow evaluation"
-    Reduce `num_episodes` or `max_steps_per_episode`, disable trajectory saving.
+## Output: `results.json`
 
-!!! question "Out of memory"
-    Disable trajectory saving (`save_trajectories: false`), reduce parallelism.
+The run writes a **single** protocol-versioned JSON (not separate `summary.json` + `episode_results.json` as older docs described). Top-level sections typically include:
 
-!!! question "Metric calculation error"
-    Check task config and ensure `success_distance` is reasonable.
+- `meta` — framework version, protocol version, task, policies, verifier, config snapshot
+- `run_summary` — aggregate counters
+- `metric_results` — aggregated metrics
+- `episode_results` — per-episode records
+- `artifacts` — optional paths
 
-!!! question "Episode format error"
-    Validate episode JSON and ensure required fields exist.
+When geodesic distance is unavailable, SPL may fall back to Euclidean; check `meta` for audit flags described in the bench README.
 
-**See also**: [Replay Module](replay.md) · [Extending](extending.md) · [Environment Module](environment.md)
+## Custom evaluators
+
+Subclass `Evaluator` and implement:
+
+- `build_protocol() -> TaskProtocol`
+- `prepare_episode_context(episode, observation, recorder) -> dict`
+- `evaluate_step(... ) -> EpisodeDecision | None`
+- `finalize_episode(...) -> EpisodeDecision`
+
+Optional hooks: `augment_observation`, `prepare_episodes_for_batch`, etc.
+
+See [Extending](extending.md) and the `navarena_bench.evaluator` implementations in the bench repository.
+
+## Metric definitions (brief)
+
+- **SR** — Success rate  
+- **SPL / SoftSPL** — Success weighted by path length (classical SPL definitions; see bench implementation)  
+- **NE** — Navigation error  
+- **OSR** — Object success (ObjectNav / ImageNav contexts)  
+- **CR** — Collision rate  
+- **DTW / NDTW** — Trajectory shape metrics when enabled  
+- **Smoothness** — Motion smoothness  
+- **avg_steps** — Average episode length  
+
+**See also**: [Agent connection](agents.md) · [Environment](environment.md) · [Replay](replay.md) · [Extending](extending.md)

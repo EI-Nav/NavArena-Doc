@@ -1,107 +1,61 @@
 # Configuration
 
-Asset preprocessing uses YAML config files. All configs live under `navarena_forge/configs/`.
+YAML configs live under `navarena_forge/configs/`. The **authoritative** default pipeline is **`pipeline.yaml`** in that folder (excerpt below).
 
-## Config Structure
+## Config files
 
 ```
-configs/
-├── pipeline.yaml              # Full pipeline config
-├── coordinate_normalize.yaml  # Standalone coordinate_normalize
-├── pcd_to_map.yaml            # Standalone pcd_to_map
-└── valid_region_estimate.yaml  # Standalone valid_region_estimate
+navarena_forge/configs/
+├── pipeline.yaml                 # Full default pipeline (3 steps)
+├── coordinate_normalize.yaml    # Standalone step
+├── pcd_to_map.yaml
+└── valid_region_estimate.yaml
 ```
 
-## pipeline.yaml (Full Pipeline)
+## `pipeline.yaml` (reference)
 
-Defines the three core steps and their parameters. The CLI batch/run-pipeline commands inject per-scene paths automatically.
+The shipped file includes per-step `params` matching the implementation. Summary:
 
-```yaml
-steps:
-  - name: coordinate_normalize
-    enabled: true
-    fatal: true
-    params:
-      input:
-        ply_file: null       # Injected by CLI
-      output:
-        transformed_output: null
-      ransac:
-        distance_threshold: 0.02
-        ransac_n: 3
-        num_iterations: 1000
-      height_range: [-0.05, 0.05]
+### `coordinate_normalize`
 
-  - name: pcd_to_map
-    enabled: true
-    fatal: true
-    params:
-      input:
-        pcd_file: null
-      output:
-        pgm_file: null
-        yaml_file: null
-      map:
-        resolution: 0.05
-        margins: [1.0, 1.0, 1.0, 1.0]
-      height_filter:
-        min_z: 0.1
-        max_z: 0.8
+| Section | Purpose |
+|---------|---------|
+| `input` / `output` | Paths injected per scene by CLI (`ply_file`, `transformed_output`, `ground_output`, `extrinsic_matrix_output`, `downsampled_output`) |
+| `ransac` | Ground plane RANSAC (`distance_threshold`, `ransac_n`, `num_iterations`) |
+| `height_range` | Ground band in meters |
+| `z_filter` | `auto_estimate`, optional `z_min` / `z_max` |
+| `downsampling` / `verification_downsampling` | Voxel sizes for downsampling |
 
-  - name: valid_region_estimate
-    enabled: true
-    fatal: false
-    params:
-      parameters:
-        dbscan_eps: 5.0
-        alpha: 0.6
-```
+### `pcd_to_map`
 
-## Parameter Reference
+| Section | Purpose |
+|---------|---------|
+| `input` / `output` | `pcd_file`, `pgm_file`, `yaml_file` (often injected) |
+| `map` | `resolution`, `margins`, **`occupied_threshold`**, **`invert`** |
+| `height_filter` | `min_z`, `max_z` for projection |
+| **`ground_estimation`** | `grid_size`, `z_min`, `z_max` |
 
-### coordinate_normalize
+### `valid_region_estimate`
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `ransac.distance_threshold` | RANSAC ground fit distance (meters) | `0.02` |
-| `ransac.num_iterations` | RANSAC iterations | `1000` |
-| `height_range` | Ground point Z range | `[-0.05, 0.05]` |
+| Section | Purpose |
+|---------|---------|
+| `input` | `pgm_file`, `yaml_file` |
+| **`parameters`** | **`occupied_threshold`**, **`margin`**, **`simplify`**, **`min_area`**, `dbscan_eps`, `dbscan_min_samples`, `alpha` |
+| **`output`** | `description`, `tags` |
+| Mask filename | CLI injects **`mask_filename: nav_mask.png`** when running `run-pipeline` / `batch` (not always present in the static YAML) |
 
-### pcd_to_map
+### Optional fourth step
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `map.resolution` | Map resolution (meters per pixel) | `0.05` |
-| `height_filter.min_z` | Height filter lower bound | `0.1` |
-| `height_filter.max_z` | Height filter upper bound | `0.8` |
+**`compress_ply`** is registered but **omitted** from the default `steps:` list; use **`python -m navarena_forge compress`** or extend `pipeline.yaml` if you need PLY → `compressed.splat` inside the same DAG.
 
-### valid_region_estimate
+## Standalone step configs
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `parameters.dbscan_eps` | DBSCAN neighborhood radius (meters) | `5.0` |
-| `parameters.dbscan_min_samples` | DBSCAN min samples | `1000` |
-| `parameters.alpha` | Alpha Shapes parameter | `0.6` |
-
-## Running a Single Step
-
-With `run-step`, provide the step’s standalone config and set input/output paths explicitly:
-
-```yaml
-# coordinate_normalize.yaml
-input:
-  ply_file: /path/to/scene/source.ply
-
-output:
-  transformed_output: /path/to/scene/aligned.ply
-
-ransac:
-  distance_threshold: 0.02
-```
+For `run-step`, use the matching `coordinate_normalize.yaml`, `pcd_to_map.yaml`, or `valid_region_estimate.yaml` and pass `--scene-dir` so the CLI can resolve paths.
 
 ```bash
 python -m navarena_forge run-step coordinate_normalize \
-    --config coordinate_normalize.yaml --scene-dir /path/to/scene
+  --config navarena_forge/configs/coordinate_normalize.yaml \
+  --scene-dir /path/to/scene
 ```
 
 **See also**: [CLI Commands](cli.md)

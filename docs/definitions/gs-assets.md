@@ -205,8 +205,10 @@ resolution: 0.05
 origin: [-7.61, -2.89, 0.0]
 negate: 0
 occupied_thresh: 0.65
-free_thresh: 0.25
+free_thresh: 0.196
 ```
+
+(`NavMapConfig` defaults use `free_thresh: 0.196`; adjust per map.)
 
 The `image` field is fixed as `nav_map.pgm`.
 

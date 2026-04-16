@@ -1,213 +1,89 @@
 # Evaluation Framework Overview
 
-navarena-bench is a navigation model evaluation framework based on 3D Gaussian Splatting and occupancy grids. It provides a modular, extensible evaluation system supporting multiple navigation tasks and agent types.
+navarena-bench is a **task-protocol-first** navigation evaluation framework built on 3D Gaussian Splatting rendering and occupancy-grid collision. The **evaluator** defines success, termination, and metrics; the **environment** only reports facts (pose, collision, distances). Your **navigation model** runs as a separate **WebSocket server** ([navarena-server](../navarena-server/index.md)); the bench connects to it as a client.
 
 !!! info "Prerequisites"
-    Before running evaluation, prepare: ① V1 format scene assets (under `$NAVARENA_DATA_DIR/assets/`); ② Episode data conforming to the [evaluation data format](../definitions/eval-data-format.md).
+    Before evaluation: ① V1 scene assets under `$NAVARENA_DATA_DIR/assets/`; ② Episode Parquet data matching the [evaluation data format](../definitions/eval-data-format.md); ③ A running model server at the URL in `server.url`.
 
 ## Core Features
 
-The evaluation framework provides:
-
-- **Modular Design** - Registration-based architecture; supports extension with new environments, tasks, evaluators, agents, and metrics
-- **3D GS Rendering** - Scene rendering via gsplat
-- **Collision Detection** - Collision detection based on occupancy grid map
-- **Multi-Task Support** - PointNav, ObjectNav, ImageNav, VLN
-- **Multi-Agent Support** - Local, Remote, ViNT, GNM, NoMaD, MultiModalNav, LanguageNav
-- **Replay Visualization** - Evaluation result replay and visualization
+- **WebSocket model server** — Bench drives the env; your agent implements `NavigationModelServer` and listens on `ws://...`
+- **3D GS rendering** — `gs` environment via gsplat / navarena-core
+- **Occupancy collision** — Inflated robot footprint (`robot_radius`)
+- **Tasks** — `pointnav`, `objectnav`, `imagenav` (built-in evaluators)
+- **Protocol-versioned output** — Single `results.json` per run (`evaluation_protocol_version` 2.x)
+- **Optional Hub** — `navarena-bench-hub` for browsing runs (install with `[hub]`)
 
 ## Architecture
 
 ```mermaid
-flowchart TB
-    subgraph Core[Core Modules]
+flowchart LR
+    subgraph Bench[navarena-bench]
         Eval[Evaluator]
-        Env[Environment]
-        Agent[Agent]
-        Dataset[Dataset]
-        Metrics[Metrics]
+        Env[Env gs]
+        DS[Dataset]
+        MS[MetricSuite]
     end
-    
-    subgraph Tasks[Task Types]
-        PN[PointNav]
-        ON[ObjectNav]
-        IN[ImageNav]
-        VLN[VLN]
+    subgraph External[Outside the repo]
+        Srv[navarena-server WebSocket]
+        Model[Your model]
     end
-    
-    subgraph Agents[Agent Types]
-        Local[Local Agent]
-        Remote[Remote Agent]
-        ViNT[ViNT Agent]
-        GNM[GNM Agent]
-        NoMaD[NoMaD Agent]
-        MultiModal[MultiModalNav Agent]
-        LangNav[LanguageNav Agent]
-    end
-    
-    subgraph Envs[Environment Types]
-        GS[3D GS Environment]
-    end
-    
     Eval --> Env
-    Eval --> Agent
-    Eval --> Dataset
-    Eval --> Metrics
-    
-    Tasks --> Eval
-    Agents --> Agent
-    Envs --> Env
+    Eval --> DS
+    Eval --> MS
+    Eval <-->|WebSocket msgpack| Srv
+    Srv --> Model
 ```
 
-## Core Components
+## Built-in task types
 
-### Evaluator
+| `task_type` | Evaluator | Notes |
+|-------------|-----------|--------|
+| `pointnav` | PointNav | Position goals; geometric or explicit-stop success |
+| `objectnav` | ObjectNav | Optional semantic verifier (`object_semantic`, `object_position`, `image_similarity`) |
+| `imagenav` | ImageNav | Goal image in observation; success uses geometric distance like PointNav |
 
-The evaluator coordinates the environment, agent, and dataset, runs the evaluation loop, and aggregates metrics.
+VLN is **not** implemented as a bench evaluator; generate VLN data with navarena-gen if needed for training, but evaluation here is limited to the three types above.
 
-**Supported evaluators:**
-- `PointNavEvaluator` - Point goal navigation
-- `ObjectNavEvaluator` - Object goal navigation
-- `ImageNavEvaluator` - Image goal navigation
-- `VLNEvaluator` - Vision-Language Navigation
+## Metrics
 
-### Environment
+Metrics are **registered by name** and grouped into **profiles** (`pointnav_standard`, `objectnav_standard`, `imagenav_standard`). Registered metrics include:
 
-The environment provides scene rendering (3D GS), occupancy grid collision detection, robot state management, and goal validation.
+`sr`, `spl`, `soft_spl`, `ne`, `osr`, `cr`, `dtw`, `ndtw`, `smoothness`, `avg_steps`
 
-**Supported environments:**
-- `GaussianSplattingEnv` - 3D GS environment
+Default profiles use subsets (e.g. `pointnav_standard`: `sr`, `spl`, `soft_spl`, `ne`, `cr`, `avg_steps`). You can override with `eval_settings.metrics` (comma-separated or list) if every metric is compatible with the task.
 
-### Agent
-
-The agent encapsulates the navigation model interface, receiving observations and producing actions.
-
-**Supported agents:**
-- `LocalAgent` - Local model
-- `RemoteAgent` - Remote HTTP service
-- `ViNTAgent` - ViNT model
-- `GNMAgent` - GNM model
-- `NoMaDAgent` - NoMaD model
-- `MultiModalNavAgent` - Multi-modal navigation (language/image/object goals)
-- `LanguageNavAgent` - Language navigation (Voronoi-based planning)
-
-### Dataset
-
-The dataset module loads, validates, and iterates evaluation episode data.
-
-**Supported datasets:**
-- `EpisodeDataset` - Episode format dataset
-
-### Metrics
-
-The metrics module computes SR (Success Rate), SPL (Success weighted by Path Length), and NE (Navigation Error).
-
-**Supported metrics:**
-- `NavigationMetrics` - Navigation metrics
-
-## Data Flow
+## Data flow
 
 ```mermaid
 sequenceDiagram
     participant Eval as Evaluator
     participant Dataset as Dataset
     participant Env as Environment
-    participant Agent as Agent
-    participant Metrics as Metrics
-    
-    Eval->>Dataset: Load Episode
-    Eval->>Env: Reset environment
-    Eval->>Agent: Reset agent
-    
-    loop Each Step
-        Env->>Agent: Observation
-        Agent->>Env: Action
-        Env->>Env: Update state
-        Env->>Eval: Env info
+    participant Conn as WebSocket server
+    Eval->>Dataset: next episode
+    Eval->>Env: reset(episode)
+    Eval->>Conn: EPISODE_START
+    loop Steps
+        Env-->>Eval: observation
+        Eval->>Conn: OBSERVATION
+        Conn-->>Eval: ACTION
+        Eval->>Env: step(action)
     end
-    
-    Eval->>Metrics: Compute metrics
-    Metrics->>Eval: Return results
-    Eval->>Eval: Save results
+    Eval->>Eval: metrics + results.json
 ```
 
-## Registration Mechanism
+## Registration (extensions)
 
-The framework uses a decorator registration mechanism to support extension:
+You can register **environments**, **evaluators**, **verifiers**, **metrics**, and **datasets** via Python decorators or `importlib` entry points. There is **no** in-repo `Agent` class; agents live in **navarena-server**.
 
-### Register Environment
+See [Extending](extending.md).
 
-```python
-from navarena_bench.env.base import Env
+## Episode data
 
-@Env.register("my_env")
-class MyEnvironment(Env):
-    def __init__(self, env_config, task_config):
-        super().__init__(env_config, task_config)
-    # ... implement interface methods
-```
+Episodes are loaded from Parquet (see [evaluation data format](../definitions/eval-data-format.md)), not a giant JSON file. Quaternions in assets and messages use **`[x, y, z, w]`** unless noted otherwise in the WebSocket layer.
 
-### Register Agent
-
-```python
-from navarena_bench.agent.base import Agent
-
-@Agent.register("my_agent")
-class MyAgent(Agent):
-    def __init__(self, config):
-        super().__init__(config)
-    # ... implement interface methods
-```
-
-### Register Evaluator
-
-```python
-from navarena_bench.evaluator.base import Evaluator
-
-@Evaluator.register("my_eval")
-class MyEvaluator(Evaluator):
-    def __init__(self, config):
-        super().__init__(config)
-    # ... implement interface methods
-```
-
-## Episode Data Format
-
-The framework uses a standard Episode JSON format:
-
-```json
-{
-  "episodes": [
-    {
-      "episode_id": "train_000001",
-      "scene_path": "x2robot/17dc3367",
-      "task_type": "pointnav",
-      "start_state": {
-        "position": [0.0, 0.0, 0.0],
-        "rotation": [0.0, 0.0, 0.0, 1.0]
-      },
-      "goals": [
-        {
-          "goal_type": "position",
-          "position": [5.0, 0.0, 0.0],
-          "rotation": [0.0, 0.0, 0.383, 0.924]
-        }
-      ]
-    }
-  ]
-}
-```
-
-**Field descriptions:**
-- `episode_id`: Episode unique identifier
-- `scene_path`: Scene path (relative to `$NAVARENA_DATA_DIR/assets/`)
-- `task_type`: Task type (pointnav | imagenav | objectnav | vln)
-- `start_state`: Start state, quaternion format `[qx, qy, qz, qw]`
-- `goals`: Goal list, must include `goal_type` (position | image | object)
-
-## Evaluation Configuration
-
-Evaluation is configured via YAML:
+## Evaluation configuration (sketch)
 
 ```yaml
 eval_type: "pointnav"
@@ -216,65 +92,70 @@ env:
   env_type: "gs"
   env_settings:
     camera_config: "${NAVARENA_DATA_DIR}/shared/camera.yaml"
-    enable_occupancy: true
     success_distance: 0.5
+    robot_radius: 0.4
 
-agent:
-  agent_type: "local"
-  model_settings: {}
-  device: null
+server:
+  url: "ws://localhost:8765"
+  timeout: 30.0
+  image_format: "jpeg"
 
 task:
   task_type: "pointnav"
+  success_policy: "geometric_distance"
+  termination_policy: "success_or_timeout"
+  metrics_profile: "pointnav_standard"
 
 dataset:
   dataset_type: "episode"
-  dataset_path: "$NAVARENA_DATA_DIR/datasets/navarena_dataset_v1/x2robot/17dc3367/pointnav"
+  dataset_path: "${NAVARENA_DATA_DIR}/datasets/.../pointnav"
 
 eval_settings:
-  num_episodes: 100
+  action_space: "waypoint"   # required: "waypoint" | "velocity"
+  num_episodes: 10
+  batch_size: 1
   output_path: "./eval_results"
   max_steps_per_episode: 500
+  save_trajectories: true
 ```
 
-## Usage Flow
+## Usage
 
-### 1. Prepare Data
-
-Create an episode dataset in the correct format.
-
-### 2. Configure Evaluation
-
-Edit the evaluation configuration file.
-
-### 3. Run Evaluation
+From the NavArena repo root (with `navarena` env):
 
 ```bash
-python -m navarena_bench.scripts.eval --config configs/eval/default_eval.yaml
+conda run -n navarena navarena-bench-eval --config navarena-bench/configs/eval/default_eval.yaml
 ```
 
-### 4. View Results
-
-Results are saved in the output directory:
-- Evaluation metrics JSON
-- Trajectory data (optional)
-- Replay data (optional)
-
-### 5. Generate Replay
+List registered components:
 
 ```bash
-python scripts/replay_eval.py --results eval_results/ --output replay.mp4
+navarena-bench-eval --list envs
+navarena-bench-eval --list evaluators
+navarena-bench-eval --list metrics
 ```
 
-## Extensibility
+Resume a run:
 
-Each component is extensible via the registration mechanism:
+```bash
+navarena-bench-eval --config navarena-bench/configs/eval/default_eval.yaml --output-dir ./eval_results --resume
+```
 
-- **New environment**: Subclass `Env` and register
-- **New agent**: Subclass `Agent` and register
-- **New evaluator**: Subclass `Evaluator` and register
-- **New metric**: Subclass `Metric` and register
-- **New replayer**: Subclass `BaseReplayer` and register
+## Outputs
 
-**See also**: [Environment](environment.md) · [Agents](agents.md) · [Evaluators](evaluators.md) · [Replay](replay.md) · [Extending](extending.md)
-    - Learn how to **[Extend the Framework](extending.md)**
+Primary artifact: **`results.json`** under `eval_settings.output_path`, containing `meta`, `run_summary`, `metric_results`, `episode_results`, and optional `artifacts`. Trajectories / replay folders appear when recording options are enabled.
+
+Optional **NavArena Hub** (after `pip install -e "navarena-bench[hub]"`):
+
+```bash
+navarena-bench-hub
+```
+
+## See also
+
+- [Environment](environment.md) — `GaussianSplattingEnv` facts and config
+- [Agent connection](agents.md) — How the bench talks to your server
+- [Evaluators](evaluators.md) — Task protocols and `results.json`
+- [Replay](replay.md) — `ReplayLoader` and recorded formats
+- [Extending](extending.md) — Env, evaluator, verifier, metric, dataset
+- [Model Server SDK](../navarena-server/index.md) — Implementing the WebSocket agent

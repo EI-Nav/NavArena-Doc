@@ -1,13 +1,13 @@
 # Quickstart
 
-This tutorial provides **minimal runnable examples** for the three modules to verify your setup. For detailed usage, see each module's user guide.
+This tutorial provides **minimal runnable examples** for the main pipeline (**forge → gen → bench**) plus pointers to **navarena-core** / **navarena-server**. For details, see each section in the User Guide.
 
 !!! tip "Path placeholders"
     Replace `/path/to/scenes/` or `/path/to/raw_scenes/` with your actual data directory. For centralized asset management, use `$NAVARENA_DATA_DIR/assets/{dataset}/{scene_id}/` (e.g. `$NAVARENA_DATA_DIR/assets/x2robot/17dc3367/`).
 
 ## End-to-End Workflow
 
-The three modules execute sequentially; each step's prerequisites are the outputs of the previous step: raw PLY → V1 assets → Episodes → eval results.
+The preprocessing → dataset → evaluation steps run in order; each step consumes the previous artifact (raw PLY → V1 assets → Parquet episodes → `results.json`). Implement policies with **navarena-server** separately.
 
 ---
 

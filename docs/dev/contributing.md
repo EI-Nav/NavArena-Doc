@@ -46,10 +46,7 @@ NavArena uses separate repositories for different contribution types:
 
 ### Document Structure
 
-- `docs/zh/` —— Simplified Chinese
-- `docs/en/` —— English
-
-When adding or editing docs, update both zh and en accordingly.
+This site’s Markdown lives under a **single** `docs/` tree (English-first). There are no separate `docs/zh/` and `docs/en/` directories in the published repo — add new pages beside the existing sections and update `mkdocs.yml` navigation when needed.
 
 ### Submission Process
 

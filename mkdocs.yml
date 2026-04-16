@@ -129,8 +129,9 @@ nav:
       - Batch Processing: data-generator/batch-processing.md
     - Evaluation Framework:
       - navarena-bench/index.md
+      - Model Server SDK: navarena-server/index.md
       - Environment: navarena-bench/environment.md
-      - Agents: navarena-bench/agents.md
+      - Agent Connection: navarena-bench/agents.md
       - Evaluators: navarena-bench/evaluators.md
       - Replay: navarena-bench/replay.md
       - Extending: navarena-bench/extending.md

@@ -1,154 +1,111 @@
-# Batch Processing
+# Batch processing
 
-The data generator supports single-scene and multi-scene batch generation, parallel episode generation, and resumable runs.
+Single-scene configs, CLI overrides, parallel workers, rendering, Explorer, and maintenance scripts.
 
-## Main Scripts
+## Main scripts
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/generate_data.py` | Main data generation entry |
-| `scripts/render_episodes.py` | Goal images and trajectory video rendering |
-| `scripts/run_viewer.py` | Web viewer launcher |
+| `scripts/generate_data.py` | Main Parquet generation (**requires `--config`**) |
+| `scripts/render_episodes.py` | Goal images + trajectory videos |
+| `scripts/run_viewer.py` | Explorer UI (backend + frontend) |
+| `scripts/export_data.py` | Export / packaging helpers (e.g. WebDataset, project-specific) |
+| `scripts/rebuild_index.py` | Rebuild dataset indices |
+| `scripts/clean_incomplete_data.py` | Remove incomplete chunks / repair state |
+| `scripts/split_dataset_by_scene.py` | Split datasets by scene |
+| `scripts/delete_data.py` | Delete dataset paths with safeguards |
 
-## Single Scene
+## Single scene
+
+From repo root (example):
 
 ```bash
-cd navarena-gen
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml
+conda run -n navarena python navarena-gen/scripts/generate_data.py \
+  --config navarena-gen/configs/examples/pointnav_example.yaml
 ```
 
-## Multi-Scene Batch
+## Multi-scene batch
 
-Loop over scenes or use a custom script:
+There is no checked-in `usage_examples.py`. Use a shell loop or a small Python script that invokes `generate_data.py` per scene with `--scene`:
 
-```python
-# Example: examples/usage_examples.py
-import subprocess
-
-scenes = ["17dc3367", "a1b2c3d4"]
-for scene_id in scenes:
-    subprocess.run([
-        "python", "scripts/generate_data.py",
-        "--config", "configs/examples/pointnav_example.yaml",
-        "--scene", f"x2robot/{scene_id}",
-    ], check=True)
+```bash
+for id in 17dc3367 a1b2c3d4; do
+  conda run -n navarena python navarena-gen/scripts/generate_data.py \
+    --config navarena-gen/configs/examples/pointnav_example.yaml \
+    --scene "x2robot/${id}"
+done
 ```
 
-Or run multiple times with different `scene_path` in the config.
-
-## Parallel Episode Generation
-
-Use `--parallel` for multi-process episode generation:
+## Parallel episode generation
 
 ```bash
 python scripts/generate_data.py \
-    --config configs/examples/vln_zh_example.yaml \
-    --parallel --num-workers 4 --batch-size 20
+  --config configs/examples/pointnav_example.yaml \
+  --parallel --num-workers 4 --batch-size 20
 ```
-
-### Parallel and Chunking Arguments
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `--parallel` | Enable parallel episode generation | `false` |
-| `--num-workers` | Worker process count | `4` |
-| `--batch-size` | Episodes per batch per worker | `20` |
+| `--parallel` | Enable worker pool | off |
+| `--num-workers` | Processes | `4` |
+| `--batch-size` | Episodes per batch unit | `20` |
 | `--chunk-size` | Episodes per Parquet chunk | `1000` |
 
-## Resume and Append Modes
+## Resume and append
 
-- **`--resume`**: Resume from checkpoint. If `.{split}_checkpoint.json` exists, continue from last progress and skip completed episodes.
-- **`--append`**: Append to existing dataset. Reads `meta/episodes.parquet`; new episode IDs start from max index + 1.
-- **`--checkpoint-interval`**: Save checkpoint every N episodes (default 50).
+- **`--resume`** — Continue from `.{split}_checkpoint.json`  
+- **`--append`** — Append to existing `meta/episodes.parquet`  
+- **`--checkpoint-interval`** — Save checkpoint every N episodes (default **50**)
 
 ```bash
-# Resume after crash
 python scripts/generate_data.py --config configs/examples/pointnav_example.yaml --resume
-
-# Append 500 episodes to existing dataset
-python scripts/generate_data.py --config configs/examples/pointnav_example.yaml \
-    --num-episodes 500 --append
 ```
 
-## Resumable Processing
-
-- Output is organized by scene_path and task_type
-- Use `--resume` to recover from checkpoint
-- Use `--append` to add to existing dataset
-
-## Trajectory Rendering
-
-After generation, render with `render_episodes.py`. All paths resolve under `$NAVARENA_DATA_DIR`:
+## Trajectory rendering
 
 ```bash
-# Shorthand via --task (auto-derives data paths and camera config)
-python scripts/render_episodes.py --scene x2robot/17dc3367 --task imagenav
+python scripts/render_episodes.py --renderer gs \
+  --scene x2robot/17dc3367 --task imagenav
 
-# Render trajectories for other task types
-python scripts/render_episodes.py --scene x2robot/17dc3367 --task pointnav
-
-# Render GridTraj in RGBD: keep RGB MP4 and additionally write depth PNG sequences
 python scripts/render_episodes.py --scene x2robot/17dc3367 --task gridtraj --rgbd
 
-# Explicit task dir (relative to $NAVARENA_DATA_DIR/datasets/, contains meta/ and data/)
-python scripts/render_episodes.py --scene x2robot/17dc3367 \
-    --dataset-name navarena_dataset_v1 --task pointnav
+python scripts/render_episodes.py \
+  --scene x2robot/17dc3367 --dataset-name navarena_dataset_v1 --task pointnav
 ```
 
-## Data Validation
+`--task` is **required** by the script (it derives paths under `$NAVARENA_DATA_DIR`).
 
-The repository does not ship a standalone `validate_data.py`. You can write a script that reads `meta/episodes.parquet` and `data/chunk-*/trajectories.parquet` to check consistency (e.g. episode_id mapping, trajectory step counts).
-
-## Web Viewer
+## Web Explorer
 
 ```bash
-python scripts/run_viewer.py --data-dir $NAVARENA_DATA_DIR/datasets
+python scripts/run_viewer.py --data-dir "$NAVARENA_DATA_DIR/datasets"
 ```
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `--data-dir` | Data directory path | - |
-| `--backend-port` | Backend service port | `8000` |
-| `--frontend-port` | Frontend service port | `5173` |
-| `--skip-frontend` | Start backend only | `false` |
-| `--skip-backend` | Start frontend only | `false` |
+| Argument | Description | Default |
+|----------|-------------|---------|
+| `--data-dir` | Root for datasets | `$NAVARENA_DATA_DIR` if omitted |
+| `--backend-port` | API port | `8000` |
+| `--frontend-host` | Bind address for Vite | `0.0.0.0` |
+| `--frontend-port` | Frontend port | `5173` |
+| `--dataset-name` | Filter / default dataset name | (see script help) |
+| `--skip-frontend` / `--skip-backend` | Start one side only | off |
+| `--export-gpus` | GPUs for export pipeline | `0` |
+| `--export-encode-workers` | Encoder threads (`0` = auto) | `0` |
+| `--export-prefetch-workers` | Prefetch threads | `2` |
 
-## Output Structure
+## Output layout (reminder)
 
-All paths relative to `$NAVARENA_DATA_DIR/datasets/`:
+Under `$NAVARENA_DATA_DIR/datasets/{dataset_name}/{scene_path}/{task_type}/`:
 
-```
-{dataset_name}/
-├── dataset_meta.json
-└── {scene_path}/
-    ├── scene_meta.json
-    └── {task_type}/
-        ├── meta/
-        │   ├── info.json
-        │   └── episodes.parquet
-        ├── data/
-        │   └── chunk-NNN/
-        │       ├── trajectories.parquet
-        │       └── episodes.parquet
-        └── videos/             # optional
-            ├── goal_images/    # ImageNav goal images (PNG)
-            ├── goal_depth/     # ImageNav goal depth (PNG, optional)
-            └── chunk-XXXXXX/
-                └── {camera_name}/
-                    ├── {episode_id}.mp4
-                    └── depth/ (optional)
-                        └── {episode_id}/frame_XXXXXX.png
-```
+- `meta/`, `data/chunk-*/`  
+- Optional **`videos/`** with `goal_images/`, per-chunk MP4s, etc.
 
 ## FAQ
 
 !!! question "Scene not preprocessed"
-    Ensure scenes are in V1 format via [Asset Preprocessing](../asset-preprocessing/) (manifest.json, nav_map.pgm, etc.).
+    Run [Asset Preprocessing](../asset-preprocessing/) first.
 
-!!! question "ObjectNav has no objects"
-    Scene needs labels.json from asset preprocessing or semantic detection.
-
-!!! question "Parallel out of memory"
-    Reduce `--num-workers` or `task_config.max_start_points`.
+!!! question "Parallel OOM"
+    Lower `--num-workers` or reduce sampling load in `task_config`.
 
 **See also**: [Configuration](configuration.md) · [Asset Preprocessing](../asset-preprocessing/)

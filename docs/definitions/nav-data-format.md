@@ -129,6 +129,12 @@ Both `meta/episodes.parquet` and `data/chunk-XXXXXX/episodes.parquet` use the sa
 | max_speed | float32 | Maximum speed (m/s) |
 | goal_image_path | string | Goal image path (imagenav) |
 | instruction_text | string | Natural language instruction (VLN) |
+| goal_object_category | string | ObjectNav category (when applicable) |
+| goal_object_id | string | Object instance id (when applicable) |
+| instruction_language | string | Instruction locale tag |
+| goals_json | string | JSON array of **all** goals for the episode; preferred when present |
+
+When `goals_json` is set, readers should deserialize it to recover multi-goal episodes. If absent, older rows fall back to the scalar `goal_*` columns (single goal).
 
 ### 3.2 Trajectory Schema (trajectories.parquet)
 
@@ -147,7 +153,9 @@ Both `meta/episodes.parquet` and `data/chunk-XXXXXX/episodes.parquet` use the sa
 | angular_velocity | float32 | Angular velocity (rad/s) |
 | linear_velocity_x, linear_velocity_y | float32 | Linear velocity components |
 | angular_acceleration | float32 | Angular acceleration (rad/s²) |
+| linear_acceleration | float32 | Linear acceleration (m/s²) |
 | curvature | float32 | Curvature (1/m) |
+| phase | string | Planner / controller phase label when set |
 
 ### 3.3 Trajectory–Episode Association
 
@@ -209,9 +217,11 @@ At the application layer, an Episode can be understood as the following structur
 ```json
 {
   "instruction_text": "Go to the end of the hallway, turn left and find the table",
-  "language": "en-US"
+  "language": "zh-CN"
 }
 ```
+
+The `Instruction` dataclass defaults to **`language: "zh-CN"`** in `navarena_core`; Parquet may still store other locales per row.
 
 ### 4.4 GT Path Statistics
 
@@ -325,11 +335,11 @@ Examples assume running from **NavArena project root** or **navarena-gen**; conf
 cd NavArena  # or cd navarena-gen
 export NAVARENA_DATA_DIR=/path/to/data
 
-# Using config file
+# Config file is required; task_type comes from YAML
 python navarena-gen/scripts/generate_data.py --config navarena-gen/configs/examples/pointnav_example.yaml
 
-# Command-line arguments
-python navarena-gen/scripts/generate_data.py --env gs --task pointnav \
+# Optional overrides (still requires --config)
+python navarena-gen/scripts/generate_data.py --config navarena-gen/configs/examples/pointnav_example.yaml \
     --scene x2robot/17dc3367 --num-episodes 1000
 ```
 

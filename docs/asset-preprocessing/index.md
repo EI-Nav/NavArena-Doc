@@ -12,16 +12,18 @@ Asset preprocessing (navarena-forge / navarena_forge) is a modular pipeline that
 
 ## Core Architecture
 
+Default **`pipeline.yaml`** runs **three** steps: `coordinate_normalize` → `pcd_to_map` → `valid_region_estimate`. The **`compress_ply`** step is **registered** but **not** in that default chain — run it via the **`compress`** CLI or add it to a custom pipeline file.
+
 ```mermaid
 flowchart TB
-    subgraph Pipeline[Pipeline]
+    subgraph DefaultPipeline[Default pipeline]
         S1[coordinate_normalize]
         S2[pcd_to_map]
         S3[valid_region_estimate]
-        S4[compress_ply]
-        
-        S1 --> S2 --> S3 --> S4
+        S1 --> S2 --> S3
     end
+    S4[compress_ply optional]
+    S3 -.->|optional| S4
     
     subgraph Steps[Step Registry]
         Registry[StepRegistry]
@@ -39,7 +41,7 @@ flowchart TB
         Splat[compressed.splat]
     end
     
-    Pipeline --> Output
+    DefaultPipeline --> Output
 ```
 
 ### Design Patterns

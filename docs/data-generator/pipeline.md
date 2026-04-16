@@ -1,134 +1,65 @@
-# Pipeline Stages
+# Pipeline stages
 
-The data generation pipeline includes environment initialization, episode generation, instruction generation, data writing, and optional rendering. This document describes inputs, outputs, and logic for each stage.
+These are **logical** stages implemented across `navarena_gen` modules (there is no separate `navarena_gen/stages/` package). Flow: **env init → episode generation → (VLN) instructions → Parquet write → optional rendering**.
 
-## Stage 1: Environment Initialization
+## Stage 1: Environment initialization
 
-### Description
+Load the V1 scene under `$NAVARENA_DATA_DIR/assets/{scene_path}`:
 
-Load scene from V1 unified asset format (`$NAVARENA_DATA_DIR/assets/`) and initialize path planner (A*).
+- `manifest.json`, `nav_map.pgm`, `nav_map.yaml`
+- Optional `nav_mask.png`, `labels.json`
 
-### Input
+Initialize the GS simulation backend and, for tasks that need shortest paths, the **grid + A\*** planner.
 
-- **scene_path**: Scene relative path (e.g. `x2robot/17dc3367`), resolved to `$NAVARENA_DATA_DIR/assets/{scene_path}`
-- **V1 assets**: manifest.json (required), nav_map.pgm (required), nav_map.yaml (required), nav_mask.png (optional), labels.json (optional)
+## Stage 2: Episode generation
 
-### Flow
+Task-specific **generators** (under `navarena_gen/generators/`) produce starts, goals, and `gt_path`.
 
-1. Read manifest.json for scene_id, map_info
-2. Load occupancy grid map and YAML config (resolution, origin)
-3. Optionally load nav_mask.png, labels.json
-4. Initialize A* path planner
+### PointNav, ImageNav, ObjectNav, VLN
 
-### Output
+Typical pattern:
 
-- `SceneInfo`: scene_id, navigable_area, objects, map info
-- Initialized `env` for episode generators
+1. Sample valid starts (grid / constraints).  
+2. Sample goals with distance constraints.  
+3. Plan a **GT trajectory** (e.g. global planning + smoothing) subject to `trajectory_constraints`.
 
----
+### GridTraj
 
-## Stage 2: Episode Generation
+**GridTraj does not follow the same “random start + random goal + A\* between them” story.** It enumerates collision-free grid points from the environment and writes a **single** episode trajectory that visits those points in generation order (no extra inter-point planner). Do not apply the generic “two-stage A\*” description to GridTraj.
 
-### Description
+## Stage 3: Instruction generation (VLN)
 
-Generate Episodes by task type (PointNav, ImageNav, ObjectNav, VLN), including start, goals, and GT trajectory.
+For `task_type: vln`, instruction generators (e.g. `simple_direction`, `path_based`, `object_goal`) attach natural-language instructions. Languages are selected via config (`zh-CN`, `en-US`, …).
 
-### Input
+| Strategy | Role |
+|----------|------|
+| `simple_direction` | Coarse direction + distance style text |
+| `path_based` | Instructions aligned with path structure |
+| `object_goal` | Object-centric wording when goals are object-based |
 
-- **env**: Initialized simulation environment
-- **task_config**: start_constraints, goal_constraints, trajectory_constraints (min_geodesic_distance, max_geodesic_distance, etc.), instruction_type
+## Stage 4: Data writing
 
-### Flow
+Streaming writes to:
 
-1. **Start sampling**: Grid sampling in navigable area by start_constraints.grid_spacing
-2. **Goal sampling**: Sample goals with trajectory_constraints.min_geodesic_distance, max_geodesic_distance
-3. **GT trajectory**: Two-stage planning (global A* + local smoothing)
-4. **Task-specific logic**:
-   - PointNav: Goal is 3D position
-   - ImageNav: Goal is reference image (requires rendering)
-   - ObjectNav: Goal is object category from labels.json
-   - VLN: Natural language instruction needed
+- `meta/episodes.parquet`, `meta/info.json`
+- `data/chunk-XXXXXX/trajectories.parquet` (and per-chunk episode metadata as implemented)
 
-### Output
+Chunk directory names use **zero-padded** indices (e.g. 6 digits) — see `navarena_core.data.parquet_io` for the canonical pattern.
 
-- List of Episode objects with start_state, goals, gt_path, instruction (VLN)
+Checkpoint file `.{split}_checkpoint.json` supports `--resume`.
 
----
+## Stage 5: Rendering (optional)
 
-## Stage 3: Instruction Generation (VLN Only)
-
-### Description
-
-Generate natural language navigation instructions for VLN Episodes using a Strategy pattern.
-
-### Instruction Types
-
-| Type | Description |
-|------|-------------|
-| `simple_direction` | Direction + distance, e.g. "Walk about 8 meters to the northeast" |
-| `path_based` | Step-by-step path, e.g. "Go forward, turn left, then forward" |
-| `object_goal` | Object goal, e.g. "Find a bed" |
-
-### Languages
-
-- `zh-CN`: Chinese
-- `en-US`: English
-
-### Output
-
-- Episode `instruction` field
+Run **`scripts/render_episodes.py`** separately. Outputs typically live under the task directory in **`videos/`** (e.g. goal images, per-episode MP4s). Paths may include `videos/goal_images/` for ImageNav.
 
 ---
-
-## Stage 4: Data Writing
-
-### Description
-
-Stream Episodes to Parquet chunks with crash recovery. Uses `DatasetWriter` and `TrajectoryWriter`; GT trajectories are buffered and written per chunk (default 1000 episodes per chunk).
-
-### Output Files
-
-- `meta/episodes.parquet`: Consolidated episode index
-- `meta/info.json`: Task-level metadata
-- `data/chunk-NNN/trajectories.parquet`: GT trajectories (chunked)
-- `data/chunk-NNN/episodes.parquet`: Per-chunk episode metadata (incremental)
-- `scene_meta.json`, `dataset_meta.json`
-
-### Crash Recovery
-
-- Lightweight `.{split}_checkpoint.json` (< 1 KB) records progress
-- Use `--resume` to recover from checkpoint
-- Use `--append` to add episodes to existing dataset
-
----
-
-## Stage 5: Rendering (Optional)
-
-### Description
-
-Run separately via `scripts/render_episodes.py` to render ImageNav goal images or trajectory videos.
-
-### Input
-
-- GT trajectory directory
-- Scene path
-- Camera config (configs/examples/camera.yaml)
-
-### Output
-
-- `goal_images/`: ImageNav goal images
-- `rendered_videos/`: Multi-camera trajectory videos
-
----
-
-## Stage Dependencies
 
 ```mermaid
 graph LR
-    E1[Env Init] --> E2[Episode Gen]
-    E2 --> E3[Instruction Gen]
-    E3 --> E4[Data Write]
+    E1[EnvInit] --> E2[EpisodeGen]
+    E2 --> E3[InstructionGen]
+    E3 --> E4[DataWrite]
     E4 -.optional.-> E5[Render]
 ```
 
-**See also**: [Configuration](configuration.md) · [Batch Processing](batch-processing.md)
+**See also**: [Configuration](configuration.md) · [Batch Processing](batch-processing.md) · [Navigation Training Data Format](../definitions/nav-data-format.md)

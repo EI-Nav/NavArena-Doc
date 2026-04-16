@@ -1,83 +1,48 @@
 # API Reference
 
-This document provides API reference for the NavArena embodied navigation infrastructure. NavArena consists of four sub-projects: **Core Library** (navarena-core), **Asset Preprocessing** (navarena-forge), **Data Generator** (navarena-gen), and **Evaluation Framework** (navarena-bench).
+NavArena is split across **navarena-core**, **navarena-forge**, **navarena-gen**, **navarena-bench**, and **navarena-server**. This page summarizes entry points; see linked pages for detail.
 
-## Core Library API (navarena-core)
+## Core Library (navarena-core)
 
-navarena-core provides shared configuration, data models, rendering, and utilities. For full details, see [Core Library](../core/).
+Shared configuration, Parquet I/O, episode models, GS rendering helpers. Details: [Core Library](../core/index.md).
 
-### Main Exports
+**Imports:** most symbols come from submodules, e.g. `navarena_core.data`, `navarena_core.config` — not the package root.
 
-- `BaseConfig`, `load_config`, `resolve_path`, `resolve_scene_dir`, `get_assets_dir`, `get_datasets_dir`, `get_shared_dir` — config and path resolution
-- `Episode`, `TrajectoryStep`, `SceneAsset`, `ParquetDatasetReader`, `ParquetEpisodeWriter`, `ParquetTrajectoryWriter`, `validate_episode`, `validate_dataset` — data models and I/O
-- `get_logger`, `setup_logging` — logging
+- Config/path resolution: `BaseConfig`, `load_config`, `resolve_path`, `resolve_scene_dir`, `get_assets_dir`, …
+- Data: `Episode`, `TrajectoryStep`, `ParquetDatasetReader`, writers, validation helpers
 
 ## Data Generator API
 
-For the complete Data Generator API, see [Data Generator API](data-generator-api.md).
+See [Data Generator API](data-generator-api.md).
 
-### Main Classes
-
-- `BaseGenerator` - Generator base class; registered subclasses: `PointNavGenerator`, `ImageNavGenerator`, `ObjectNavGenerator`, `VLNGenerator`
-- `BaseSimEnv` - Simulation environment base class; `GSSimEnv` for 3D GS
-- `BaseInstructionGenerator` - Instruction generator base class (VLN); registered subclasses: `SimpleDirectionInstructionGenerator`, `PathBasedInstructionGenerator`, `ObjectGoalInstructionGenerator`
-- `GridAStarPlanner` - Global A* path planner
-- `TwoStageTrajectoryPlanner` - Two-stage trajectory planner (A* + local smoothing)
-- `DatasetWriter`, `TrajectoryWriter` - Data writers
-- `GeneratorConfig` - Data generation configuration class
+- `BaseGenerator` — task implementations include PointNav, GridTraj, ImageNav, ObjectNav, VLN
+- `BaseSimEnv`, `GSSimEnv`
+- `BaseInstructionGenerator` + strategies for VLN
+- Planners (`GridAStarPlanner`, two-stage smoothing) — used where applicable (**not** GridTraj whole-grid walk)
+- `GeneratorConfig`, dataset writers
 
 ## Evaluation Framework API
 
-For the complete Evaluation Framework API, see [Evaluation Framework API](navarena-bench-api.md).
+See [Evaluation Framework API](navarena-bench-api.md).
 
-### Main Classes
+- `Evaluator` — registered: `pointnav`, `objectnav`, `imagenav`
+- `Env` — `gs` → `GaussianSplattingEnv`
+- **`navarena_server`** WebSocket client inside the evaluator — no in-repo `Agent` registry
+- `Metric` — multiple registered metrics (`sr`, `spl`, …) selected via profiles / `eval_settings.metrics`
+- `Dataset` — Parquet episode loading
 
-- `Evaluator` - Evaluator base class; registered subclasses: `PointNavEvaluator`, `ImageNavEvaluator`, `ObjectNavEvaluator`, `VLNEvaluator`
-- `Env` - Environment base class; `GaussianSplattingEnv` for 3D GS
-- `Agent` - Agent base class; registered subclasses: `LocalAgent`, `RemoteAgent`, `ViNTAgent`, `GNMAgent`, `NoMaDAgent`, `MultiModalNavAgent`, `LanguageNavAgent`
-- `Dataset` - Dataset base class; `EpisodeDataset` implementation
-- `Metric` - Metric base class; `NavigationMetrics` implementation
-
-## Quick Reference
-
-### Data Generator
-
-```python
-from navarena_gen.generators.base import BaseGenerator
-from navarena_gen.envs.base import BaseSimEnv
-from navarena_gen.config.base_config import GeneratorConfig
-
-# Load config
-config = GeneratorConfig.from_yaml("configs/examples/pointnav_example.yaml")
-
-# Create env and generator
-env = BaseSimEnv.init(config.env_type, config.env_config)
-env.load_scene(config.get_resolved_scene_path())
-generator = BaseGenerator.init(config.task_type, config.task_config)
-
-# Stream episodes
-for episode in generator.generate(env, config.num_episodes):
-    ...
-```
-
-### Evaluation Framework
+### Quick reference (bench)
 
 ```python
 from navarena_bench.evaluator import Evaluator
-from navarena_bench.configs.eval_config import EvalCfg
 
-# Load config
-config = EvalCfg.from_yaml("configs/eval/default_eval.yaml")
-
-# Create evaluator
 evaluator = Evaluator.init(config)
-
-# Run evaluation
-results = evaluator.eval()
+evaluator.eval()   # returns None; read results.json under output_path
 ```
 
 ## Full Documentation
 
-- [Core Library](../core/) - navarena-core module overview and API
-- [Data Generator API](data-generator-api.md) - Complete Data Generator API
-- [Evaluation Framework API](navarena-bench-api.md) - Complete Evaluation Framework API
+- [Core Library](../core/index.md)
+- [Data Generator API](data-generator-api.md)
+- [Evaluation Framework API](navarena-bench-api.md)
+- [Model Server SDK](../navarena-server/index.md)

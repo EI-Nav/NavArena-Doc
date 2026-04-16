@@ -40,17 +40,18 @@ flowchart LR
 | **V1 Asset Format** | Unified scene asset directory structure with manifest.json, aligned.ply, nav_map.pgm, nav_map.yaml, nav_mask.png, etc. |
 | **GT Trajectory** | Ground Truth trajectory from start to goal, used for training and evaluation |
 | **Split** | Data split: train, val_seen, val_unseen, test |
-| **Task Type** | pointnav (point goal), imagenav (image goal), objectnav (object goal), vln (vision-language navigation) |
+| **Task Type** | pointnav, gridtraj, imagenav, objectnav, vln |
 | **scene_path** | Scene relative path in form `{dataset}/{scene_id}`, relative to `$NAVARENA_DATA_DIR/assets/` |
 
 ## 3. Sub-Project Responsibilities
 
 | Project | Responsibility |
 |---------|----------------|
-| **navarena-core** | Core library; rendering, planning; dependency of forge, gen, bench |
+| **navarena-core** | Shared library: config, data models, GS rendering helpers, I/O utilities (planning lives in **navarena-gen**) |
 | **navarena-forge** | Asset preprocessing; converts raw 3DGS to V1 format |
 | **navarena-gen** | Data generation; Episodes, GT trajectories, goal images, rendered videos |
-| **navarena-bench** | Evaluation framework; loads Episodes, runs agents in 3D GS env, computes metrics |
+| **navarena-bench** | Evaluation framework; 3D GS env, WebSocket-linked policies, metrics |
+| **navarena-server** | WebSocket SDK for user-implemented navigation models (used with bench) |
 
 ## 4. NAVARENA_DATA_DIR Layout
 

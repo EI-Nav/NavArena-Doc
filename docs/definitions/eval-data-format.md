@@ -41,7 +41,7 @@ trajectory = reader.read_trajectory("train_000001")
 |-------|------|----------|-------------|
 | `episode_id` | string | Yes | Unique identifier, format `{split}_{index}` |
 | `scene_path` | string | Yes | Scene path, format `{group}/{scene_id}` (e.g. x2robot/17dc3367) |
-| `task_type` | string | Yes | `pointnav` \| `imagenav` \| `objectnav` \| `vln` |
+| `task_type` | string | Yes | Same vocabulary as training Parquet (`pointnav`, `gridtraj`, `imagenav`, `objectnav`, `vln`). **navarena-bench** currently runs **`pointnav` / `objectnav` / `imagenav`** evaluators — `gridtraj` / `vln` rows are for data compatibility unless you add custom evaluators. |
 | `start_state` | object | Yes | `{position: [x,y,z], rotation: [qx,qy,qz,qw]}` |
 | `goals` | array | Yes | At least one goal; see goal_type table below |
 | `instructions` | array | VLN only | `[{instruction_text, language}]` |
