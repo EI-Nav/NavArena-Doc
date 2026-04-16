@@ -2,142 +2,146 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/troubleshooting/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/api/data-generator-api/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/api/navarena-bench-api/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/api/reference/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/cli/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/configuration/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/pipeline-steps/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/asset-preprocessing/web-viewer/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/concepts/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/concepts/architecture/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/core/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/batch-processing/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/configuration/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/data-generator/pipeline/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/definitions/concepts/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/definitions/eval-data-format/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/definitions/gs-assets/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/definitions/nav-data-format/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/dev/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/dev/changelog/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/dev/contributing/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/installation/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/getting-started/quickstart/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/guide/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/agents/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/environment/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/evaluators/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/extending/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/navarena-bench/replay/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
+    </url>
+    <url>
+         <loc>https://ei-nav.github.io/NavArena-Doc/navarena-server/</loc>
+         <lastmod>2026-04-16</lastmod>
     </url>
     <url>
          <loc>https://ei-nav.github.io/NavArena-Doc/reference/</loc>
-         <lastmod>2026-04-07</lastmod>
+         <lastmod>2026-04-16</lastmod>
     </url>
 </urlset>
